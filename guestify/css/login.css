@@ -1,0 +1,67 @@
+/* css/login.css — only for the Blank template login page */
+
+/* Container */
+.login-page {
+  display: flex;
+  min-height: 100vh;
+  margin: 0;
+}
+
+/* Panel */
+.login-page__panel {
+  flex: 1;
+  max-width: 33.333%;
+  padding: 2rem;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.login-page__logo {
+  max-width: 200px;
+  margin-bottom: 1rem;
+}
+
+.login-page__title {
+  margin-bottom: 1.5rem;
+  font-size: 1.75rem;
+}
+
+.login-page__form {
+  margin-bottom: 1rem;
+}
+
+.login-page__logout {
+  margin-top: 1rem;
+}
+
+.login-page__social {
+  margin-top: 1.5rem;
+}
+
+.login-page__social-item {
+  margin-right: 1rem;
+  color: #666;
+  text-decoration: none;
+}
+
+/* Illustration */
+.login-page__illustration {
+  flex: 2;
+  background: url('https://guestify.ai/wp-content/uploads/2021/01/login_welcome_bck.png')
+              center/cover no-repeat;
+}
+
+/* Mobile fallback */
+@media (max-width: 768px) {
+  .login-page {
+    flex-direction: column;
+  }
+  .login-page__illustration {
+    display: none;
+  }
+  .login-page__panel {
+    max-width: 100%;
+  }
+}

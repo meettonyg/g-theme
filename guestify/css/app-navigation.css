@@ -1,0 +1,437 @@
+/**
+ * Guestify App Navigation Styles
+ * Based on Visual Brand Standards
+ * 
+ * Color Palette:
+ * - Intelligence Blue: #1B365D (Primary)
+ * - Connection Green: #2B7A4C (Secondary) 
+ * - Authority Gray: #4A5568 (Neutral)
+ * - Transformation Orange: #ED8936 (Accent)
+ * - Pure White: #FFFFFF
+ * - Near Black: #1A202C
+ */
+
+:root {
+    --intelligence-blue: #1B365D;
+    --connection-green: #2B7A4C;
+    --authority-gray: #4A5568;
+    --transformation-orange: #ED8936;
+    --insight-purple: #805AD5;
+    --success-teal: #38B2AC;
+    --pure-white: #FFFFFF;
+    --off-white: #F7FAFC;
+    --light-gray: #E2E8F0;
+    --medium-gray: #718096;
+    --dark-gray: #2D3748;
+    --near-black: #1A202C;
+}
+
+/* App Navigation Container */
+.app-nav {
+    background: var(--pure-white);
+    border-bottom: 1px solid var(--light-gray);
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 1px 3px 0 rgba(27, 54, 93, 0.1);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+}
+
+.app-nav__container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+}
+
+/* Brand Section */
+.app-nav__brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    text-decoration: none;
+    color: var(--intelligence-blue);
+    transition: all 0.2s ease;
+}
+
+.app-nav__brand:hover {
+    opacity: 0.8;
+}
+
+.app-nav__logo {
+    width: 40px;
+    height: 40px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.app-nav__logo-icon {
+    width: 100%;
+    height: 100%;
+}
+
+.app-nav__brand-text {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--intelligence-blue);
+    letter-spacing: -0.025em;
+}
+
+/* Navigation Menu */
+.app-nav__menu {
+    display: flex;
+    list-style: none;
+    gap: 4px;
+    margin: 0;
+    padding: 0;
+}
+
+.app-nav__item {
+    position: relative;
+}
+
+.app-nav__item--dropdown:hover .app-nav__dropdown {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.app-nav__link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    text-decoration: none;
+    color: var(--authority-gray);
+    font-weight: 500;
+    font-size: 14px;
+    border-radius: 8px;
+    transition: all 0.2s ease;
+    line-height: 1.2;
+}
+
+.app-nav__link:hover {
+    background: var(--off-white);
+    color: var(--intelligence-blue);
+}
+
+.app-nav__link--active {
+    background: var(--intelligence-blue);
+    color: var(--pure-white);
+}
+
+.app-nav__link--child {
+    padding-left: 32px;
+    font-size: 13px;
+}
+
+.app-nav__icon {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+    flex-shrink: 0;
+}
+
+.app-nav__dropdown-icon {
+    width: 14px;
+    height: 14px;
+    fill: currentColor;
+    margin-left: auto;
+    transition: transform 0.2s ease;
+}
+
+.app-nav__item--dropdown:hover .app-nav__dropdown-icon {
+    transform: rotate(180deg);
+}
+
+/* Dropdown Menu */
+.app-nav__dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 200px;
+    background: var(--pure-white);
+    border: 1px solid var(--light-gray);
+    border-radius: 8px;
+    box-shadow: 0 4px 6px -1px rgba(27, 54, 93, 0.1), 0 2px 4px -1px rgba(27, 54, 93, 0.06);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-8px);
+    transition: all 0.2s ease;
+    list-style: none;
+    margin: 0;
+    padding: 8px 0;
+    z-index: 1001;
+}
+
+.app-nav__dropdown-item {
+    margin: 0;
+}
+
+.app-nav__dropdown-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    text-decoration: none;
+    color: var(--authority-gray);
+    font-weight: 500;
+    font-size: 14px;
+    transition: all 0.2s ease;
+    border-radius: 0;
+}
+
+.app-nav__dropdown-link:hover {
+    background: var(--off-white);
+    color: var(--intelligence-blue);
+}
+
+.app-nav__dropdown-link--active {
+    background: var(--intelligence-blue);
+    color: var(--pure-white);
+}
+
+/* User Section */
+.app-nav__user {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.app-nav__notifications {
+    position: relative;
+    background: none;
+    border: none;
+    padding: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    color: var(--authority-gray);
+    transition: all 0.2s ease;
+}
+
+.app-nav__notifications:hover {
+    background: var(--off-white);
+    color: var(--intelligence-blue);
+}
+
+.app-nav__notifications-badge {
+    position: absolute;
+    top: 6px;
+    right: 6px;
+    width: 8px;
+    height: 8px;
+    background: var(--transformation-orange);
+    border-radius: 50%;
+    border: 2px solid var(--pure-white);
+}
+
+.app-nav__profile {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 8px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--near-black);
+    transition: all 0.2s ease;
+}
+
+.app-nav__profile:hover {
+    background: var(--off-white);
+}
+
+.app-nav__avatar,
+.app-nav__avatar-img {
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 600;
+    font-size: 14px;
+    flex-shrink: 0;
+}
+
+.app-nav__avatar {
+    background: linear-gradient(135deg, var(--intelligence-blue) 0%, var(--connection-green) 100%);
+    color: var(--pure-white);
+}
+
+.app-nav__avatar-img {
+    object-fit: cover;
+}
+
+.app-nav__profile-info {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.app-nav__profile-name {
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 1.2;
+    color: var(--near-black);
+}
+
+.app-nav__profile-role {
+    font-size: 12px;
+    color: var(--authority-gray);
+    line-height: 1.2;
+}
+
+/* Mobile Styles */
+.app-nav__mobile-toggle {
+    display: none;
+    background: none;
+    border: none;
+    padding: 8px;
+    border-radius: 8px;
+    cursor: pointer;
+    color: var(--authority-gray);
+    transition: all 0.2s ease;
+}
+
+.app-nav__mobile-toggle:hover {
+    background: var(--off-white);
+    color: var(--intelligence-blue);
+}
+
+.app-nav__mobile-menu {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--pure-white);
+    border-bottom: 1px solid var(--light-gray);
+    box-shadow: 0 4px 6px -1px rgba(27, 54, 93, 0.1);
+}
+
+.app-nav__mobile-menu.is-open {
+    display: block;
+}
+
+.app-nav__mobile-menu .app-nav__menu {
+    flex-direction: column;
+    padding: 16px;
+    gap: 2px;
+}
+
+.app-nav__mobile-menu .app-nav__link {
+    justify-content: flex-start;
+    padding: 12px 16px;
+    border-radius: 8px;
+}
+
+/* Menu Icons - Specific icon mappings based on menu items */
+.app-nav__link[href*="podcast"] .app-nav__icon,
+.app-nav__link[href*="prospector"] .app-nav__icon {
+    /* Podcast/Search icon */
+}
+
+.app-nav__link[href*="interview"] .app-nav__icon,
+.app-nav__link[href*="tracker"] .app-nav__icon {
+    /* Interview/People icon */
+}
+
+.app-nav__link[href*="guest"] .app-nav__icon,
+.app-nav__link[href*="profile"] .app-nav__icon {
+    /* Guest/Profile icon */
+}
+
+.app-nav__link[href*="message"] .app-nav__icon,
+.app-nav__link[href*="builder"] .app-nav__icon {
+    /* Message/Email icon */
+}
+
+.app-nav__link[href*="value"] .app-nav__icon {
+    /* Value/Star icon */
+}
+
+/* Responsive Design */
+@media (max-width: 1024px) {
+    .app-nav__container {
+        max-width: none;
+    }
+}
+
+@media (max-width: 768px) {
+    .app-nav__container {
+        padding: 0 16px;
+    }
+
+    .app-nav__menu {
+        display: none;
+    }
+
+    .app-nav__mobile-toggle {
+        display: block;
+    }
+
+    .app-nav__profile-info {
+        display: none;
+    }
+
+    .app-nav__user {
+        gap: 8px;
+    }
+
+    .app-nav__brand-text {
+        font-size: 18px;
+    }
+}
+
+@media (max-width: 480px) {
+    .app-nav__container {
+        padding: 0 12px;
+        height: 56px;
+    }
+
+    .app-nav__logo {
+        width: 36px;
+        height: 36px;
+    }
+
+    .app-nav__brand-text {
+        font-size: 16px;
+    }
+}
+
+/* Loading and Interaction States */
+.app-nav__link:focus {
+    outline: 2px solid var(--intelligence-blue);
+    outline-offset: 2px;
+}
+
+.app-nav__link:active {
+    transform: translateY(1px);
+}
+
+/* Accessibility Improvements */
+@media (prefers-reduced-motion: reduce) {
+    .app-nav__link,
+    .app-nav__dropdown,
+    .app-nav__dropdown-icon {
+        transition: none;
+    }
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+    .app-nav {
+        border-bottom-width: 2px;
+    }
+    
+    .app-nav__link--active {
+        outline: 2px solid var(--pure-white);
+        outline-offset: -2px;
+    }
+}
