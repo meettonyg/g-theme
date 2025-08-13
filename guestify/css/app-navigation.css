@@ -1,11 +1,11 @@
 /**
- * Professional Guestify App Navigation Styles
+ * Professional Guestify App Navigation Styles (Final Version)
  * Inspired by HubSpot's clean, professional design
  * Using Guestify Visual Brand Standards
- * 
+ *
  * Color Palette:
  * - Intelligence Blue: #1B365D (Primary)
- * - Connection Green: #2B7A4C (Secondary) 
+ * - Connection Green: #2B7A4C (Secondary)
  * - Authority Gray: #4A5568 (Neutral)
  * - Transformation Orange: #ED8936 (Accent)
  * - Pure White: #FFFFFF
@@ -41,7 +41,7 @@
     min-height: 60px;
 }
 
-.app-nav__container {
+.app-nav .app-nav__container {
     max-width: 100%;
     margin: 0 auto;
     padding: 0 24px;
@@ -52,7 +52,7 @@
 }
 
 /* Brand Section */
-.app-nav__brand {
+.app-nav .app-nav__brand {
     display: flex;
     align-items: center;
     gap: 12px;
@@ -62,11 +62,11 @@
     flex-shrink: 0;
 }
 
-.app-nav__brand:hover {
+.app-nav .app-nav__brand:hover {
     opacity: 0.9;
 }
 
-.app-nav__logo {
+.app-nav .app-nav__logo {
     width: 32px;
     height: 32px;
     border-radius: 6px;
@@ -76,12 +76,12 @@
     overflow: hidden;
 }
 
-.app-nav__logo-icon {
+.app-nav .app-nav__logo-icon {
     width: 100%;
     height: 100%;
 }
 
-.app-nav__brand-text {
+.app-nav .app-nav__brand-text {
     font-size: 18px;
     font-weight: 600;
     color: var(--pure-white);
@@ -89,7 +89,7 @@
 }
 
 /* Navigation Menu */
-.app-nav__menu {
+.app-nav .app-nav__menu {
     display: flex;
     list-style: none;
     gap: 2px;
@@ -100,23 +100,24 @@
     max-width: 800px;
 }
 
-.app-nav__item {
+.app-nav .app-nav__item {
     position: relative;
 }
 
-.app-nav__item--dropdown:hover .app-nav__dropdown {
+.app-nav .app-nav__item--dropdown:hover .app-nav__dropdown {
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
 }
 
-.app-nav__link {
+.app-nav .app-nav__link {
     display: flex;
     align-items: center;
     gap: 6px;
+    margin:0 3px;
     padding: 8px 16px;
     text-decoration: none;
-    color: #FFFFFF;
+    color: rgba(255, 255, 255, 0.85);
     font-weight: 500;
     font-size: 14px;
     border-radius: 6px;
@@ -127,35 +128,35 @@
     background: transparent;
 }
 
-.app-nav__link:hover {
+.app-nav .app-nav__link:hover {
     background: rgba(255, 255, 255, 0.1);
     color: #FFFFFF;
 }
 
-.app-nav__link--active {
+.app-nav .app-nav__link--active {
     background: var(--connection-green);
     color: #FFFFFF;
     font-weight: 600;
 }
 
-.app-nav__link--active:hover {
+.app-nav .app-nav__link--active:hover {
     background: var(--connection-green);
     color: #FFFFFF;
 }
 
-.app-nav__link--child {
+.app-nav .app-nav__link--child {
     padding-left: 32px;
     font-size: 13px;
 }
 
-.app-nav__icon {
+.app-nav .app-nav__icon {
     width: 16px;
     height: 16px;
     fill: currentColor;
     flex-shrink: 0;
 }
 
-.app-nav__dropdown-icon {
+.app-nav .app-nav__dropdown-icon {
     width: 12px;
     height: 12px;
     fill: currentColor;
@@ -163,12 +164,12 @@
     transition: transform 0.2s ease;
 }
 
-.app-nav__item--dropdown:hover .app-nav__dropdown-icon {
+.app-nav .app-nav__item--dropdown:hover .app-nav__dropdown-icon {
     transform: rotate(180deg);
 }
 
 /* Dropdown Menu */
-.app-nav__dropdown {
+.app-nav .app-nav__dropdown {
     position: absolute;
     top: calc(100% + 4px);
     left: 0;
@@ -187,11 +188,11 @@
     z-index: 1001;
 }
 
-.app-nav__dropdown-item {
+.app-nav .app-nav__dropdown-item {
     margin: 0;
 }
 
-.app-nav__dropdown-link {
+.app-nav .app-nav__dropdown-link {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -204,25 +205,25 @@
     border-radius: 0;
 }
 
-.app-nav__dropdown-link:hover {
+.app-nav .app-nav__dropdown-link:hover {
     background: var(--hover-bg);
     color: var(--intelligence-blue);
 }
 
-.app-nav__dropdown-link--active {
+.app-nav .app-nav__dropdown-link--active {
     background: var(--intelligence-blue);
     color: var(--pure-white);
 }
 
 /* User Section */
-.app-nav__user {
+.app-nav .app-nav__user {
     display: flex;
     align-items: center;
     gap: 12px;
     flex-shrink: 0;
 }
 
-.app-nav__notifications {
+.app-nav .app-nav__notifications {
     position: relative;
     background: none;
     border: none;
@@ -233,12 +234,12 @@
     transition: all 0.15s ease;
 }
 
-.app-nav__notifications:hover {
+.app-nav .app-nav__notifications:hover {
     background: rgba(255, 255, 255, 0.1);
     color: var(--pure-white);
 }
 
-.app-nav__notifications-badge {
+.app-nav .app-nav__notifications-badge {
     position: absolute;
     top: 6px;
     right: 6px;
@@ -249,7 +250,7 @@
     border: 2px solid var(--intelligence-blue);
 }
 
-.app-nav__profile {
+.app-nav .app-nav__profile {
     display: flex;
     align-items: center;
     gap: 8px;
@@ -260,12 +261,12 @@
     transition: all 0.15s ease;
 }
 
-.app-nav__profile:hover {
+.app-nav .app-nav__profile:hover {
     background: rgba(255, 255, 255, 0.1);
 }
 
-.app-nav__avatar,
-.app-nav__avatar-img {
+.app-nav .app-nav__avatar,
+.app-nav .app-nav__avatar-img {
     width: 28px;
     height: 28px;
     border-radius: 6px;
@@ -277,36 +278,36 @@
     flex-shrink: 0;
 }
 
-.app-nav__avatar {
+.app-nav .app-nav__avatar {
     background: linear-gradient(135deg, var(--intelligence-blue) 0%, var(--connection-green) 100%);
     color: var(--pure-white);
 }
 
-.app-nav__avatar-img {
+.app-nav .app-nav__avatar-img {
     object-fit: cover;
 }
 
-.app-nav__profile-info {
+.app-nav .app-nav__profile-info {
     display: flex;
     flex-direction: column;
     align-items: flex-start;
 }
 
-.app-nav__profile-name {
+.app-nav .app-nav__profile-name {
     font-size: 13px;
     font-weight: 600;
     line-height: 1.2;
     color: var(--pure-white);
 }
 
-.app-nav__profile-role {
+.app-nav .app-nav__profile-role {
     font-size: 11px;
     color: rgba(255, 255, 255, 0.7);
     line-height: 1.2;
 }
 
 /* Mobile Styles */
-.app-nav__mobile-toggle {
+.app-nav .app-nav__mobile-toggle {
     display: none;
     background: none;
     border: none;
@@ -317,12 +318,12 @@
     transition: all 0.15s ease;
 }
 
-.app-nav__mobile-toggle:hover {
+.app-nav .app-nav__mobile-toggle:hover {
     background: rgba(255, 255, 255, 0.1);
     color: var(--pure-white);
 }
 
-.app-nav__mobile-menu {
+.app-nav .app-nav__mobile-menu {
     display: none;
     position: absolute;
     top: 100%;
@@ -333,11 +334,11 @@
     box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.15);
 }
 
-.app-nav__mobile-menu.is-open {
+.app-nav .app-nav__mobile-menu.is-open {
     display: block;
 }
 
-.app-nav__mobile-menu .app-nav__menu {
+.app-nav .app-nav__mobile-menu .app-nav__menu {
     flex-direction: column;
     padding: 16px;
     gap: 2px;
@@ -345,7 +346,7 @@
     max-width: none;
 }
 
-.app-nav__mobile-menu .app-nav__link {
+.app-nav .app-nav__mobile-menu .app-nav__link {
     justify-content: flex-start;
     padding: 12px 16px;
     border-radius: 6px;
@@ -353,108 +354,108 @@
 
 /* Responsive Design */
 @media (max-width: 1200px) {
-    .app-nav__container {
+    .app-nav .app-nav__container {
         padding: 0 20px;
     }
     
-    .app-nav__menu {
+    .app-nav .app-nav__menu {
         gap: 1px;
     }
     
-    .app-nav__link {
+    .app-nav .app-nav__link {
         padding: 8px 12px;
         font-size: 13px;
     }
 }
 
 @media (max-width: 1024px) {
-    .app-nav__container {
+    .app-nav .app-nav__container {
         padding: 0 16px;
     }
     
-    .app-nav__menu {
+    .app-nav .app-nav__menu {
         max-width: 600px;
     }
 }
 
 @media (max-width: 768px) {
-    .app-nav__container {
+    .app-nav .app-nav__container {
         padding: 0 16px;
         height: 56px;
     }
 
-    .app-nav__menu {
+    .app-nav .app-nav__menu {
         display: none;
     }
 
-    .app-nav__mobile-toggle {
+    .app-nav .app-nav__mobile-toggle {
         display: block;
     }
 
-    .app-nav__profile-info {
+    .app-nav .app-nav__profile-info {
         display: none;
     }
 
-    .app-nav__user {
+    .app-nav .app-nav__user {
         gap: 8px;
     }
 
-    .app-nav__brand-text {
+    .app-nav .app-nav__brand-text {
         font-size: 16px;
     }
     
-    .app-nav__logo {
+    .app-nav .app-nav__logo {
         width: 28px;
         height: 28px;
     }
 }
 
 @media (max-width: 480px) {
-    .app-nav__container {
+    .app-nav .app-nav__container {
         padding: 0 12px;
         height: 52px;
     }
 
-    .app-nav__logo {
+    .app-nav .app-nav__logo {
         width: 24px;
         height: 24px;
     }
 
-    .app-nav__brand-text {
+    .app-nav .app-nav__brand-text {
         font-size: 15px;
     }
     
-    .app-nav__avatar,
-    .app-nav__avatar-img {
+    .app-nav .app-nav__avatar,
+    .app-nav .app-nav__avatar-img {
         width: 24px;
         height: 24px;
     }
 }
 
 /* Focus and Interaction States */
-.app-nav__link:focus {
+.app-nav .app-nav__link:focus {
     outline: 2px solid var(--connection-green);
     outline-offset: 2px;
 }
 
-.app-nav__link:active {
+.app-nav .app-nav__link:active {
     transform: translateY(0);
 }
 
 /* Loading and Interaction States */
-.app-nav__notifications:focus,
-.app-nav__profile:focus {
+.app-nav .app-nav__notifications:focus,
+.app-nav .app-nav__profile:focus {
     outline: 2px solid var(--connection-green);
     outline-offset: 2px;
 }
 
 /* Accessibility Improvements */
 @media (prefers-reduced-motion: reduce) {
-    .app-nav__link,
-    .app-nav__dropdown,
-    .app-nav__dropdown-icon,
-    .app-nav__notifications,
-    .app-nav__profile {
+    .app-nav .app-nav__link,
+    .app-nav .app-nav__dropdown,
+    .app-nav .app-nav__dropdown-icon,
+    .app-nav .app-nav__notifications,
+    .app-nav .app-nav__profile {
         transition: none;
     }
 }
@@ -466,12 +467,12 @@
         border-bottom-color: rgba(255, 255, 255, 0.3);
     }
     
-    .app-nav__link--active {
+    .app-nav .app-nav__link--active {
         outline: 2px solid var(--pure-white);
         outline-offset: -2px;
     }
     
-    .app-nav__dropdown {
+    .app-nav .app-nav__dropdown {
         border-width: 2px;
     }
 }

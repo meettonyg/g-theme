@@ -141,6 +141,9 @@ function guestify_scripts() {
 	wp_enqueue_style( 'guestify-style', get_stylesheet_uri(), array(), _S_VERSION );
 	wp_style_add_data( 'guestify-style', 'rtl', 'replace' );
 
+	// Enqueue Font Awesome
+	wp_enqueue_style( 'font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css', array(), '6.4.0' );
+
 	wp_enqueue_script( 'guestify-navigation', get_template_directory_uri() . '/js/navigation.js', array(), _S_VERSION, true );
 
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {

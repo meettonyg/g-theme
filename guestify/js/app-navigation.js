@@ -1,7 +1,8 @@
 /**
  * Guestify App Navigation JavaScript
- * 
- * Handles mobile menu toggle and active state management
+ *
+ * Handles mobile menu toggle and other interactive elements.
+ * (Active state is now handled server-side by PHP to prevent FOUC)
  */
 
 (function() {
@@ -38,32 +39,9 @@
                 }
             }
         });
-
-        // Set active state based on current path
-        setActiveNavItem();
         
         // Handle dropdown menus for mobile
         handleMobileDropdowns();
-    }
-
-    // Set active navigation item based on current URL
-    function setActiveNavItem() {
-        const currentPath = window.location.pathname;
-        const navLinks = document.querySelectorAll('.app-nav__link, .app-nav__dropdown-link');
-        
-        navLinks.forEach(link => {
-            link.classList.remove('app-nav__link--active', 'app-nav__dropdown-link--active');
-            
-            const linkPath = link.getAttribute('href');
-            if (linkPath && (currentPath === linkPath || currentPath.startsWith(linkPath + '/'))) {
-                // Add appropriate active class
-                if (link.classList.contains('app-nav__dropdown-link')) {
-                    link.classList.add('app-nav__dropdown-link--active');
-                } else {
-                    link.classList.add('app-nav__link--active');
-                }
-            }
-        });
     }
 
     // Handle dropdown behavior on mobile
