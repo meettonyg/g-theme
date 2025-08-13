@@ -3,7 +3,7 @@
  * App Navigation Header
  * 
  * Only displays on /app/ and child pages
- * Uses Guestify Visual Brand Standards
+ * Uses Guestify Visual Brand Standards with dark theme
  * 
  * @package Guestify
  */
@@ -45,21 +45,22 @@ foreach ($menu_items as $item) {
             <div class="app-nav__logo">
                 <svg viewBox="0 0 40 40" class="app-nav__logo-icon">
                     <defs>
-                        <linearGradient id="logoGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                            <stop offset="0%" style="stop-color:#1B365D;stop-opacity:1" />
-                            <stop offset="100%" style="stop-color:#2B7A4C;stop-opacity:1" />
+                        <linearGradient id="logoGradientDark" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" style="stop-color:#ffffff;stop-opacity:1" />
+                            <stop offset="50%" style="stop-color:#2B7A4C;stop-opacity:1" />
+                            <stop offset="100%" style="stop-color:#38B2AC;stop-opacity:1" />
                         </linearGradient>
                     </defs>
-                    <rect width="40" height="40" rx="8" fill="url(#logoGradient)"/>
-                    <g fill="white" opacity="0.9">
+                    <rect width="40" height="40" rx="8" fill="url(#logoGradientDark)"/>
+                    <g fill="#1B365D" opacity="0.9">
                         <!-- Connection nodes representing relationship intelligence -->
                         <circle cx="15" cy="15" r="3"/>
                         <circle cx="25" cy="15" r="3"/>
                         <circle cx="20" cy="25" r="3"/>
                         <!-- Connection lines -->
-                        <line x1="15" y1="15" x2="25" y2="15" stroke="white" stroke-width="2" opacity="0.7"/>
-                        <line x1="18" y1="18" x2="22" y2="22" stroke="white" stroke-width="2" opacity="0.7"/>
-                        <line x1="22" y1="18" x2="18" y2="22" stroke="white" stroke-width="2" opacity="0.7"/>
+                        <line x1="15" y1="15" x2="25" y2="15" stroke="#1B365D" stroke-width="2" opacity="0.8"/>
+                        <line x1="18" y1="18" x2="22" y2="22" stroke="#1B365D" stroke-width="2" opacity="0.8"/>
+                        <line x1="22" y1="18" x2="18" y2="22" stroke="#1B365D" stroke-width="2" opacity="0.8"/>
                     </g>
                 </svg>
             </div>

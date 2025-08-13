@@ -1,6 +1,7 @@
 /**
- * Guestify App Navigation Styles
- * Based on Visual Brand Standards
+ * Professional Guestify App Navigation Styles
+ * Inspired by HubSpot's clean, professional design
+ * Using Guestify Visual Brand Standards
  * 
  * Color Palette:
  * - Intelligence Blue: #1B365D (Primary)
@@ -24,27 +25,30 @@
     --medium-gray: #718096;
     --dark-gray: #2D3748;
     --near-black: #1A202C;
+    --border-color: #E5E7EB;
+    --hover-bg: #F9FAFB;
 }
 
 /* App Navigation Container */
 .app-nav {
-    background: var(--pure-white);
-    border-bottom: 1px solid var(--light-gray);
+    background: var(--intelligence-blue);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
     position: sticky;
     top: 0;
     z-index: 1000;
-    box-shadow: 0 1px 3px 0 rgba(27, 54, 93, 0.1);
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', sans-serif;
+    box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.15);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    min-height: 60px;
 }
 
 .app-nav__container {
-    max-width: 1200px;
+    max-width: 100%;
     margin: 0 auto;
     padding: 0 24px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    height: 64px;
+    height: 60px;
 }
 
 /* Brand Section */
@@ -53,18 +57,19 @@
     align-items: center;
     gap: 12px;
     text-decoration: none;
-    color: var(--intelligence-blue);
-    transition: all 0.2s ease;
+    color: var(--pure-white);
+    transition: opacity 0.2s ease;
+    flex-shrink: 0;
 }
 
 .app-nav__brand:hover {
-    opacity: 0.8;
+    opacity: 0.9;
 }
 
 .app-nav__logo {
-    width: 40px;
-    height: 40px;
-    border-radius: 8px;
+    width: 32px;
+    height: 32px;
+    border-radius: 6px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -77,9 +82,9 @@
 }
 
 .app-nav__brand-text {
-    font-size: 20px;
+    font-size: 18px;
     font-weight: 600;
-    color: var(--intelligence-blue);
+    color: var(--pure-white);
     letter-spacing: -0.025em;
 }
 
@@ -87,9 +92,12 @@
 .app-nav__menu {
     display: flex;
     list-style: none;
-    gap: 4px;
+    gap: 2px;
     margin: 0;
     padding: 0;
+    flex: 1;
+    justify-content: center;
+    max-width: 800px;
 }
 
 .app-nav__item {
@@ -105,25 +113,34 @@
 .app-nav__link {
     display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 10px 16px;
+    gap: 6px;
+    padding: 8px 16px;
     text-decoration: none;
-    color: var(--authority-gray);
+    color: #FFFFFF;
     font-weight: 500;
     font-size: 14px;
-    border-radius: 8px;
-    transition: all 0.2s ease;
-    line-height: 1.2;
+    border-radius: 6px;
+    transition: all 0.15s ease;
+    line-height: 1.4;
+    white-space: nowrap;
+    position: relative;
+    background: transparent;
 }
 
 .app-nav__link:hover {
-    background: var(--off-white);
-    color: var(--intelligence-blue);
+    background: rgba(255, 255, 255, 0.1);
+    color: #FFFFFF;
 }
 
 .app-nav__link--active {
-    background: var(--intelligence-blue);
-    color: var(--pure-white);
+    background: var(--connection-green);
+    color: #FFFFFF;
+    font-weight: 600;
+}
+
+.app-nav__link--active:hover {
+    background: var(--connection-green);
+    color: #FFFFFF;
 }
 
 .app-nav__link--child {
@@ -139,10 +156,10 @@
 }
 
 .app-nav__dropdown-icon {
-    width: 14px;
-    height: 14px;
+    width: 12px;
+    height: 12px;
     fill: currentColor;
-    margin-left: auto;
+    margin-left: 4px;
     transition: transform 0.2s ease;
 }
 
@@ -153,20 +170,20 @@
 /* Dropdown Menu */
 .app-nav__dropdown {
     position: absolute;
-    top: 100%;
+    top: calc(100% + 4px);
     left: 0;
-    min-width: 200px;
+    min-width: 220px;
     background: var(--pure-white);
-    border: 1px solid var(--light-gray);
+    border: 1px solid var(--border-color);
     border-radius: 8px;
-    box-shadow: 0 4px 6px -1px rgba(27, 54, 93, 0.1), 0 2px 4px -1px rgba(27, 54, 93, 0.06);
+    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.25), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
     opacity: 0;
     visibility: hidden;
     transform: translateY(-8px);
     transition: all 0.2s ease;
     list-style: none;
     margin: 0;
-    padding: 8px 0;
+    padding: 6px 0;
     z-index: 1001;
 }
 
@@ -178,17 +195,17 @@
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 8px 16px;
+    padding: 10px 16px;
     text-decoration: none;
-    color: var(--authority-gray);
+    color: var(--dark-gray);
     font-weight: 500;
     font-size: 14px;
-    transition: all 0.2s ease;
+    transition: all 0.15s ease;
     border-radius: 0;
 }
 
 .app-nav__dropdown-link:hover {
-    background: var(--off-white);
+    background: var(--hover-bg);
     color: var(--intelligence-blue);
 }
 
@@ -201,7 +218,8 @@
 .app-nav__user {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: 12px;
+    flex-shrink: 0;
 }
 
 .app-nav__notifications {
@@ -209,53 +227,53 @@
     background: none;
     border: none;
     padding: 8px;
-    border-radius: 8px;
+    border-radius: 6px;
     cursor: pointer;
-    color: var(--authority-gray);
-    transition: all 0.2s ease;
+    color: rgba(255, 255, 255, 0.8);
+    transition: all 0.15s ease;
 }
 
 .app-nav__notifications:hover {
-    background: var(--off-white);
-    color: var(--intelligence-blue);
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--pure-white);
 }
 
 .app-nav__notifications-badge {
     position: absolute;
     top: 6px;
     right: 6px;
-    width: 8px;
-    height: 8px;
+    width: 6px;
+    height: 6px;
     background: var(--transformation-orange);
     border-radius: 50%;
-    border: 2px solid var(--pure-white);
+    border: 2px solid var(--intelligence-blue);
 }
 
 .app-nav__profile {
     display: flex;
     align-items: center;
     gap: 8px;
-    padding: 6px 8px;
+    padding: 4px 8px;
     border-radius: 8px;
     text-decoration: none;
-    color: var(--near-black);
-    transition: all 0.2s ease;
+    color: rgba(255, 255, 255, 0.9);
+    transition: all 0.15s ease;
 }
 
 .app-nav__profile:hover {
-    background: var(--off-white);
+    background: rgba(255, 255, 255, 0.1);
 }
 
 .app-nav__avatar,
 .app-nav__avatar-img {
-    width: 32px;
-    height: 32px;
-    border-radius: 8px;
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-weight: 600;
-    font-size: 14px;
+    font-size: 12px;
     flex-shrink: 0;
 }
 
@@ -275,15 +293,15 @@
 }
 
 .app-nav__profile-name {
-    font-size: 14px;
-    font-weight: 500;
+    font-size: 13px;
+    font-weight: 600;
     line-height: 1.2;
-    color: var(--near-black);
+    color: var(--pure-white);
 }
 
 .app-nav__profile-role {
-    font-size: 12px;
-    color: var(--authority-gray);
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.7);
     line-height: 1.2;
 }
 
@@ -293,15 +311,15 @@
     background: none;
     border: none;
     padding: 8px;
-    border-radius: 8px;
+    border-radius: 6px;
     cursor: pointer;
-    color: var(--authority-gray);
-    transition: all 0.2s ease;
+    color: rgba(255, 255, 255, 0.8);
+    transition: all 0.15s ease;
 }
 
 .app-nav__mobile-toggle:hover {
-    background: var(--off-white);
-    color: var(--intelligence-blue);
+    background: rgba(255, 255, 255, 0.1);
+    color: var(--pure-white);
 }
 
 .app-nav__mobile-menu {
@@ -310,9 +328,9 @@
     top: 100%;
     left: 0;
     right: 0;
-    background: var(--pure-white);
-    border-bottom: 1px solid var(--light-gray);
-    box-shadow: 0 4px 6px -1px rgba(27, 54, 93, 0.1);
+    background: var(--intelligence-blue);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.15);
 }
 
 .app-nav__mobile-menu.is-open {
@@ -323,49 +341,46 @@
     flex-direction: column;
     padding: 16px;
     gap: 2px;
+    justify-content: flex-start;
+    max-width: none;
 }
 
 .app-nav__mobile-menu .app-nav__link {
     justify-content: flex-start;
     padding: 12px 16px;
-    border-radius: 8px;
-}
-
-/* Menu Icons - Specific icon mappings based on menu items */
-.app-nav__link[href*="podcast"] .app-nav__icon,
-.app-nav__link[href*="prospector"] .app-nav__icon {
-    /* Podcast/Search icon */
-}
-
-.app-nav__link[href*="interview"] .app-nav__icon,
-.app-nav__link[href*="tracker"] .app-nav__icon {
-    /* Interview/People icon */
-}
-
-.app-nav__link[href*="guest"] .app-nav__icon,
-.app-nav__link[href*="profile"] .app-nav__icon {
-    /* Guest/Profile icon */
-}
-
-.app-nav__link[href*="message"] .app-nav__icon,
-.app-nav__link[href*="builder"] .app-nav__icon {
-    /* Message/Email icon */
-}
-
-.app-nav__link[href*="value"] .app-nav__icon {
-    /* Value/Star icon */
+    border-radius: 6px;
 }
 
 /* Responsive Design */
+@media (max-width: 1200px) {
+    .app-nav__container {
+        padding: 0 20px;
+    }
+    
+    .app-nav__menu {
+        gap: 1px;
+    }
+    
+    .app-nav__link {
+        padding: 8px 12px;
+        font-size: 13px;
+    }
+}
+
 @media (max-width: 1024px) {
     .app-nav__container {
-        max-width: none;
+        padding: 0 16px;
+    }
+    
+    .app-nav__menu {
+        max-width: 600px;
     }
 }
 
 @media (max-width: 768px) {
     .app-nav__container {
         padding: 0 16px;
+        height: 56px;
     }
 
     .app-nav__menu {
@@ -385,41 +400,61 @@
     }
 
     .app-nav__brand-text {
-        font-size: 18px;
+        font-size: 16px;
+    }
+    
+    .app-nav__logo {
+        width: 28px;
+        height: 28px;
     }
 }
 
 @media (max-width: 480px) {
     .app-nav__container {
         padding: 0 12px;
-        height: 56px;
+        height: 52px;
     }
 
     .app-nav__logo {
-        width: 36px;
-        height: 36px;
+        width: 24px;
+        height: 24px;
     }
 
     .app-nav__brand-text {
-        font-size: 16px;
+        font-size: 15px;
+    }
+    
+    .app-nav__avatar,
+    .app-nav__avatar-img {
+        width: 24px;
+        height: 24px;
     }
 }
 
-/* Loading and Interaction States */
+/* Focus and Interaction States */
 .app-nav__link:focus {
-    outline: 2px solid var(--intelligence-blue);
+    outline: 2px solid var(--connection-green);
     outline-offset: 2px;
 }
 
 .app-nav__link:active {
-    transform: translateY(1px);
+    transform: translateY(0);
+}
+
+/* Loading and Interaction States */
+.app-nav__notifications:focus,
+.app-nav__profile:focus {
+    outline: 2px solid var(--connection-green);
+    outline-offset: 2px;
 }
 
 /* Accessibility Improvements */
 @media (prefers-reduced-motion: reduce) {
     .app-nav__link,
     .app-nav__dropdown,
-    .app-nav__dropdown-icon {
+    .app-nav__dropdown-icon,
+    .app-nav__notifications,
+    .app-nav__profile {
         transition: none;
     }
 }
@@ -428,10 +463,22 @@
 @media (prefers-contrast: high) {
     .app-nav {
         border-bottom-width: 2px;
+        border-bottom-color: rgba(255, 255, 255, 0.3);
     }
     
     .app-nav__link--active {
         outline: 2px solid var(--pure-white);
         outline-offset: -2px;
+    }
+    
+    .app-nav__dropdown {
+        border-width: 2px;
+    }
+}
+
+/* Print Styles */
+@media print {
+    .app-nav {
+        display: none;
     }
 }

@@ -37,20 +37,13 @@ function is_app_page($section = '') {
     $url_path = parse_url($current_url, PHP_URL_PATH);
     $url_path = rtrim($url_path, '/');
     
-    // Check if URL starts with /app or contains /app/
+    // Check if URL starts with /app or is /app
     if (empty($section)) {
-        return (
-            $url_path === '/app' || 
-            strpos($url_path, '/app/') === 0 ||
-            strpos($url_path, '/app/') !== false
-        );
+        return ($url_path === '/app' || strpos($url_path, '/app/') === 0);
     }
     
     // Check for specific section
-    return (
-        strpos($url_path, '/app/' . $section) === 0 ||
-        strpos($url_path, '/app/' . $section) !== false
-    );
+    return (strpos($url_path, '/app/' . $section) === 0);
 }
 
 /**
