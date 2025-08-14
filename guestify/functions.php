@@ -28,8 +28,8 @@ function guestify_setup() {
 		*/
 	load_theme_textdomain( 'guestify', get_template_directory() . '/languages' );
 
-	// Add default posts and comments RSS feed links to head.
-	add_theme_support( 'automatic-feed-links' );
+	// DO NOT add automatic RSS feed links - we're removing these manually
+	// Removed: add_theme_support( 'automatic-feed-links' );
 
 	/*
 		* Let WordPress manage the document title.
@@ -184,14 +184,131 @@ if ( defined( 'JETPACK__VERSION' ) ) {
  */
 require get_template_directory() . '/inc/app-navigation-functions.php';
 
+/**
+ * Enqueue login CSS only for login page (ID: 34270)
+ */
 function guestify_enqueue_login_css() {
-  if ( is_page_template( 'template-blank.php' ) ) {
-    wp_enqueue_style(
-      'guestify-login',
-      get_stylesheet_directory_uri() . '/css/login.css',
-      [],
-      filemtime( get_stylesheet_directory() . '/css/login.css' )
-    );
-  }
+	if ( is_page( 34270 ) ) {
+		wp_enqueue_style(
+			'guestify-login',
+			get_stylesheet_directory_uri() . '/css/login.css',
+			array(),
+			filemtime( get_stylesheet_directory() . '/css/login.css' )
+		);
+	}
 }
 add_action( 'wp_enqueue_scripts', 'guestify_enqueue_login_css' );
+
+/**
+ * Remove WordPress block library CSS and other unnecessary styles
+ */
+function guestify_remove_block_styles() {
+	wp_dequeue_style( 'wp-block-library' );
+	wp_dequeue_style( 'wp-block-library-theme' );
+	wp_dequeue_style( 'wc-blocks-style' ); // WooCommerce blocks if present
+	wp_dequeue_style( 'global-styles' ); // Global styles
+	wp_dequeue_style( 'classic-theme-styles' ); // Classic theme styles
+	wp_deregister_style( 'classic-theme-styles' );
+}
+add_action( 'wp_enqueue_scripts', 'guestify_remove_block_styles', 100 );
+
+/**
+ * Remove block library CSS from admin
+ */
+function guestify_remove_block_styles_admin() {
+	wp_dequeue_style( 'wp-block-library' );
+	wp_dequeue_style( 'wp-block-library-theme' );
+}
+add_action( 'admin_enqueue_scripts', 'guestify_remove_block_styles_admin', 100 );
+
+/**
+ * Remove WordPress head bloat - runs early to catch all actions
+ */
+function guestify_remove_head_bloat() {
+	// Remove RSS feed links
+	remove_action( 'wp_head', 'feed_links', 2 );
+	remove_action( 'wp_head', 'feed_links_extra', 3 );
+	
+	// Remove WordPress emoji scripts and styles
+	remove_action( 'wp_head', 'print_emoji_detection_script', 7 );
+	remove_action( 'admin_print_scripts', 'print_emoji_detection_script' );
+	remove_action( 'wp_print_styles', 'print_emoji_styles' );
+	remove_action( 'admin_print_styles', 'print_emoji_styles' );
+	remove_filter( 'the_content_feed', 'wp_staticize_emoji' );
+	remove_filter( 'comment_text_rss', 'wp_staticize_emoji' );
+	remove_filter( 'wp_mail', 'wp_staticize_emoji_for_email' );
+	
+	// Remove other WordPress head bloat
+	remove_action( 'wp_head', 'wp_generator' ); // WordPress version
+	remove_action( 'wp_head', 'wlwmanifest_link' ); // Windows Live Writer
+	remove_action( 'wp_head', 'rsd_link' ); // Really Simple Discovery
+	remove_action( 'wp_head', 'wp_shortlink_wp_head' ); // Shortlink
+	remove_action( 'wp_head', 'adjacent_posts_rel_link_wp_head' ); // Prev/next links
+	remove_action( 'wp_head', 'wp_oembed_add_discovery_links' ); // oEmbed discovery links
+	remove_action( 'wp_head', 'wp_oembed_add_host_js' ); // oEmbed host JS
+	remove_action( 'wp_head', 'rest_output_link_wp_head' ); // REST API link
+}
+add_action( 'after_setup_theme', 'guestify_remove_head_bloat' );
+
+/**
+ * Remove emoji from TinyMCE editor
+ */
+function guestify_remove_emoji_tinymce( $plugins ) {
+	if ( is_array( $plugins ) ) {
+		return array_diff( $plugins, array( 'wpemoji' ) );
+	} else {
+		return array();
+	}
+}
+add_filter( 'tiny_mce_plugins', 'guestify_remove_emoji_tinymce' );
+
+/**
+ * Remove emoji DNS prefetch
+ */
+function guestify_remove_emoji_dns_prefetch( $urls, $relation_type ) {
+	if ( 'dns-prefetch' === $relation_type ) {
+		$emoji_svg_url = apply_filters( 'emoji_svg_url', 'https://s.w.org/images/core/emoji/2/svg/' );
+		$urls = array_diff( $urls, array( $emoji_svg_url ) );
+	}
+	return $urls;
+}
+add_filter( 'wp_resource_hints', 'guestify_remove_emoji_dns_prefetch', 10, 2 );
+
+/**
+ * Disable XML-RPC for security
+ */
+add_filter( 'xmlrpc_enabled', '__return_false' );
+
+/**
+ * Remove query strings from static resources for better caching
+ */
+function guestify_remove_query_strings( $src ) {
+	$parts = explode( '?ver', $src );
+	return $parts[0];
+}
+add_filter( 'script_loader_src', 'guestify_remove_query_strings', 15, 1 );
+add_filter( 'style_loader_src', 'guestify_remove_query_strings', 15, 1 );
+
+/**
+ * Disable WordPress heartbeat on frontend (keeps it for admin)
+ */
+function guestify_disable_heartbeat() {
+	if ( ! is_admin() ) {
+		wp_deregister_script( 'heartbeat' );
+	}
+}
+add_action( 'init', 'guestify_disable_heartbeat', 1 );
+
+function exclude_scripts_from_app() {
+    // Check if we are on a page that is 'app' or a descendant of 'app'
+    if ( is_page( 'app' ) || get_post_ancestors( get_the_ID() ) ) {
+        $app_page = get_page_by_path( 'app' );
+        if ( $app_page && in_array( $app_page->ID, get_post_ancestors( get_the_ID() ) ) ) {
+             // Dequeue the script if it's an app page.
+             // Replace 'guestify-navigation' with the actual script handle if it's different.
+             wp_dequeue_script( 'guestify-navigation' );
+        }
+    }
+}
+// Run this function after the theme has enqueued its scripts, with a priority of 20.
+add_action( 'wp_enqueue_scripts', 'exclude_scripts_from_app', 20 );
