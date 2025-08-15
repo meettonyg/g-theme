@@ -299,16 +299,22 @@ function guestify_disable_heartbeat() {
 }
 add_action( 'init', 'guestify_disable_heartbeat', 1 );
 
-function exclude_scripts_from_app() {
-    // Check if we are on a page that is 'app' or a descendant of 'app'
-    if ( is_page( 'app' ) || get_post_ancestors( get_the_ID() ) ) {
-        $app_page = get_page_by_path( 'app' );
-        if ( $app_page && in_array( $app_page->ID, get_post_ancestors( get_the_ID() ) ) ) {
-             // Dequeue the script if it's an app page.
-             // Replace 'guestify-navigation' with the actual script handle if it's different.
-             wp_dequeue_script( 'guestify-navigation' );
-        }
+/**
+ * Dequeue public scripts and styles on all app pages for a clean slate.
+ * This runs after the main guestify_scripts hook to ensure it overrides it.
+ */
+function guestify_dequeue_public_assets_on_app_pages() {
+    // Check if the current URL starts with '/app/'
+    if ( isset( $_SERVER['REQUEST_URI'] ) && strpos( $_SERVER['REQUEST_URI'], '/app/' ) === 0 ) {
+        // Remove the main stylesheet
+        wp_dequeue_style( 'guestify-style' );
+        wp_deregister_style( 'guestify-style' );
+
+        // Remove the public-facing navigation script
+        wp_dequeue_script( 'guestify-navigation' );
+        wp_deregister_script( 'guestify-navigation' );
     }
 }
-// Run this function after the theme has enqueued its scripts, with a priority of 20.
-add_action( 'wp_enqueue_scripts', 'exclude_scripts_from_app', 20 );
+// Hook with a priority of 20 to run after the default enqueue action.
+add_action( 'wp_enqueue_scripts', 'guestify_dequeue_public_assets_on_app_pages', 20 );
+
