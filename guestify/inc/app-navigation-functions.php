@@ -17,33 +17,26 @@ function is_app_page($section = '') {
         return false;
     }
     
-    // Method 1: Check WordPress page hierarchy
-    global $post;
-    if ($post) {
-        // Get all parent pages
-        $ancestors = get_post_ancestors($post);
-        $ancestors[] = $post->ID;
-        
-        foreach ($ancestors as $ancestor_id) {
-            $ancestor = get_post($ancestor_id);
-            if ($ancestor && $ancestor->post_name === 'app') {
-                return empty($section) ? true : strpos($post->post_name, $section) !== false;
-            }
-        }
-    }
-    
-    // Method 2: Check URL path
+    // Check URL path - most reliable method for all page types
     $current_url = $_SERVER['REQUEST_URI'];
     $url_path = parse_url($current_url, PHP_URL_PATH);
     $url_path = rtrim($url_path, '/');
     
-    // Check if URL starts with /app or is /app
-    if (empty($section)) {
-        return ($url_path === '/app' || strpos($url_path, '/app/') === 0);
+    // Define all paths that should show app navigation
+    $app_navigation_paths = ['/app', '/account', '/courses', '/tools'];
+    
+    // Check if URL matches any app navigation path
+    foreach ($app_navigation_paths as $app_path) {
+        if ($url_path === $app_path || strpos($url_path, $app_path . '/') === 0) {
+            if (empty($section)) {
+                return true;
+            }
+            // Check for specific section
+            return strpos($url_path, $app_path . '/' . $section) === 0;
+        }
     }
     
-    // Check for specific section
-    return (strpos($url_path, '/app/' . $section) === 0);
+    return false;
 }
 
 /**
@@ -87,6 +80,10 @@ function get_menu_icon($title) {
         'dashboard' => 'dashboard',
         'analytics' => 'chart',
         'settings' => 'cog',
+        'account' => 'cog',
+        'training' => 'graduation-cap',
+        'courses' => 'graduation-cap',
+        'tools' => 'tools',
         'profile' => 'user',
         'help' => 'question-circle',
         'logout' => 'logout'
@@ -141,6 +138,12 @@ function get_svg_icon($type) {
         'user' => '<svg class="app-nav__icon" viewBox="0 0 20 20" fill="currentColor">
                       <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
                   </svg>',
+        'graduation-cap' => '<svg class="app-nav__icon" viewBox="0 0 20 20" fill="currentColor">
+                               <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.25 2.524 1 1 0 01-1.5 0z"/>
+                           </svg>',
+        'tools' => '<svg class="app-nav__icon" viewBox="0 0 20 20" fill="currentColor">
+                       <path fill-rule="evenodd" d="M19 5.5a4.5 4.5 0 01-4.791 4.49c-.873-.055-1.808.128-2.368.8l-6.024 7.23a2.724 2.724 0 11-3.837-3.837L9.21 8.16c.672-.56.855-1.495.8-2.368a4.5 4.5 0 015.873-4.575c.324.105.39.51.15.752L13.34 4.66a.455.455 0 00-.11.494 3.01 3.01 0 001.617 1.617c.17.07.363.02.493-.111l2.692-2.692c.241-.241.647-.174.752.15.14.435.216.9.216 1.382zM4 17a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/>
+                   </svg>',
         'question-circle' => '<svg class="app-nav__icon" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zM8.94 6.94a.75.75 0 11-1.061-1.061 3 3 0 112.871 5.026v.345a.75.75 0 01-1.5 0v-.5c0-.72.57-1.172 1.081-1.344A1.5 1.5 0 108.94 6.94zM10 15a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/>
                             </svg>',
@@ -212,46 +215,42 @@ function remove_app_page_titles($title, $id = null) {
 add_filter('the_title', 'remove_app_page_titles', 10, 2);
 
 /**
- * Remove page title from wp_title on app pages
+ * Set appropriate page titles for app sections
  */
-function remove_app_page_wp_title($title) {
+function set_app_page_titles($title) {
     if (is_app_page()) {
-        return 'Guestify App';
+        $current_url = $_SERVER['REQUEST_URI'];
+        $url_path = parse_url($current_url, PHP_URL_PATH);
+        $url_path = rtrim($url_path, '/');
+        
+        if (strpos($url_path, '/account') === 0) {
+            return 'Account Settings - Guestify';
+        } elseif (strpos($url_path, '/courses') === 0) {
+            return 'Training & Resources - Guestify';
+        } elseif (strpos($url_path, '/tools') === 0) {
+            return 'Tools - Guestify';
+        } else {
+            return 'Guestify App';
+        }
     }
     return $title;
 }
-add_filter('wp_title', 'remove_app_page_wp_title');
+add_filter('wp_title', 'set_app_page_titles');
 add_filter('document_title_parts', function($title) {
     if (is_app_page()) {
-        $title['title'] = 'Guestify App';
+        $current_url = $_SERVER['REQUEST_URI'];
+        $url_path = parse_url($current_url, PHP_URL_PATH);
+        $url_path = rtrim($url_path, '/');
+        
+        if (strpos($url_path, '/account') === 0) {
+            $title['title'] = 'Account Settings';
+        } elseif (strpos($url_path, '/courses') === 0) {
+            $title['title'] = 'Training & Resources';
+        } elseif (strpos($url_path, '/tools') === 0) {
+            $title['title'] = 'Tools';
+        } else {
+            $title['title'] = 'Guestify App';
+        }
     }
     return $title;
 });
-
-/**
- * Temporary debug function - remove after testing
- */
-function debug_app_detection() {
-    if (current_user_can('manage_options')) {
-        $url = $_SERVER['REQUEST_URI'];
-        $is_app = is_app_page() ? 'TRUE' : 'FALSE';
-        
-        global $post;
-        $post_name = $post ? $post->post_name : 'no-post';
-        $post_id = $post ? $post->ID : 'no-id';
-        
-        // Get ancestors
-        $ancestors = $post ? get_post_ancestors($post) : [];
-        $ancestor_names = [];
-        foreach ($ancestors as $ancestor_id) {
-            $ancestor = get_post($ancestor_id);
-            if ($ancestor) {
-                $ancestor_names[] = $ancestor->post_name;
-            }
-        }
-        $ancestor_list = implode(',', $ancestor_names);
-        
-        echo "<!-- DEBUG: URL={$url}, is_app_page={$is_app}, post_name={$post_name}, post_id={$post_id}, ancestors=[{$ancestor_list}] -->";
-    }
-}
-add_action('wp_head', 'debug_app_detection');

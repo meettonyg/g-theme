@@ -2,7 +2,7 @@
 /**
  * App Navigation Header
  * 
- * Only displays on /app/ and child pages
+ * Displays on /app/, /account/, /courses/, /tools/ and their child pages
  * Uses Guestify Visual Brand Standards with dark theme
  * 
  * @package Guestify
@@ -120,14 +120,14 @@ foreach ($menu_items as $item) {
                     <div class="app-nav__user-menu-divider"></div>
                     
                     <div class="app-nav__user-menu-section">
-                        <a href="<?php echo home_url('/app/guest-onboarding/'); ?>" class="app-nav__user-menu-item app-nav__user-menu-item--progress">
+                        <a href="<?php echo home_url('/app/onboarding/'); ?>" class="app-nav__user-menu-item app-nav__user-menu-item--progress">
                             <svg class="app-nav__user-menu-icon" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/>
                             </svg>
                             Guest Onboarding
                         </a>
                         
-                        <a href="<?php echo home_url('/app/training/'); ?>" class="app-nav__user-menu-item">
+                        <a href="<?php echo home_url('/courses/'); ?>" class="app-nav__user-menu-item">
                             <svg class="app-nav__user-menu-icon" viewBox="0 0 20 20" fill="currentColor">
                                 <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.25 2.524 1 1 0 01-1.5 0z"/>
                             </svg>
