@@ -144,7 +144,10 @@ function guestify_scripts() {
 	// Enqueue Font Awesome
 	wp_enqueue_style( 'font-awesome', 'https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css', array(), '6.4.0' );
 
-	wp_enqueue_script( 'guestify-navigation', get_template_directory_uri() . '/js/navigation.js', array(), _S_VERSION, true );
+	// Conditionally enqueue the navigation script. It will not load on page with ID 46159.
+	if ( ! is_page( '46159' ) ) {
+		wp_enqueue_script( 'guestify-navigation', get_template_directory_uri() . '/js/navigation.js', array(), _S_VERSION, true );
+	}
 
 	if ( is_singular() && comments_open() && get_option( 'thread_comments' ) ) {
 		wp_enqueue_script( 'comment-reply' );
@@ -318,3 +321,25 @@ function guestify_dequeue_public_assets_on_app_pages() {
 // Hook with a priority of 20 to run after the default enqueue action.
 add_action( 'wp_enqueue_scripts', 'guestify_dequeue_public_assets_on_app_pages', 20 );
 
+/**
+ * Dequeue scripts and styles on page 46159.
+ */
+function guestify_dequeue_assets_on_specific_page() {
+    if ( is_page( '46159' ) ) {
+        // Dequeue the navigation script
+        wp_dequeue_script( 'guestify-navigation' );
+        wp_deregister_script( 'guestify-navigation' );
+
+        // Dequeue jQuery scripts
+        wp_dequeue_script( 'jquery-core' );
+        wp_deregister_script( 'jquery-core' );
+        wp_dequeue_script( 'jquery-migrate' );
+        wp_deregister_script( 'jquery-migrate' );
+
+        // Dequeue the Guestify stylesheet
+        wp_dequeue_style( 'guestify-style' );
+        wp_deregister_style( 'guestify-style' );
+
+    }
+}
+add_action( 'wp_enqueue_scripts', 'guestify_dequeue_assets_on_specific_page', 99 );
