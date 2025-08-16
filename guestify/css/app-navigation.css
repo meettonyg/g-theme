@@ -250,6 +250,11 @@
     border: 2px solid var(--intelligence-blue);
 }
 
+/* User Dropdown */
+.app-nav .app-nav__user-dropdown {
+    position: relative;
+}
+
 .app-nav .app-nav__profile {
     display: flex;
     align-items: center;
@@ -259,10 +264,25 @@
     text-decoration: none;
     color: rgba(255, 255, 255, 0.9);
     transition: all 0.15s ease;
+    background: none;
+    border: none;
+    cursor: pointer;
 }
 
 .app-nav .app-nav__profile:hover {
     background: rgba(255, 255, 255, 0.1);
+}
+
+.app-nav .app-nav__dropdown-caret {
+    width: 14px;
+    height: 14px;
+    color: rgba(255, 255, 255, 0.7);
+    transition: transform 0.2s ease;
+    margin-left: 4px;
+}
+
+.app-nav .app-nav__user-menu--open .app-nav__dropdown-caret {
+    transform: rotate(180deg);
 }
 
 .app-nav .app-nav__avatar,
@@ -304,6 +324,112 @@
     font-size: 11px;
     color: rgba(255, 255, 255, 0.7);
     line-height: 1.2;
+}
+
+/* User Dropdown Menu */
+.app-nav .app-nav__user-menu {
+    position: absolute;
+    top: calc(100% + 8px);
+    right: 0;
+    background: var(--pure-white);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    box-shadow: 0 10px 25px -3px rgba(0, 0, 0, 0.25), 0 4px 6px -2px rgba(0, 0, 0, 0.1);
+    min-width: 280px;
+    z-index: 1001;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-10px);
+    transition: all 0.2s ease;
+    overflow: hidden;
+}
+
+.app-nav .app-nav__user-menu--open {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.app-nav .app-nav__user-menu-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--border-color);
+    background: var(--off-white);
+}
+
+.app-nav .app-nav__user-menu-name {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--near-black);
+    margin-bottom: 4px;
+    line-height: 1.3;
+}
+
+.app-nav .app-nav__user-menu-email {
+    font-size: 14px;
+    color: var(--medium-gray);
+    line-height: 1.3;
+}
+
+.app-nav .app-nav__user-menu-divider {
+    height: 1px;
+    background: var(--border-color);
+    margin: 8px 0;
+}
+
+.app-nav .app-nav__user-menu-section {
+    padding: 8px 0;
+}
+
+.app-nav .app-nav__user-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px 20px;
+    color: var(--dark-gray);
+    text-decoration: none;
+    font-size: 14px;
+    font-weight: 500;
+    transition: all 0.15s ease;
+    line-height: 1.4;
+}
+
+.app-nav .app-nav__user-menu-item:hover {
+    background-color: var(--hover-bg);
+    color: var(--intelligence-blue);
+    text-decoration: none;
+}
+
+.app-nav .app-nav__user-menu-item--danger {
+    color: #EF4444;
+}
+
+.app-nav .app-nav__user-menu-item--danger:hover {
+    background-color: #FEF2F2;
+    color: #DC2626;
+}
+
+.app-nav .app-nav__user-menu-icon {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    fill: currentColor;
+}
+
+/* Progress indicator for account setup */
+.app-nav .app-nav__user-menu-item--progress {
+    position: relative;
+}
+
+.app-nav .app-nav__user-menu-item--progress::after {
+    content: '20%';
+    position: absolute;
+    right: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--transformation-orange);
+    background: rgba(237, 137, 54, 0.1);
+    padding: 2px 6px;
+    border-radius: 4px;
 }
 
 /* Mobile Styles */
@@ -407,6 +533,18 @@
     .app-nav .app-nav__logo {
         width: 28px;
         height: 28px;
+    }
+    
+    /* Mobile user menu adjustments */
+    .app-nav .app-nav__user-menu {
+        right: -16px;
+        left: -16px;
+        min-width: auto;
+        border-radius: 8px;
+    }
+    
+    .app-nav .app-nav__dropdown-caret {
+        display: none;
     }
 }
 

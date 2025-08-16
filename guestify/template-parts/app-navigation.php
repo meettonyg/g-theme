@@ -93,18 +93,67 @@ foreach ($menu_items as $item) {
                 <span class="app-nav__notifications-badge"></span>
             </button>
 
-            <!-- Profile -->
-            <a href="<?php echo home_url('/app/profile/'); ?>" class="app-nav__profile">
-                <?php if ($user_avatar_url): ?>
-                    <img src="<?php echo esc_url($user_avatar_url); ?>" alt="Profile" class="app-nav__avatar-img">
-                <?php else: ?>
-                    <div class="app-nav__avatar"><?php echo esc_html($user_initials); ?></div>
-                <?php endif; ?>
-                <div class="app-nav__profile-info">
-                    <div class="app-nav__profile-name"><?php echo esc_html($current_user->display_name); ?></div>
-                    <div class="app-nav__profile-role">Pro User</div>
+            <!-- User Dropdown -->
+            <div class="app-nav__user-dropdown">
+                <button class="app-nav__profile" onclick="toggleUserDropdown()" aria-label="User Menu">
+                    <?php if ($user_avatar_url): ?>
+                        <img src="<?php echo esc_url($user_avatar_url); ?>" alt="Profile" class="app-nav__avatar-img">
+                    <?php else: ?>
+                        <div class="app-nav__avatar"><?php echo esc_html($user_initials); ?></div>
+                    <?php endif; ?>
+                    <div class="app-nav__profile-info">
+                        <div class="app-nav__profile-name"><?php echo esc_html($current_user->display_name); ?></div>
+                        <div class="app-nav__profile-role">Pro User</div>
+                    </div>
+                    <svg class="app-nav__dropdown-caret" viewBox="0 0 20 20" fill="currentColor">
+                        <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                    </svg>
+                </button>
+                
+                <!-- User Dropdown Menu -->
+                <div class="app-nav__user-menu" id="userDropdownMenu">
+                    <div class="app-nav__user-menu-header">
+                        <div class="app-nav__user-menu-name"><?php echo esc_html($current_user->display_name); ?></div>
+                        <div class="app-nav__user-menu-email"><?php echo esc_html($current_user->user_email); ?></div>
+                    </div>
+                    
+                    <div class="app-nav__user-menu-divider"></div>
+                    
+                    <div class="app-nav__user-menu-section">
+                        <a href="<?php echo home_url('/app/guest-onboarding/'); ?>" class="app-nav__user-menu-item app-nav__user-menu-item--progress">
+                            <svg class="app-nav__user-menu-icon" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/>
+                            </svg>
+                            Guest Onboarding
+                        </a>
+                        
+                        <a href="<?php echo home_url('/app/training/'); ?>" class="app-nav__user-menu-item">
+                            <svg class="app-nav__user-menu-icon" viewBox="0 0 20 20" fill="currentColor">
+                                <path d="M10.394 2.08a1 1 0 00-.788 0l-7 3a1 1 0 000 1.84L5.25 8.051a.999.999 0 01.356-.257l4-1.714a1 1 0 11.788 1.838L7.667 9.088l1.94.831a1 1 0 00.787 0l7-3a1 1 0 000-1.838l-7-3zM3.31 9.397L5 10.12v4.102a8.969 8.969 0 00-1.05-.174 1 1 0 01-.89-.89 11.115 11.115 0 01.25-3.762zM9.3 16.573A9.026 9.026 0 007 14.935v-3.957l1.818.78a3 3 0 002.364 0l5.508-2.361a11.026 11.026 0 01.25 3.762 1 1 0 01-.89.89 8.968 8.968 0 00-5.25 2.524 1 1 0 01-1.5 0z"/>
+                            </svg>
+                            Training & Courses
+                        </a>
+                    </div>
+                    
+                    <div class="app-nav__user-menu-divider"></div>
+                    
+                    <div class="app-nav__user-menu-section">
+                        <a href="<?php echo esc_url('https://guestify.ai/account/'); ?>" class="app-nav__user-menu-item">
+                            <svg class="app-nav__user-menu-icon" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M11.49 3.17c-.38-1.56-2.6-1.56-2.98 0a1.532 1.532 0 01-2.286.948c-1.372-.836-2.942.734-2.106 2.106.54.886.061 2.042-.947 2.287-1.561.379-1.561 2.6 0 2.978a1.532 1.532 0 01.947 2.287c-.836 1.372.734 2.942 2.106 2.106a1.532 1.532 0 012.287.947c.379 1.561 2.6 1.561 2.978 0a1.533 1.533 0 012.287-.947c1.372.836 2.942-.734 2.106-2.106a1.533 1.533 0 01.947-2.287c1.561-.379 1.561-2.6 0-2.978a1.532 1.532 0 01-.947-2.287c.836-1.372-.734-2.942-2.106-2.106a1.532 1.532 0 01-2.287-.947zM10 13a3 3 0 100-6 3 3 0 000 6z" clip-rule="evenodd"/>
+                            </svg>
+                            Account Settings
+                        </a>
+                        
+                        <a href="<?php echo wp_logout_url(home_url('/')); ?>" class="app-nav__user-menu-item app-nav__user-menu-item--danger">
+                            <svg class="app-nav__user-menu-icon" viewBox="0 0 20 20" fill="currentColor">
+                                <path fill-rule="evenodd" d="M3 3a1 1 0 00-1 1v12a1 1 0 102 0V4a1 1 0 00-1-1zm10.293 9.293a1 1 0 001.414 1.414l3-3a1 1 0 000-1.414l-3-3a1 1 0 10-1.414 1.414L14.586 9H7a1 1 0 100 2h7.586l-1.293 1.293z" clip-rule="evenodd"/>
+                            </svg>
+                            Log Out
+                        </a>
+                    </div>
                 </div>
-            </a>
+            </div>
         </div>
 
         <!-- Mobile Toggle -->
