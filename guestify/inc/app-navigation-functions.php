@@ -17,6 +17,12 @@ function is_app_page($section = '') {
         return false;
     }
     
+    // Exclude specific page ID
+    global $post;
+    if ($post && $post->ID == 46159) {
+        return false;
+    }
+    
     // Check URL path - most reliable method for all page types
     $current_url = $_SERVER['REQUEST_URI'];
     $url_path = parse_url($current_url, PHP_URL_PATH);
