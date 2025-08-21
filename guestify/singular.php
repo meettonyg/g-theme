@@ -1,8 +1,9 @@
 <?php
 /**
- * The template for displaying all single posts
+ * The template for displaying all single pages and posts
+ * This is a fallback template for any singular content
  *
- * @link https://developer.wordpress.org/themes/basics/template-hierarchy/#single-post
+ * @link https://developer.wordpress.org/themes/basics/template-hierarchy/
  *
  * @package Guestify
  */
@@ -17,13 +18,6 @@ get_header();
 		the_post();
 
 		get_template_part( 'template-parts/content', get_post_type() );
-
-		the_post_navigation(
-			array(
-				'prev_text' => '<span class="nav-subtitle">' . esc_html__( 'Previous:', 'guestify' ) . '</span> <span class="nav-title">%title</span>',
-				'next_text' => '<span class="nav-subtitle">' . esc_html__( 'Next:', 'guestify' ) . '</span> <span class="nav-title">%title</span>',
-			)
-		);
 
 		// If comments are open or we have at least one comment, load up the comment template.
 		if ( comments_open() || get_comments_number() ) :
