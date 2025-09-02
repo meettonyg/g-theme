@@ -7,6 +7,46 @@
  * @package Guestify
  */
 
+// ROOT FIX: Check for Media Kit data FIRST
+global $post;
+if ($post) {
+    $media_kit_state = get_post_meta($post->ID, 'gmkb_media_kit_state', true);
+    
+    // If this post has media kit data, use the plugin's template instead
+    if (!empty($media_kit_state) && 
+        (isset($media_kit_state['components']) || isset($media_kit_state['saved_components'])) &&
+        (count($media_kit_state['components'] ?? []) > 0 || count($media_kit_state['saved_components'] ?? []) > 0)) {
+        
+        // Look for the plugin template
+        $plugin_template = WP_PLUGIN_DIR . '/mk4/templates/single-guests-mediakit-fallback.php';
+        
+        if (file_exists($plugin_template)) {
+            // Set globals for the template
+            $GLOBALS['gmkb_using_media_kit_template'] = true;
+            $GLOBALS['gmkb_media_kit_state'] = $media_kit_state;
+            $GLOBALS['gmkb_media_kit_post_id'] = $post->ID;
+            
+            // Debug logging
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+                error_log('THEME OVERRIDE: Detected media kit data for post ' . $post->ID);
+                error_log('THEME OVERRIDE: Loading plugin template instead of theme template');
+                error_log('THEME OVERRIDE: Components: ' . count($media_kit_state['components'] ?? []));
+                error_log('THEME OVERRIDE: Saved components: ' . count($media_kit_state['saved_components'] ?? []));
+            }
+            
+            // Include the plugin template and exit
+            include $plugin_template;
+            exit;
+        } else {
+            // Log error if template not found
+            if (defined('WP_DEBUG') && WP_DEBUG) {
+                error_log('THEME OVERRIDE ERROR: Plugin template not found at: ' . $plugin_template);
+            }
+        }
+    }
+}
+// END MEDIA KIT OVERRIDE CHECK
+
 // Get the Pod
 $pod = null;
 if (function_exists('pods')) {
