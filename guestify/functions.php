@@ -51,10 +51,12 @@ function guestify_setup() {
 		*/
 	add_theme_support( 'post-thumbnails' );
 
-	// This theme uses wp_nav_menu() in one location.
+	// Register navigation menus
 	register_nav_menus(
 		array(
-			'menu-1' => esc_html__( 'Primary', 'guestify' ),
+			'menu-1'   => esc_html__( 'Primary', 'guestify' ),
+			'frontend' => esc_html__( 'Frontend Menu', 'guestify' ),
+			'app-menu' => esc_html__( 'App Menu', 'guestify' ),
 		)
 	);
 

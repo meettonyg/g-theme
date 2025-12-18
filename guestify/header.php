@@ -54,7 +54,7 @@
 					<?php
 					wp_nav_menu(
 						array(
-							'theme_location' => 'menu-1',
+							'theme_location' => 'frontend',
 							'menu_id'        => 'frontend-menu',
 							'menu_class'     => 'frontend-header__menu',
 							'container'      => false,
