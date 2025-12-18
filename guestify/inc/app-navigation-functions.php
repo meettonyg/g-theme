@@ -25,7 +25,6 @@ function is_blank_canvas_page() {
     // Define paths that should have no header/footer (blank canvas)
     // Add paths here for pages that need complete control over layout
     $blank_canvas_paths = [
-        '/demo',
         '/tips',
     ];
 
