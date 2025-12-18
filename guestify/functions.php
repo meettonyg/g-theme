@@ -446,9 +446,6 @@ function guestify_remove_head_bloat() {
 }
 add_action( 'after_setup_theme', 'guestify_remove_head_bloat' );
 
-// Disable wpautop for all pages to preserve HTML structure
-remove_filter( 'the_content', 'wpautop' );
-
 /**
  * Remove emoji from TinyMCE editor
  */
@@ -590,48 +587,48 @@ function guestify_dequeue_assets_on_specific_page() {
 add_action( 'wp_enqueue_scripts', 'guestify_dequeue_assets_on_specific_page', 99 );
 
 /**
- * Disable wpautop for specific page templates to preserve HTML structure
- * 
- * ROOT CAUSE FIX: Template-based wpautop removal - cleaner than URL matching
- * 
- * Templates that disable wpautop:
- * - template-blank.php (Blank - No Header / No Footer)
- * 
- * Simply assign these templates to pages in WordPress admin, and wpautop
- * is automatically disabled to preserve your structured HTML.
- * 
- * CHECKLIST COMPLIANCE:
- * ✅ Root Cause Fix - Controls content filtering at template level
- * ✅ Simplicity First - One function, self-documenting via template assignment
- * ✅ No Redundant Logic - Template selection controls behavior
- * ✅ Maintainability - Easy to add new templates to the list
+ * Disable wpautop for all pages except app and public-facing templates
+ *
+ * Preserves HTML structure on most pages while keeping wpautop enabled
+ * for /app/ pages and public-facing content that rely on auto-paragraphs.
+ *
+ * Pages that KEEP wpautop (auto-paragraphs enabled):
+ * - All /app/* pages
+ * - Homepage, blog posts, and other public-facing content
+ *
+ * Pages that DISABLE wpautop:
+ * - All other pages (structured HTML pages, landing pages, etc.)
  */
-function guestify_disable_wpautop_for_templates() {
-    // Get the current page template
-    $template = get_page_template_slug();
-    
-    // Templates that should NOT have wpautop
-    $no_wpautop_templates = array(
-        'template-blank.php',  // Blank template for structured HTML pages
-        // Add more templates here as needed
+function guestify_disable_wpautop_selectively() {
+    if ( ! isset( $_SERVER['REQUEST_URI'] ) ) {
+        return;
+    }
+
+    $request_uri = $_SERVER['REQUEST_URI'];
+
+    // Pages that should KEEP wpautop (auto-paragraphs enabled)
+    $keep_wpautop_patterns = array(
+        '#^/app/#',           // All app pages
+        '#^/$#',              // Homepage
+        '#^/blog#',           // Blog pages
+        '#^/category/#',      // Category archives
+        '#^/tag/#',           // Tag archives
+        '#^/author/#',        // Author archives
     );
-    
-    // Check if current template should have wpautop disabled
-    if ( in_array( $template, $no_wpautop_templates, true ) ) {
-        // Remove wpautop filter from the_content
-        remove_filter( 'the_content', 'wpautop' );
-        
-        // Also remove from excerpt
-        remove_filter( 'the_excerpt', 'wpautop' );
-        
-        // Debug logging (optional)
-        if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
-            error_log( '🚫 Guestify Theme: Disabled wpautop for template: ' . $template );
+
+    // Check if current URL should keep wpautop
+    foreach ( $keep_wpautop_patterns as $pattern ) {
+        if ( preg_match( $pattern, $request_uri ) === 1 ) {
+            // Keep wpautop enabled for these pages
+            return;
         }
     }
+
+    // Disable wpautop for all other pages
+    remove_filter( 'the_content', 'wpautop' );
+    remove_filter( 'the_excerpt', 'wpautop' );
 }
-// Hook early to run before content is processed
-add_action( 'template_redirect', 'guestify_disable_wpautop_for_templates', 1 );
+add_action( 'init', 'guestify_disable_wpautop_selectively' );
 
 /**
  * TEMPORARY: Debug Media Kit Frontend Display
