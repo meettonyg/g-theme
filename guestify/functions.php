@@ -203,6 +203,24 @@ function guestify_enqueue_login_css() {
 add_action( 'wp_enqueue_scripts', 'guestify_enqueue_login_css' );
 
 /**
+ * Enqueue homepage CSS only for homepage (ID: 46263)
+ */
+function guestify_enqueue_homepage_css() {
+	if ( is_page( 46263 ) ) {
+		$css_file = ABSPATH . 'wp-content/css/homepage.css';
+		$version = file_exists( $css_file ) ? filemtime( $css_file ) : '1.0.0';
+
+		wp_enqueue_style(
+			'guestify-homepage',
+			'/wp-content/css/homepage.css',
+			array(),
+			$version
+		);
+	}
+}
+add_action( 'wp_enqueue_scripts', 'guestify_enqueue_homepage_css' );
+
+/**
  * Remove WordPress block library CSS and other unnecessary styles
  */
 function guestify_remove_block_styles() {
