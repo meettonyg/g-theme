@@ -1,9 +1,62 @@
 <?php
 /**
  * Guestify App Navigation Helper Functions
- * 
+ *
  * @package Guestify
  */
+
+/**
+ * Check if current page should have no header/footer (blank canvas pages)
+ * Uses URL patterns for pages that should be completely blank
+ *
+ * @return bool
+ */
+function is_blank_canvas_page() {
+    // Check if we're in admin or doing AJAX
+    if (is_admin() || wp_doing_ajax()) {
+        return false;
+    }
+
+    // Check URL path
+    $current_url = $_SERVER['REQUEST_URI'];
+    $url_path = parse_url($current_url, PHP_URL_PATH);
+    $url_path = rtrim($url_path, '/');
+
+    // Define paths that should have no header/footer (blank canvas)
+    // Add paths here for pages that need complete control over layout
+    $blank_canvas_paths = [
+        '/demo',
+        '/tips',
+    ];
+
+    // Check if URL matches any blank canvas path
+    foreach ($blank_canvas_paths as $blank_path) {
+        if ($url_path === $blank_path || strpos($url_path, $blank_path . '/') === 0) {
+            return true;
+        }
+    }
+
+    // Also check for page template 'template-blank.php'
+    global $post;
+    if ($post) {
+        $template = get_page_template_slug($post->ID);
+        if ($template === 'template-blank.php') {
+            return true;
+        }
+    }
+
+    return false;
+}
+
+/**
+ * Check if current page is a front-end page (not app, not blank canvas)
+ * These pages get the clean public header
+ *
+ * @return bool
+ */
+function is_frontend_page() {
+    return !is_app_page() && !is_blank_canvas_page();
+}
 
 /**
  * Check if current page is an app page

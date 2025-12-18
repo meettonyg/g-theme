@@ -1,0 +1,317 @@
+/**
+ * Frontend Header Styles
+ * Clean, modern header with logo left and nav right
+ *
+ * @package Guestify
+ */
+
+/* ==========================================================================
+   Frontend Header - Core Layout
+   ========================================================================== */
+
+.frontend-header {
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    background-color: #ffffff;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Offset for admin bar when logged in */
+.admin-bar .frontend-header {
+    top: 32px;
+}
+
+@media screen and (max-width: 782px) {
+    .admin-bar .frontend-header {
+        top: 46px;
+    }
+}
+
+.frontend-header__container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 24px;
+    height: 72px;
+}
+
+/* ==========================================================================
+   Logo
+   ========================================================================== */
+
+.frontend-header__logo {
+    flex-shrink: 0;
+}
+
+.frontend-header__logo a {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+}
+
+.frontend-header__logo .custom-logo {
+    height: 40px;
+    width: auto;
+    max-width: 180px;
+    object-fit: contain;
+}
+
+.frontend-header__site-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    text-decoration: none;
+    letter-spacing: -0.025em;
+}
+
+.frontend-header__site-title:hover {
+    color: #0066cc;
+}
+
+/* ==========================================================================
+   Navigation
+   ========================================================================== */
+
+.frontend-header__nav {
+    display: flex;
+    align-items: center;
+}
+
+.frontend-header__menu {
+    display: flex;
+    align-items: center;
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    gap: 8px;
+}
+
+.frontend-header__menu li {
+    position: relative;
+    margin: 0;
+    padding: 0;
+}
+
+.frontend-header__menu > li > a {
+    display: inline-flex;
+    align-items: center;
+    padding: 10px 16px;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: #374151;
+    text-decoration: none;
+    border-radius: 6px;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.frontend-header__menu > li > a:hover,
+.frontend-header__menu > li > a:focus {
+    background-color: #f3f4f6;
+    color: #111827;
+}
+
+.frontend-header__menu > li.current_page_item > a,
+.frontend-header__menu > li.current_page_ancestor > a {
+    background-color: #eff6ff;
+    color: #1d4ed8;
+}
+
+/* CTA Button Style - Apply to last menu item or specific class */
+.frontend-header__menu > li:last-child > a,
+.frontend-header__menu > li.menu-item-cta > a {
+    background-color: #2563eb;
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.frontend-header__menu > li:last-child > a:hover,
+.frontend-header__menu > li.menu-item-cta > a:hover {
+    background-color: #1d4ed8;
+    color: #ffffff;
+}
+
+/* ==========================================================================
+   Dropdown Menus
+   ========================================================================== */
+
+.frontend-header__menu li ul {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    min-width: 200px;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
+    padding: 8px 0;
+    margin: 4px 0 0 0;
+    list-style: none;
+    z-index: 100;
+}
+
+.frontend-header__menu li:hover > ul,
+.frontend-header__menu li:focus-within > ul {
+    display: block;
+}
+
+.frontend-header__menu li ul li {
+    margin: 0;
+}
+
+.frontend-header__menu li ul li a {
+    display: block;
+    padding: 10px 16px;
+    font-size: 0.875rem;
+    font-weight: 400;
+    color: #374151;
+    text-decoration: none;
+    transition: background-color 0.15s ease;
+}
+
+.frontend-header__menu li ul li a:hover {
+    background-color: #f3f4f6;
+    color: #111827;
+}
+
+/* ==========================================================================
+   Mobile Menu Toggle
+   ========================================================================== */
+
+.frontend-header__menu-toggle {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    border-radius: 8px;
+    transition: background-color 0.15s ease;
+}
+
+.frontend-header__menu-toggle:hover {
+    background-color: #f3f4f6;
+}
+
+.frontend-header__menu-icon,
+.frontend-header__menu-icon::before,
+.frontend-header__menu-icon::after {
+    display: block;
+    width: 24px;
+    height: 2px;
+    background-color: #374151;
+    border-radius: 1px;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+}
+
+.frontend-header__menu-icon {
+    position: relative;
+}
+
+.frontend-header__menu-icon::before,
+.frontend-header__menu-icon::after {
+    content: '';
+    position: absolute;
+    left: 0;
+}
+
+.frontend-header__menu-icon::before {
+    top: -7px;
+}
+
+.frontend-header__menu-icon::after {
+    top: 7px;
+}
+
+/* Animated menu icon when open */
+.frontend-header__menu-toggle[aria-expanded="true"] .frontend-header__menu-icon {
+    background-color: transparent;
+}
+
+.frontend-header__menu-toggle[aria-expanded="true"] .frontend-header__menu-icon::before {
+    top: 0;
+    transform: rotate(45deg);
+}
+
+.frontend-header__menu-toggle[aria-expanded="true"] .frontend-header__menu-icon::after {
+    top: 0;
+    transform: rotate(-45deg);
+}
+
+/* ==========================================================================
+   Responsive Styles
+   ========================================================================== */
+
+@media screen and (max-width: 992px) {
+    .frontend-header__container {
+        padding: 0 16px;
+        height: 64px;
+    }
+
+    .frontend-header__menu-toggle {
+        display: flex;
+    }
+
+    .frontend-header__menu {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        flex-direction: column;
+        background: #ffffff;
+        padding: 16px;
+        gap: 4px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.12);
+        border-top: 1px solid #e5e7eb;
+    }
+
+    .frontend-header__nav[data-menu-open="true"] .frontend-header__menu {
+        display: flex;
+    }
+
+    .frontend-header__menu > li {
+        width: 100%;
+    }
+
+    .frontend-header__menu > li > a {
+        width: 100%;
+        justify-content: flex-start;
+    }
+
+    .frontend-header__menu li ul {
+        position: static;
+        box-shadow: none;
+        padding-left: 16px;
+        margin: 0;
+    }
+
+    .frontend-header__menu li:hover > ul,
+    .frontend-header__menu li:focus-within > ul {
+        display: block;
+    }
+
+    /* Reset CTA styles on mobile */
+    .frontend-header__menu > li:last-child > a,
+    .frontend-header__menu > li.menu-item-cta > a {
+        background-color: #2563eb;
+        text-align: center;
+        justify-content: center;
+    }
+}
+
+@media screen and (max-width: 480px) {
+    .frontend-header__logo .custom-logo {
+        height: 32px;
+        max-width: 140px;
+    }
+
+    .frontend-header__site-title {
+        font-size: 1.25rem;
+    }
+}
