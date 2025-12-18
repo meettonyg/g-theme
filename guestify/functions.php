@@ -446,6 +446,9 @@ function guestify_remove_head_bloat() {
 }
 add_action( 'after_setup_theme', 'guestify_remove_head_bloat' );
 
+// Disable wpautop for all pages to preserve HTML structure
+remove_filter( 'the_content', 'wpautop' );
+
 /**
  * Remove emoji from TinyMCE editor
  */
