@@ -12,6 +12,11 @@ if ( ! defined( '_S_VERSION' ) ) {
 	define( '_S_VERSION', '1.0.0' );
 }
 
+// Google Tag Manager Container ID
+if ( ! defined( 'GUESTIFY_GTM_ID' ) ) {
+	define( 'GUESTIFY_GTM_ID', 'GTM-T4NDWXK' );
+}
+
 /**
  * Sets up theme defaults and registers support for various WordPress features.
  *
@@ -203,6 +208,148 @@ function guestify_enqueue_login_css() {
 add_action( 'wp_enqueue_scripts', 'guestify_enqueue_login_css' );
 
 /**
+ * Enqueue homepage CSS only for homepage (ID: 46263)
+ */
+function guestify_enqueue_homepage_css() {
+	if ( is_page( 46263 ) ) {
+		$css_path = WP_CONTENT_DIR . '/css/homepage.css';
+		$css_url  = content_url( '/css/homepage.css' );
+		$version  = file_exists( $css_path ) ? filemtime( $css_path ) : '1.0.0';
+
+		wp_enqueue_style(
+			'guestify-homepage',
+			$css_url,
+			array(),
+			$version
+		);
+	}
+}
+add_action( 'wp_enqueue_scripts', 'guestify_enqueue_homepage_css' );
+
+/**
+ * Guestify New Theme Pages CSS Enqueue
+ *
+ * Data-driven approach for loading section-specific CSS files.
+ * Add new pages by updating the $page_styles configuration array.
+ */
+function guestify_enqueue_new_theme_pages_css() {
+	$request_uri = isset( $_SERVER['REQUEST_URI'] ) ? $_SERVER['REQUEST_URI'] : '';
+	$css_dir     = WP_CONTENT_DIR . '/css/';
+	$css_url     = content_url( '/css/' );
+
+	// Configuration: URL patterns mapped to their CSS files
+	// Format: 'key' => [ 'patterns' => [...], 'styles' => [ [handle, file, deps], ... ] ]
+	$page_styles = array(
+		'tips' => array(
+			'patterns' => array( '#^/tips(/|/tip-[1-3]/?)?$#' ),
+			'styles'   => array(
+				array( 'base', 'base.css', array() ),
+				array( 'components', 'components.css', array( 'base' ) ),
+				array( 'layout', 'layout.css', array( 'base' ) ),
+				array( 'tips', 'tips.css', array( 'base', 'components', 'layout' ) ),
+			),
+		),
+		'admin' => array(
+			'patterns' => array(
+				'#^/app/downgrade(-confirmation)?/?$#',
+				'#^/(reset|whitelist|password-reset-confirmation)/?$#',
+			),
+			'styles' => array(
+				array( 'base', 'base.css', array() ),
+				array( 'components', 'components.css', array( 'base' ) ),
+				array( 'layout', 'layout.css', array( 'base' ) ),
+				array( 'admin', 'admin.css', array( 'base', 'components', 'layout' ) ),
+			),
+		),
+		'demo' => array(
+			'patterns' => array( '#^/demo(/demo-[1-4])?/?$#' ),
+			'styles'   => array(
+				array( 'demo-core', 'demo-core.css', array() ),
+			),
+		),
+		'landing' => array(
+			'patterns' => array( '#^/app/(audience-builder|interview|message-builder|prospector|value-builder)/?$#' ),
+			'styles'   => array(
+				array( 'base', 'base.css', array() ),
+				array( 'landing', 'landing.css', array( 'base' ) ),
+			),
+		),
+		'onboarding' => array(
+			'patterns' => array(
+				'#^/app/leaderboards/walkthrough(-confirmation)?/?$#',
+				'#^/demo/personalized/?$#',
+			),
+			'styles' => array(
+				array( 'base', 'base.css', array() ),
+				array( 'onboarding', 'onboarding.css', array( 'base' ) ),
+			),
+		),
+		'training' => array(
+			'patterns' => array( '#^/training/?$#' ),
+			'styles'   => array(
+				array( 'training', 'training.css', array() ),
+			),
+		),
+		'workshop' => array(
+			'patterns' => array( '#^/workshop-replay/?$#' ),
+			'styles'   => array(
+				array( 'workshop-replay', 'workshop-replay.css', array() ),
+			),
+		),
+		'about' => array(
+			'patterns' => array( '#^/about/?$#' ),
+			'styles'   => array(
+				array( 'about', 'about.css', array() ),
+			),
+		),
+		'contact' => array(
+			'patterns' => array( '#^/contact/?$#' ),
+			'styles'   => array(
+				array( 'contact', 'contact.css', array() ),
+			),
+		),
+		'app-home' => array(
+			'patterns' => array( '#^/app/?$#' ),
+			'styles'   => array(
+				array( 'app-home', 'app-home.css', array() ),
+			),
+		),
+	);
+
+	// Find matching page configuration
+	$matched_styles = null;
+	foreach ( $page_styles as $config ) {
+		foreach ( $config['patterns'] as $pattern ) {
+			if ( preg_match( $pattern, $request_uri ) === 1 ) {
+				$matched_styles = $config['styles'];
+				break 2;
+			}
+		}
+	}
+
+	// Exit if no match found
+	if ( null === $matched_styles ) {
+		return;
+	}
+
+	// Enqueue matched CSS files
+	foreach ( $matched_styles as $style ) {
+		list( $handle, $file, $deps ) = $style;
+		$path = $css_dir . $file;
+
+		if ( file_exists( $path ) ) {
+			wp_enqueue_style(
+				'guestify-new-theme-' . $handle,
+				$css_url . $file,
+				array_map( function( $d ) { return 'guestify-new-theme-' . $d; }, $deps ),
+				filemtime( $path )
+			);
+		}
+	}
+}
+add_action( 'wp_enqueue_scripts', 'guestify_enqueue_new_theme_pages_css', 25 );
+
+/**
  * Remove WordPress block library CSS and other unnecessary styles
  */
 function guestify_remove_block_styles() {
@@ -223,6 +370,52 @@ function guestify_remove_block_styles_admin() {
 	wp_dequeue_style( 'wp-block-library-theme' );
 }
 add_action( 'admin_enqueue_scripts', 'guestify_remove_block_styles_admin', 100 );
+
+/**
+ * LearnPress Asset Removal (non-LearnPress pages only)
+ *
+ * Removes LearnPress styles, scripts, and inline code from pages
+ * that don't need them. Uses early hooks to ensure removal before rendering.
+ */
+function guestify_learnpress_asset_stripper() {
+	// If we are on any LearnPress page, do nothing.
+	if ( function_exists( 'is_learnpress' ) && is_learnpress() ) {
+		return;
+	}
+
+	// Dequeue LearnPress styles
+	add_action( 'wp_print_styles', function() {
+		$style_handles = array(
+			'learnpress',
+			'learnpress-widgets',
+			'learnpress-profile',
+			'learn-press-custom',
+		);
+		foreach ( $style_handles as $handle ) {
+			wp_dequeue_style( $handle );
+		}
+	}, 1 );
+
+	// Dequeue LearnPress scripts
+	add_action( 'wp_print_scripts', function() {
+		$script_handles = array(
+			'learn-press-frontend',
+			'lp-utils',
+			'lp-profile',
+			'lp-setting-courses',
+			'lp-load-ajax',
+		);
+		foreach ( $script_handles as $handle ) {
+			wp_dequeue_script( $handle );
+		}
+	}, 1 );
+
+	// Remove LearnPress inline scripts from head
+	if ( function_exists( 'learn_press_assets' ) && ( $lp_assets_instance = learn_press_assets() ) ) {
+		remove_action( 'wp_head', array( $lp_assets_instance, 'load_scripts_styles_on_head' ), -1 );
+	}
+}
+add_action( 'init', 'guestify_learnpress_asset_stripper', 1 );
 
 /**
  * Remove WordPress head bloat - runs early to catch all actions
@@ -444,3 +637,53 @@ add_action( 'template_redirect', 'guestify_disable_wpautop_for_templates', 1 );
 if (file_exists(WP_PLUGIN_DIR . '/mk4/debug-frontend-display.php')) {
     require_once WP_PLUGIN_DIR . '/mk4/debug-frontend-display.php';
 }
+
+/**
+ * Google Tag Manager Integration
+ */
+
+/**
+ * Renders the Google Tag Manager noscript tag.
+ */
+function guestify_render_gtm_noscript() {
+	if ( ! defined( 'GUESTIFY_GTM_ID' ) ) {
+		return;
+	}
+	echo '<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=' . esc_attr( GUESTIFY_GTM_ID ) . '"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->';
+}
+
+// GTM Head Script - Site Wide
+add_action( 'wp_head', function() {
+	if ( ! defined( 'GUESTIFY_GTM_ID' ) ) {
+		return;
+	}
+	echo '<!-- Google Tag Manager -->
+<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({\'gtm.start\':
+new Date().getTime(),event:\'gtm.js\'});var f=d.getElementsByTagName(s)[0],
+j=d.createElement(s),dl=l!=\'dataLayer\'?\'&l=\'+l:\'\';j.async=true;j.src=
+\'https://www.googletagmanager.com/gtm.js?id=\'+i+dl;f.parentNode.insertBefore(j,f);
+})(window,document,\'script\',\'dataLayer\',\'' . esc_js( GUESTIFY_GTM_ID ) . '\');</script>
+<!-- End Google Tag Manager -->';
+}, 1 );
+
+// GTM Body Script - Site Wide
+add_action( 'wp_body_open', 'guestify_render_gtm_noscript', 1 );
+
+// Fallback for themes that don't support wp_body_open
+add_action( 'wp_footer', function() {
+	if ( ! did_action( 'wp_body_open' ) ) {
+		guestify_render_gtm_noscript();
+	}
+} );
+
+/**
+ * Hide admin bar for non-administrators on frontend
+ */
+add_action( 'after_setup_theme', function() {
+	if ( ! current_user_can( 'administrator' ) && ! is_admin() ) {
+		show_admin_bar( false );
+	}
+});
