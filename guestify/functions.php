@@ -330,6 +330,52 @@ function guestify_remove_block_styles_admin() {
 add_action( 'admin_enqueue_scripts', 'guestify_remove_block_styles_admin', 100 );
 
 /**
+ * LearnPress Asset Removal (non-LearnPress pages only)
+ *
+ * Removes LearnPress styles, scripts, and inline code from pages
+ * that don't need them. Uses early hooks to ensure removal before rendering.
+ */
+function guestify_learnpress_asset_stripper() {
+	// If we are on any LearnPress page, do nothing.
+	if ( function_exists( 'is_learnpress' ) && is_learnpress() ) {
+		return;
+	}
+
+	// Dequeue LearnPress styles
+	add_action( 'wp_print_styles', function() {
+		$style_handles = array(
+			'learnpress',
+			'learnpress-widgets',
+			'learnpress-profile',
+			'learn-press-custom',
+		);
+		foreach ( $style_handles as $handle ) {
+			wp_dequeue_style( $handle );
+		}
+	}, 1 );
+
+	// Dequeue LearnPress scripts
+	add_action( 'wp_print_scripts', function() {
+		$script_handles = array(
+			'learn-press-frontend',
+			'lp-utils',
+			'lp-profile',
+			'lp-setting-courses',
+			'lp-load-ajax',
+		);
+		foreach ( $script_handles as $handle ) {
+			wp_dequeue_script( $handle );
+		}
+	}, 1 );
+
+	// Remove LearnPress inline scripts from head
+	if ( function_exists( 'learn_press_assets' ) && ( $lp_assets_instance = learn_press_assets() ) ) {
+		remove_action( 'wp_head', array( $lp_assets_instance, 'load_scripts_styles_on_head' ), -1 );
+	}
+}
+add_action( 'init', 'guestify_learnpress_asset_stripper', 1 );
+
+/**
  * Remove WordPress head bloat - runs early to catch all actions
  */
 function guestify_remove_head_bloat() {
