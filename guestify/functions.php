@@ -223,12 +223,15 @@ add_action( 'wp_enqueue_scripts', 'guestify_enqueue_homepage_css' );
 /**
  * Guestify New Theme Pages CSS Enqueue
  *
- * Loads section-specific CSS files for 22 new HTML pages:
+ * Loads section-specific CSS files for theme pages:
  * - Tips pages (4): /tips/
  * - Admin pages (5): /app/downgrade/, /reset/, /whitelist/, etc.
  * - Demo pages (5): /demo/
  * - Landing pages (5): /app/audience-builder/, /app/interview/, etc.
  * - Onboarding pages (3): /app/leaderboards/walkthrough/, /demo/personalized/
+ * - Events pages (2): /training/, /workshop-replay/
+ * - Site pages (2): /about/, /contact/
+ * - App home (1): /app/
  */
 function guestify_enqueue_new_theme_pages_css() {
 	$request_uri = isset( $_SERVER['REQUEST_URI'] ) ? $_SERVER['REQUEST_URI'] : '';
@@ -237,7 +240,7 @@ function guestify_enqueue_new_theme_pages_css() {
 	$css_dir = WP_CONTENT_DIR . '/css/';
 	$css_url = content_url( '/css/' );
 
-	// Pattern detection for new 22 pages
+	// Pattern detection
 	$is_tips_page = preg_match( '#^/tips(/|/tip-[1-3]/?)?$#', $request_uri ) === 1;
 
 	$is_admin_downgrade = preg_match( '#^/app/downgrade(-confirmation)?/?$#', $request_uri ) === 1;
@@ -251,10 +254,19 @@ function guestify_enqueue_new_theme_pages_css() {
 
 	$is_onboarding_page = preg_match( '#^/app/leaderboards/walkthrough(-confirmation)?/?$#', $request_uri ) === 1;
 
-	$is_new_theme_page = $is_tips_page || $is_admin_page || $is_demo_page ||
-	                     $is_demo_personalized || $is_landing_page || $is_onboarding_page;
+	// New page patterns
+	$is_training_page = preg_match( '#^/training/?$#', $request_uri ) === 1;
+	$is_workshop_page = preg_match( '#^/workshop-replay/?$#', $request_uri ) === 1;
+	$is_about_page = preg_match( '#^/about/?$#', $request_uri ) === 1;
+	$is_contact_page = preg_match( '#^/contact/?$#', $request_uri ) === 1;
+	$is_app_home = preg_match( '#^/app/?$#', $request_uri ) === 1;
 
-	// Exit early if not one of the 22 new pages
+	$is_new_theme_page = $is_tips_page || $is_admin_page || $is_demo_page ||
+	                     $is_demo_personalized || $is_landing_page || $is_onboarding_page ||
+	                     $is_training_page || $is_workshop_page || $is_about_page ||
+	                     $is_contact_page || $is_app_home;
+
+	// Exit early if not a theme page
 	if ( ! $is_new_theme_page ) {
 		return;
 	}
@@ -303,6 +315,31 @@ function guestify_enqueue_new_theme_pages_css() {
 	if ( $is_onboarding_page || $is_demo_personalized ) {
 		$enqueue_css( 'base', 'base.css' );
 		$enqueue_css( 'onboarding', 'onboarding.css', array( 'base' ) );
+	}
+
+	// TRAINING PAGE: training.css (standalone)
+	if ( $is_training_page ) {
+		$enqueue_css( 'training', 'training.css' );
+	}
+
+	// WORKSHOP REPLAY PAGE: workshop-replay.css (standalone)
+	if ( $is_workshop_page ) {
+		$enqueue_css( 'workshop-replay', 'workshop-replay.css' );
+	}
+
+	// ABOUT PAGE: about.css (standalone)
+	if ( $is_about_page ) {
+		$enqueue_css( 'about', 'about.css' );
+	}
+
+	// CONTACT PAGE: contact.css (standalone)
+	if ( $is_contact_page ) {
+		$enqueue_css( 'contact', 'contact.css' );
+	}
+
+	// APP HOME PAGE: app-home.css (standalone)
+	if ( $is_app_home ) {
+		$enqueue_css( 'app-home', 'app-home.css' );
 	}
 }
 add_action( 'wp_enqueue_scripts', 'guestify_enqueue_new_theme_pages_css', 25 );
