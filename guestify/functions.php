@@ -666,3 +666,12 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
 <!-- End Google Tag Manager (noscript) -->';
     }
 });
+
+/**
+ * Hide admin bar for non-administrators on frontend
+ */
+add_action( 'after_setup_theme', function() {
+	if ( ! current_user_can( 'administrator' ) && ! is_admin() ) {
+		show_admin_bar( false );
+	}
+});
