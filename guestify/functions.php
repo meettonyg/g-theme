@@ -221,6 +221,93 @@ function guestify_enqueue_homepage_css() {
 add_action( 'wp_enqueue_scripts', 'guestify_enqueue_homepage_css' );
 
 /**
+ * Guestify New Theme Pages CSS Enqueue
+ *
+ * Loads section-specific CSS files for 22 new HTML pages:
+ * - Tips pages (4): /tips/
+ * - Admin pages (5): /app/downgrade/, /reset/, /whitelist/, etc.
+ * - Demo pages (5): /demo/
+ * - Landing pages (5): /app/audience-builder/, /app/interview/, etc.
+ * - Onboarding pages (3): /app/leaderboards/walkthrough/, /demo/personalized/
+ */
+function guestify_enqueue_new_theme_pages_css() {
+	$request_uri = isset( $_SERVER['REQUEST_URI'] ) ? $_SERVER['REQUEST_URI'] : '';
+
+	// Base CSS directory
+	$css_dir = WP_CONTENT_DIR . '/css/';
+	$css_url = content_url( '/css/' );
+
+	// Pattern detection for new 22 pages
+	$is_tips_page = preg_match( '#^/tips(/|/tip-[1-3]/?)?$#', $request_uri ) === 1;
+
+	$is_admin_downgrade = preg_match( '#^/app/downgrade(-confirmation)?/?$#', $request_uri ) === 1;
+	$is_admin_other = preg_match( '#^/(reset|whitelist|password-reset-confirmation)/?$#', $request_uri ) === 1;
+	$is_admin_page = $is_admin_downgrade || $is_admin_other;
+
+	$is_demo_page = preg_match( '#^/demo(/demo-[1-4])?/?$#', $request_uri ) === 1;
+	$is_demo_personalized = preg_match( '#^/demo/personalized/?$#', $request_uri ) === 1;
+
+	$is_landing_page = preg_match( '#^/app/(audience-builder|interview|message-builder|prospector|value-builder)/?$#', $request_uri ) === 1;
+
+	$is_onboarding_page = preg_match( '#^/app/leaderboards/walkthrough(-confirmation)?/?$#', $request_uri ) === 1;
+
+	$is_new_theme_page = $is_tips_page || $is_admin_page || $is_demo_page ||
+	                     $is_demo_personalized || $is_landing_page || $is_onboarding_page;
+
+	// Exit early if not one of the 22 new pages
+	if ( ! $is_new_theme_page ) {
+		return;
+	}
+
+	// Helper function to enqueue CSS with cache busting
+	$enqueue_css = function( $handle, $file, $deps = array() ) use ( $css_dir, $css_url ) {
+		$path = $css_dir . $file;
+		if ( file_exists( $path ) ) {
+			wp_enqueue_style(
+				'guestify-new-theme-' . $handle,
+				$css_url . $file,
+				array_map( function( $d ) { return 'guestify-new-theme-' . $d; }, $deps ),
+				filemtime( $path )
+			);
+		}
+	};
+
+	// TIPS PAGES: base + components + layout + tips.css
+	if ( $is_tips_page ) {
+		$enqueue_css( 'base', 'base.css' );
+		$enqueue_css( 'components', 'components.css', array( 'base' ) );
+		$enqueue_css( 'layout', 'layout.css', array( 'base' ) );
+		$enqueue_css( 'tips', 'tips.css', array( 'base', 'components', 'layout' ) );
+	}
+
+	// ADMIN PAGES: base + components + layout + admin.css
+	if ( $is_admin_page ) {
+		$enqueue_css( 'base', 'base.css' );
+		$enqueue_css( 'components', 'components.css', array( 'base' ) );
+		$enqueue_css( 'layout', 'layout.css', array( 'base' ) );
+		$enqueue_css( 'admin', 'admin.css', array( 'base', 'components', 'layout' ) );
+	}
+
+	// DEMO PAGES: demo-core.css only (standalone)
+	if ( $is_demo_page && ! $is_demo_personalized ) {
+		$enqueue_css( 'demo-core', 'demo-core.css' );
+	}
+
+	// LANDING PAGES: base + landing.css
+	if ( $is_landing_page ) {
+		$enqueue_css( 'base', 'base.css' );
+		$enqueue_css( 'landing', 'landing.css', array( 'base' ) );
+	}
+
+	// ONBOARDING PAGES: base + onboarding.css
+	if ( $is_onboarding_page || $is_demo_personalized ) {
+		$enqueue_css( 'base', 'base.css' );
+		$enqueue_css( 'onboarding', 'onboarding.css', array( 'base' ) );
+	}
+}
+add_action( 'wp_enqueue_scripts', 'guestify_enqueue_new_theme_pages_css', 25 );
+
+/**
  * Remove WordPress block library CSS and other unnecessary styles
  */
 function guestify_remove_block_styles() {
