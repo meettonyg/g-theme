@@ -12,6 +12,11 @@ if ( ! defined( '_S_VERSION' ) ) {
 	define( '_S_VERSION', '1.0.0' );
 }
 
+// Google Tag Manager Container ID
+if ( ! defined( 'GUESTIFY_GTM_ID' ) ) {
+	define( 'GUESTIFY_GTM_ID', 'GTM-T4NDWXK' );
+}
+
 /**
  * Sets up theme defaults and registers support for various WordPress features.
  *
@@ -207,12 +212,13 @@ add_action( 'wp_enqueue_scripts', 'guestify_enqueue_login_css' );
  */
 function guestify_enqueue_homepage_css() {
 	if ( is_page( 46263 ) ) {
-		$css_file = ABSPATH . 'wp-content/css/homepage.css';
-		$version = file_exists( $css_file ) ? filemtime( $css_file ) : '1.0.0';
+		$css_path = WP_CONTENT_DIR . '/css/homepage.css';
+		$css_url  = content_url( '/css/homepage.css' );
+		$version  = file_exists( $css_path ) ? filemtime( $css_path ) : '1.0.0';
 
 		wp_enqueue_style(
 			'guestify-homepage',
-			'/wp-content/css/homepage.css',
+			$css_url,
 			array(),
 			$version
 		);
@@ -223,57 +229,114 @@ add_action( 'wp_enqueue_scripts', 'guestify_enqueue_homepage_css' );
 /**
  * Guestify New Theme Pages CSS Enqueue
  *
- * Loads section-specific CSS files for theme pages:
- * - Tips pages (4): /tips/
- * - Admin pages (5): /app/downgrade/, /reset/, /whitelist/, etc.
- * - Demo pages (5): /demo/
- * - Landing pages (5): /app/audience-builder/, /app/interview/, etc.
- * - Onboarding pages (3): /app/leaderboards/walkthrough/, /demo/personalized/
- * - Events pages (2): /training/, /workshop-replay/
- * - Site pages (2): /about/, /contact/
- * - App home (1): /app/
+ * Data-driven approach for loading section-specific CSS files.
+ * Add new pages by updating the $page_styles configuration array.
  */
 function guestify_enqueue_new_theme_pages_css() {
 	$request_uri = isset( $_SERVER['REQUEST_URI'] ) ? $_SERVER['REQUEST_URI'] : '';
+	$css_dir     = WP_CONTENT_DIR . '/css/';
+	$css_url     = content_url( '/css/' );
 
-	// Base CSS directory
-	$css_dir = WP_CONTENT_DIR . '/css/';
-	$css_url = content_url( '/css/' );
+	// Configuration: URL patterns mapped to their CSS files
+	// Format: 'key' => [ 'patterns' => [...], 'styles' => [ [handle, file, deps], ... ] ]
+	$page_styles = array(
+		'tips' => array(
+			'patterns' => array( '#^/tips(/|/tip-[1-3]/?)?$#' ),
+			'styles'   => array(
+				array( 'base', 'base.css', array() ),
+				array( 'components', 'components.css', array( 'base' ) ),
+				array( 'layout', 'layout.css', array( 'base' ) ),
+				array( 'tips', 'tips.css', array( 'base', 'components', 'layout' ) ),
+			),
+		),
+		'admin' => array(
+			'patterns' => array(
+				'#^/app/downgrade(-confirmation)?/?$#',
+				'#^/(reset|whitelist|password-reset-confirmation)/?$#',
+			),
+			'styles' => array(
+				array( 'base', 'base.css', array() ),
+				array( 'components', 'components.css', array( 'base' ) ),
+				array( 'layout', 'layout.css', array( 'base' ) ),
+				array( 'admin', 'admin.css', array( 'base', 'components', 'layout' ) ),
+			),
+		),
+		'demo' => array(
+			'patterns' => array( '#^/demo(/demo-[1-4])?/?$#' ),
+			'styles'   => array(
+				array( 'demo-core', 'demo-core.css', array() ),
+			),
+		),
+		'landing' => array(
+			'patterns' => array( '#^/app/(audience-builder|interview|message-builder|prospector|value-builder)/?$#' ),
+			'styles'   => array(
+				array( 'base', 'base.css', array() ),
+				array( 'landing', 'landing.css', array( 'base' ) ),
+			),
+		),
+		'onboarding' => array(
+			'patterns' => array(
+				'#^/app/leaderboards/walkthrough(-confirmation)?/?$#',
+				'#^/demo/personalized/?$#',
+			),
+			'styles' => array(
+				array( 'base', 'base.css', array() ),
+				array( 'onboarding', 'onboarding.css', array( 'base' ) ),
+			),
+		),
+		'training' => array(
+			'patterns' => array( '#^/training/?$#' ),
+			'styles'   => array(
+				array( 'training', 'training.css', array() ),
+			),
+		),
+		'workshop' => array(
+			'patterns' => array( '#^/workshop-replay/?$#' ),
+			'styles'   => array(
+				array( 'workshop-replay', 'workshop-replay.css', array() ),
+			),
+		),
+		'about' => array(
+			'patterns' => array( '#^/about/?$#' ),
+			'styles'   => array(
+				array( 'about', 'about.css', array() ),
+			),
+		),
+		'contact' => array(
+			'patterns' => array( '#^/contact/?$#' ),
+			'styles'   => array(
+				array( 'contact', 'contact.css', array() ),
+			),
+		),
+		'app-home' => array(
+			'patterns' => array( '#^/app/?$#' ),
+			'styles'   => array(
+				array( 'app-home', 'app-home.css', array() ),
+			),
+		),
+	);
 
-	// Pattern detection
-	$is_tips_page = preg_match( '#^/tips(/|/tip-[1-3]/?)?$#', $request_uri ) === 1;
+	// Find matching page configuration
+	$matched_styles = null;
+	foreach ( $page_styles as $config ) {
+		foreach ( $config['patterns'] as $pattern ) {
+			if ( preg_match( $pattern, $request_uri ) === 1 ) {
+				$matched_styles = $config['styles'];
+				break 2;
+			}
+		}
+	}
 
-	$is_admin_downgrade = preg_match( '#^/app/downgrade(-confirmation)?/?$#', $request_uri ) === 1;
-	$is_admin_other = preg_match( '#^/(reset|whitelist|password-reset-confirmation)/?$#', $request_uri ) === 1;
-	$is_admin_page = $is_admin_downgrade || $is_admin_other;
-
-	$is_demo_page = preg_match( '#^/demo(/demo-[1-4])?/?$#', $request_uri ) === 1;
-	$is_demo_personalized = preg_match( '#^/demo/personalized/?$#', $request_uri ) === 1;
-
-	$is_landing_page = preg_match( '#^/app/(audience-builder|interview|message-builder|prospector|value-builder)/?$#', $request_uri ) === 1;
-
-	$is_onboarding_page = preg_match( '#^/app/leaderboards/walkthrough(-confirmation)?/?$#', $request_uri ) === 1;
-
-	// New page patterns
-	$is_training_page = preg_match( '#^/training/?$#', $request_uri ) === 1;
-	$is_workshop_page = preg_match( '#^/workshop-replay/?$#', $request_uri ) === 1;
-	$is_about_page = preg_match( '#^/about/?$#', $request_uri ) === 1;
-	$is_contact_page = preg_match( '#^/contact/?$#', $request_uri ) === 1;
-	$is_app_home = preg_match( '#^/app/?$#', $request_uri ) === 1;
-
-	$is_new_theme_page = $is_tips_page || $is_admin_page || $is_demo_page ||
-	                     $is_demo_personalized || $is_landing_page || $is_onboarding_page ||
-	                     $is_training_page || $is_workshop_page || $is_about_page ||
-	                     $is_contact_page || $is_app_home;
-
-	// Exit early if not a theme page
-	if ( ! $is_new_theme_page ) {
+	// Exit if no match found
+	if ( null === $matched_styles ) {
 		return;
 	}
 
-	// Helper function to enqueue CSS with cache busting
-	$enqueue_css = function( $handle, $file, $deps = array() ) use ( $css_dir, $css_url ) {
+	// Enqueue matched CSS files
+	foreach ( $matched_styles as $style ) {
+		list( $handle, $file, $deps ) = $style;
 		$path = $css_dir . $file;
+
 		if ( file_exists( $path ) ) {
 			wp_enqueue_style(
 				'guestify-new-theme-' . $handle,
@@ -282,64 +345,6 @@ function guestify_enqueue_new_theme_pages_css() {
 				filemtime( $path )
 			);
 		}
-	};
-
-	// TIPS PAGES: base + components + layout + tips.css
-	if ( $is_tips_page ) {
-		$enqueue_css( 'base', 'base.css' );
-		$enqueue_css( 'components', 'components.css', array( 'base' ) );
-		$enqueue_css( 'layout', 'layout.css', array( 'base' ) );
-		$enqueue_css( 'tips', 'tips.css', array( 'base', 'components', 'layout' ) );
-	}
-
-	// ADMIN PAGES: base + components + layout + admin.css
-	if ( $is_admin_page ) {
-		$enqueue_css( 'base', 'base.css' );
-		$enqueue_css( 'components', 'components.css', array( 'base' ) );
-		$enqueue_css( 'layout', 'layout.css', array( 'base' ) );
-		$enqueue_css( 'admin', 'admin.css', array( 'base', 'components', 'layout' ) );
-	}
-
-	// DEMO PAGES: demo-core.css only (standalone)
-	if ( $is_demo_page && ! $is_demo_personalized ) {
-		$enqueue_css( 'demo-core', 'demo-core.css' );
-	}
-
-	// LANDING PAGES: base + landing.css
-	if ( $is_landing_page ) {
-		$enqueue_css( 'base', 'base.css' );
-		$enqueue_css( 'landing', 'landing.css', array( 'base' ) );
-	}
-
-	// ONBOARDING PAGES: base + onboarding.css
-	if ( $is_onboarding_page || $is_demo_personalized ) {
-		$enqueue_css( 'base', 'base.css' );
-		$enqueue_css( 'onboarding', 'onboarding.css', array( 'base' ) );
-	}
-
-	// TRAINING PAGE: training.css (standalone)
-	if ( $is_training_page ) {
-		$enqueue_css( 'training', 'training.css' );
-	}
-
-	// WORKSHOP REPLAY PAGE: workshop-replay.css (standalone)
-	if ( $is_workshop_page ) {
-		$enqueue_css( 'workshop-replay', 'workshop-replay.css' );
-	}
-
-	// ABOUT PAGE: about.css (standalone)
-	if ( $is_about_page ) {
-		$enqueue_css( 'about', 'about.css' );
-	}
-
-	// CONTACT PAGE: contact.css (standalone)
-	if ( $is_contact_page ) {
-		$enqueue_css( 'contact', 'contact.css' );
-	}
-
-	// APP HOME PAGE: app-home.css (standalone)
-	if ( $is_app_home ) {
-		$enqueue_css( 'app-home', 'app-home.css' );
 	}
 }
 add_action( 'wp_enqueue_scripts', 'guestify_enqueue_new_theme_pages_css', 25 );
@@ -635,37 +640,44 @@ if (file_exists(WP_PLUGIN_DIR . '/mk4/debug-frontend-display.php')) {
 
 /**
  * Google Tag Manager Integration
- * Container ID: GTM-T4NDWXK
  */
 
+/**
+ * Renders the Google Tag Manager noscript tag.
+ */
+function guestify_render_gtm_noscript() {
+	if ( ! defined( 'GUESTIFY_GTM_ID' ) ) {
+		return;
+	}
+	echo '<!-- Google Tag Manager (noscript) -->
+<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=' . esc_attr( GUESTIFY_GTM_ID ) . '"
+height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+<!-- End Google Tag Manager (noscript) -->';
+}
+
 // GTM Head Script - Site Wide
-add_action('wp_head', function() {
-    echo '<!-- Google Tag Manager -->
+add_action( 'wp_head', function() {
+	if ( ! defined( 'GUESTIFY_GTM_ID' ) ) {
+		return;
+	}
+	echo '<!-- Google Tag Manager -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({\'gtm.start\':
 new Date().getTime(),event:\'gtm.js\'});var f=d.getElementsByTagName(s)[0],
 j=d.createElement(s),dl=l!=\'dataLayer\'?\'&l=\'+l:\'\';j.async=true;j.src=
 \'https://www.googletagmanager.com/gtm.js?id=\'+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,\'script\',\'dataLayer\',\'GTM-T4NDWXK\');</script>
+})(window,document,\'script\',\'dataLayer\',\'' . esc_js( GUESTIFY_GTM_ID ) . '\');</script>
 <!-- End Google Tag Manager -->';
-}, 1);
+}, 1 );
 
 // GTM Body Script - Site Wide
-add_action('wp_body_open', function() {
-    echo '<!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-T4NDWXK"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->';
-}, 1);
+add_action( 'wp_body_open', 'guestify_render_gtm_noscript', 1 );
 
 // Fallback for themes that don't support wp_body_open
-add_action('wp_footer', function() {
-    if (!did_action('wp_body_open')) {
-        echo '<!-- Google Tag Manager (noscript) -->
-<noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-T4NDWXK"
-height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
-<!-- End Google Tag Manager (noscript) -->';
-    }
-});
+add_action( 'wp_footer', function() {
+	if ( ! did_action( 'wp_body_open' ) ) {
+		guestify_render_gtm_noscript();
+	}
+} );
 
 /**
  * Hide admin bar for non-administrators on frontend
