@@ -220,10 +220,10 @@ if ( defined( 'JETPACK__VERSION' ) ) {
 require get_template_directory() . '/inc/app-navigation-functions.php';
 
 /**
- * Enqueue login CSS only for login page (ID: 34270)
+ * Enqueue login CSS only for login page
  */
 function guestify_enqueue_login_css() {
-	if ( is_page( 34270 ) ) {
+	if ( is_page( 'login' ) ) {
 		wp_enqueue_style(
 			'guestify-login',
 			get_stylesheet_directory_uri() . '/css/login.css',
