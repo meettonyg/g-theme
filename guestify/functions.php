@@ -235,6 +235,36 @@ function guestify_enqueue_login_css() {
 add_action( 'wp_enqueue_scripts', 'guestify_enqueue_login_css' );
 
 /**
+ * Enqueue partners CSS only for partners page
+ */
+function guestify_enqueue_partners_css() {
+	if ( is_page( 'partners' ) ) {
+		wp_enqueue_style(
+			'guestify-partners',
+			get_stylesheet_directory_uri() . '/css/partners.css',
+			array(),
+			filemtime( get_stylesheet_directory() . '/css/partners.css' )
+		);
+	}
+}
+add_action( 'wp_enqueue_scripts', 'guestify_enqueue_partners_css' );
+
+/**
+ * Enqueue pricing CSS only for pricing page
+ */
+function guestify_enqueue_pricing_css() {
+	if ( is_page( 'pricing' ) ) {
+		wp_enqueue_style(
+			'guestify-pricing',
+			get_stylesheet_directory_uri() . '/css/pricing.css',
+			array(),
+			filemtime( get_stylesheet_directory() . '/css/pricing.css' )
+		);
+	}
+}
+add_action( 'wp_enqueue_scripts', 'guestify_enqueue_pricing_css' );
+
+/**
  * Enqueue homepage CSS only for homepage (ID: 46263)
  */
 function guestify_enqueue_homepage_css() {
