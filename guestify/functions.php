@@ -235,34 +235,85 @@ function guestify_enqueue_login_css() {
 add_action( 'wp_enqueue_scripts', 'guestify_enqueue_login_css' );
 
 /**
- * Enqueue partners CSS only for partners page
+ * Enqueue partners CSS and JS only for partners page
  */
-function guestify_enqueue_partners_css() {
+function guestify_enqueue_partners_assets() {
 	if ( is_page( 'partners' ) ) {
-		wp_enqueue_style(
-			'guestify-partners',
-			get_stylesheet_directory_uri() . '/css/partners.css',
-			array(),
-			filemtime( get_stylesheet_directory() . '/css/partners.css' )
-		);
+		// Enqueue CSS
+		$css_path = get_stylesheet_directory() . '/css/partners.css';
+		if ( file_exists( $css_path ) ) {
+			wp_enqueue_style(
+				'guestify-partners',
+				get_stylesheet_directory_uri() . '/css/partners.css',
+				array(),
+				filemtime( $css_path )
+			);
+		}
+
+		// Enqueue JS (vanilla JS, no dependencies, loaded in footer)
+		$js_path = get_stylesheet_directory() . '/js/partners.js';
+		if ( file_exists( $js_path ) ) {
+			wp_enqueue_script(
+				'guestify-partners',
+				get_stylesheet_directory_uri() . '/js/partners.js',
+				array(),
+				filemtime( $js_path ),
+				true
+			);
+		}
 	}
 }
-add_action( 'wp_enqueue_scripts', 'guestify_enqueue_partners_css' );
+add_action( 'wp_enqueue_scripts', 'guestify_enqueue_partners_assets' );
 
 /**
- * Enqueue pricing CSS only for pricing page
+ * Enqueue pricing CSS and JS only for pricing page
  */
-function guestify_enqueue_pricing_css() {
+function guestify_enqueue_pricing_assets() {
 	if ( is_page( 'pricing' ) ) {
-		wp_enqueue_style(
-			'guestify-pricing',
-			get_stylesheet_directory_uri() . '/css/pricing.css',
-			array(),
-			filemtime( get_stylesheet_directory() . '/css/pricing.css' )
-		);
+		// Enqueue CSS
+		$css_path = get_stylesheet_directory() . '/css/pricing.css';
+		if ( file_exists( $css_path ) ) {
+			wp_enqueue_style(
+				'guestify-pricing',
+				get_stylesheet_directory_uri() . '/css/pricing.css',
+				array(),
+				filemtime( $css_path )
+			);
+		}
+
+		// Enqueue JS (vanilla JS, no dependencies, loaded in footer)
+		$js_path = get_stylesheet_directory() . '/js/pricing.js';
+		if ( file_exists( $js_path ) ) {
+			wp_enqueue_script(
+				'guestify-pricing',
+				get_stylesheet_directory_uri() . '/js/pricing.js',
+				array(),
+				filemtime( $js_path ),
+				true
+			);
+		}
 	}
 }
-add_action( 'wp_enqueue_scripts', 'guestify_enqueue_pricing_css' );
+add_action( 'wp_enqueue_scripts', 'guestify_enqueue_pricing_assets' );
+
+/**
+ * Enqueue resources CSS only for resources page
+ */
+function guestify_enqueue_resources_assets() {
+	if ( is_page( 'resources' ) ) {
+		// Enqueue CSS
+		$css_path = get_stylesheet_directory() . '/css/resources.css';
+		if ( file_exists( $css_path ) ) {
+			wp_enqueue_style(
+				'guestify-resources',
+				get_stylesheet_directory_uri() . '/css/resources.css',
+				array(),
+				filemtime( $css_path )
+			);
+		}
+	}
+}
+add_action( 'wp_enqueue_scripts', 'guestify_enqueue_resources_assets' );
 
 /**
  * Enqueue homepage CSS only for homepage (ID: 46263)
