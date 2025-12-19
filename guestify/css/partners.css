@@ -1,6 +1,1121 @@
-/**
- * Partners Page Styles
- *
- * Custom styles for the /partners/ page
- */
+/* ==========================================================================
+   PARTNERS.CSS - Partners Page Styles
+   BEM-compliant external stylesheet using base.css variables
+   ========================================================================== */
 
+/* ==========================================================================
+   Hero Section
+   ========================================================================== */
+
+.partners-hero {
+  background: linear-gradient(135deg, var(--secondary-color) 0%, #2a4a7f 100%);
+  padding: var(--space-16) var(--space-5);
+  text-align: center;
+  color: var(--bg-white);
+}
+
+.partners-hero__container {
+  max-width: 1140px;
+  margin: 0 auto;
+}
+
+.partners-hero__eyebrow {
+  display: block;
+  font-size: var(--text-lg);
+  color: var(--accent-color);
+  margin-bottom: var(--space-4);
+  text-transform: uppercase;
+  letter-spacing: 2px;
+}
+
+.partners-hero__title {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: var(--text-4xl);
+  font-weight: var(--weight-semibold);
+  color: var(--bg-white);
+  margin-bottom: var(--space-5);
+  line-height: var(--leading-tight);
+}
+
+.partners-hero__subtitle {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: var(--text-xl);
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: var(--space-8);
+  line-height: var(--leading-relaxed);
+}
+
+.partners-hero__button {
+  display: inline-block;
+  background: var(--accent-color);
+  color: var(--bg-white);
+  padding: var(--space-4) var(--space-8);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+  text-decoration: none;
+  transition: background-color var(--transition-normal);
+}
+
+.partners-hero__button:hover {
+  background: var(--accent-hover);
+  color: var(--bg-white);
+}
+
+/* ==========================================================================
+   What to Expect Section
+   ========================================================================== */
+
+.expect {
+  background: var(--bg-white);
+  padding: var(--space-16) var(--space-5);
+}
+
+.expect__container {
+  max-width: 1140px;
+  margin: 0 auto;
+  display: flex;
+  gap: var(--space-12);
+  align-items: flex-start;
+}
+
+.expect__left {
+  flex: 0 0 40%;
+}
+
+.expect__eyebrow {
+  display: block;
+  font-size: var(--text-sm);
+  color: var(--text-light);
+  margin-bottom: var(--space-2);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.expect__title {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: var(--text-3xl);
+  font-weight: var(--weight-semibold);
+  color: var(--text-dark);
+  margin-bottom: var(--space-4);
+}
+
+.expect__divider {
+  width: 60px;
+  height: 3px;
+  background: var(--primary-color);
+  border: none;
+  margin: 0;
+}
+
+.expect__right {
+  flex: 1;
+}
+
+.expect__item {
+  display: flex;
+  gap: var(--space-4);
+  margin-bottom: var(--space-8);
+}
+
+.expect__icon {
+  flex-shrink: 0;
+  color: var(--primary-color);
+  font-size: var(--text-2xl);
+}
+
+.expect__item-title {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: var(--text-xl);
+  font-weight: var(--weight-semibold);
+  color: var(--text-dark);
+  margin-bottom: var(--space-2);
+}
+
+.expect__item-text {
+  font-size: var(--text-base);
+  color: var(--text-light);
+  line-height: var(--leading-relaxed);
+  margin: 0;
+}
+
+/* ==========================================================================
+   Why Become a Partner Section
+   ========================================================================== */
+
+.why-partner {
+  background: var(--bg-light);
+  padding: var(--space-12) var(--space-5);
+  text-align: center;
+}
+
+.why-partner__container {
+  max-width: 1140px;
+  margin: 0 auto;
+}
+
+.why-partner__title {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: var(--text-3xl);
+  font-weight: var(--weight-semibold);
+  color: var(--text-dark);
+  margin: 0;
+}
+
+/* ==========================================================================
+   Benefits Grid
+   ========================================================================== */
+
+.benefits {
+  background: var(--bg-white);
+  padding: var(--space-12) var(--space-5);
+}
+
+.benefits__container {
+  max-width: 1140px;
+  margin: 0 auto;
+}
+
+.benefits__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--space-8);
+}
+
+.benefits__item {
+  text-align: center;
+  padding: var(--space-6);
+}
+
+.benefits__item-title {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: var(--text-xl);
+  font-weight: var(--weight-semibold);
+  color: var(--text-dark);
+  margin-bottom: var(--space-3);
+}
+
+.benefits__item-text {
+  font-size: var(--text-base);
+  color: var(--text-light);
+  line-height: var(--leading-relaxed);
+  margin: 0;
+}
+
+/* ==========================================================================
+   Wave CTA Section
+   ========================================================================== */
+
+.wave-cta {
+  background: linear-gradient(135deg, var(--secondary-color) 0%, #2a4a7f 100%);
+  padding: var(--space-16) var(--space-5);
+  position: relative;
+  text-align: center;
+}
+
+.wave-cta__wave {
+  position: absolute;
+  left: 0;
+  width: 100%;
+  overflow: hidden;
+  line-height: 0;
+}
+
+.wave-cta__wave--top {
+  top: 0;
+}
+
+.wave-cta__wave svg {
+  position: relative;
+  display: block;
+  width: calc(100% + 1.3px);
+  height: 60px;
+}
+
+.wave-cta__path {
+  fill: var(--bg-white);
+}
+
+.wave-cta__container {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding-top: var(--space-8);
+}
+
+.wave-cta__button {
+  display: inline-block;
+  background: var(--accent-color);
+  color: var(--bg-white);
+  padding: var(--space-4) var(--space-8);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+  text-decoration: none;
+  transition: background-color var(--transition-normal);
+}
+
+.wave-cta__button:hover {
+  background: var(--accent-hover);
+  color: var(--bg-white);
+}
+
+/* ==========================================================================
+   About Podcast One Sheet Section
+   ========================================================================== */
+
+.about-pos {
+  background: var(--bg-light);
+  padding: var(--space-16) var(--space-5);
+}
+
+.about-pos__container {
+  max-width: 1140px;
+  margin: 0 auto;
+  display: flex;
+  gap: var(--space-12);
+  align-items: flex-start;
+}
+
+.about-pos__left {
+  flex: 0 0 45%;
+}
+
+.about-pos__video-box {
+  background: var(--bg-white);
+  padding: var(--space-6);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+}
+
+.about-pos__label {
+  display: block;
+  font-size: var(--text-sm);
+  color: var(--text-light);
+  margin-bottom: var(--space-2);
+}
+
+.about-pos__video-title {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: var(--text-xl);
+  font-weight: var(--weight-semibold);
+  color: var(--text-dark);
+  margin-bottom: var(--space-4);
+}
+
+.about-pos__video-wrapper {
+  position: relative;
+  padding-bottom: 56.25%;
+  height: 0;
+  margin-bottom: var(--space-4);
+}
+
+.about-pos__video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border: none;
+  border-radius: var(--radius-md);
+}
+
+.about-pos__video-button {
+  display: inline-block;
+  background: var(--active-blue);
+  color: var(--bg-white);
+  padding: var(--space-3) var(--space-6);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-base);
+  font-weight: var(--weight-medium);
+  text-decoration: none;
+  transition: background-color var(--transition-normal);
+}
+
+.about-pos__video-button:hover {
+  background: var(--secondary-hover);
+  color: var(--bg-white);
+}
+
+.about-pos__right {
+  flex: 1;
+}
+
+.about-pos__title {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: var(--text-3xl);
+  font-weight: var(--weight-semibold);
+  color: var(--text-dark);
+  margin-bottom: var(--space-2);
+}
+
+.about-pos__subtitle {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-medium);
+  color: var(--text-dark);
+  margin-bottom: var(--space-4);
+}
+
+.about-pos__mission {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: var(--text-lg);
+  font-weight: var(--weight-medium);
+  color: var(--accent-color);
+  margin-bottom: var(--space-6);
+}
+
+.about-pos__text {
+  font-size: var(--text-base);
+  color: var(--text-light);
+  line-height: var(--leading-relaxed);
+}
+
+.about-pos__text p {
+  margin-bottom: var(--space-4);
+}
+
+/* ==========================================================================
+   Testimonial Section
+   ========================================================================== */
+
+.testimonial {
+  background: var(--bg-white);
+  padding: var(--space-16) var(--space-5);
+  text-align: center;
+}
+
+.testimonial__container {
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.testimonial__card {
+  background: var(--bg-light);
+  padding: var(--space-10);
+  border-radius: var(--radius-lg);
+  margin-bottom: var(--space-8);
+  position: relative;
+}
+
+.testimonial__card::before {
+  content: '"';
+  position: absolute;
+  top: var(--space-4);
+  left: var(--space-6);
+  font-size: 4rem;
+  color: var(--accent-color);
+  opacity: 0.3;
+  font-family: Georgia, serif;
+  line-height: 1;
+}
+
+.testimonial__quote {
+  font-size: var(--text-xl);
+  font-style: italic;
+  color: var(--text-dark);
+  line-height: var(--leading-relaxed);
+  margin-bottom: var(--space-6);
+}
+
+.testimonial__author {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-4);
+}
+
+.testimonial__image {
+  width: 60px;
+  height: 60px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.testimonial__info {
+  text-align: left;
+}
+
+.testimonial__name {
+  display: block;
+  font-weight: var(--weight-semibold);
+  color: var(--text-dark);
+}
+
+.testimonial__title {
+  display: block;
+  font-size: var(--text-sm);
+  color: var(--text-light);
+}
+
+.testimonial__button {
+  display: inline-block;
+  background: var(--accent-color);
+  color: var(--bg-white);
+  padding: var(--space-4) var(--space-8);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+  text-decoration: none;
+  transition: background-color var(--transition-normal);
+}
+
+.testimonial__button:hover {
+  background: var(--accent-hover);
+  color: var(--bg-white);
+}
+
+/* ==========================================================================
+   Partner Fit Section
+   ========================================================================== */
+
+.partner-fit {
+  background: var(--bg-light);
+  padding: var(--space-16) var(--space-5);
+}
+
+.partner-fit__container {
+  max-width: 1140px;
+  margin: 0 auto;
+  display: flex;
+  gap: var(--space-12);
+  align-items: center;
+}
+
+.partner-fit__left {
+  flex: 1;
+}
+
+.partner-fit__right {
+  flex: 0 0 45%;
+}
+
+.partner-fit__title {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: var(--text-3xl);
+  font-weight: var(--weight-semibold);
+  color: var(--text-dark);
+  margin-bottom: var(--space-4);
+}
+
+.partner-fit__subtitle {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: var(--text-lg);
+  color: var(--text-light);
+  margin-bottom: var(--space-6);
+}
+
+.partner-fit__list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 var(--space-6) 0;
+}
+
+.partner-fit__list-item {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-3);
+  margin-bottom: var(--space-3);
+  font-size: var(--text-base);
+  color: var(--text-dark);
+}
+
+.partner-fit__check {
+  color: var(--primary-color);
+  margin-top: 4px;
+}
+
+.partner-fit__cta {
+  font-size: var(--text-base);
+  color: var(--text-light);
+  line-height: var(--leading-relaxed);
+}
+
+.partner-fit__image {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-lg);
+}
+
+/* ==========================================================================
+   Products Section
+   ========================================================================== */
+
+.products {
+  background: var(--bg-white);
+  padding: var(--space-12) var(--space-5);
+  text-align: center;
+}
+
+.products__container {
+  max-width: 1140px;
+  margin: 0 auto;
+}
+
+.products__title {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: var(--text-3xl);
+  font-weight: var(--weight-semibold);
+  color: var(--text-dark);
+  margin-bottom: var(--space-3);
+}
+
+.products__subtitle {
+  font-size: var(--text-lg);
+  color: var(--text-light);
+  margin: 0;
+}
+
+/* ==========================================================================
+   Product Details Section
+   ========================================================================== */
+
+.product-details {
+  background: var(--bg-light);
+  padding: var(--space-12) var(--space-5);
+}
+
+.product-details__container {
+  max-width: 1140px;
+  margin: 0 auto;
+}
+
+.product-details__row {
+  display: flex;
+  gap: var(--space-8);
+  margin-bottom: var(--space-12);
+  align-items: flex-start;
+}
+
+.product-details__row:last-child {
+  margin-bottom: 0;
+}
+
+.product-details__image-col {
+  flex: 0 0 45%;
+}
+
+.product-details__info-col {
+  flex: 1;
+}
+
+.product-details__icon-box {
+  background: var(--bg-white);
+  padding: var(--space-8);
+  border-radius: var(--radius-lg);
+  text-align: center;
+  box-shadow: var(--shadow-sm);
+}
+
+.product-details__icon {
+  font-size: 3rem;
+  color: var(--accent-color);
+  margin-bottom: var(--space-4);
+}
+
+.product-details__icon-title {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: var(--text-xl);
+  font-weight: var(--weight-semibold);
+  color: var(--text-dark);
+  margin-bottom: var(--space-3);
+}
+
+.product-details__icon-text {
+  font-size: var(--text-base);
+  color: var(--text-light);
+  margin: 0;
+}
+
+.product-details__heading {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-semibold);
+  color: var(--text-dark);
+  margin-bottom: var(--space-6);
+}
+
+.product-details__item {
+  display: flex;
+  gap: var(--space-4);
+  margin-bottom: var(--space-5);
+}
+
+.product-details__item-icon {
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  background: var(--accent-color);
+  color: var(--bg-white);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--text-lg);
+}
+
+.product-details__item-content {
+  flex: 1;
+}
+
+.product-details__item-title {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+  color: var(--text-dark);
+  margin-bottom: var(--space-1);
+}
+
+.product-details__item-text {
+  font-size: var(--text-base);
+  color: var(--text-light);
+  line-height: var(--leading-relaxed);
+  margin: 0;
+}
+
+.product-details__trial-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+}
+
+/* ==========================================================================
+   FAQ Section
+   ========================================================================== */
+
+.faq {
+  background: var(--bg-white);
+  padding: var(--space-16) var(--space-5);
+}
+
+.faq__container {
+  max-width: 1140px;
+  margin: 0 auto;
+  display: flex;
+  gap: var(--space-12);
+}
+
+.faq__left {
+  flex: 1;
+}
+
+.faq__right {
+  flex: 0 0 40%;
+}
+
+.faq__title {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: var(--text-3xl);
+  font-weight: var(--weight-semibold);
+  color: var(--text-dark);
+  margin-bottom: var(--space-8);
+}
+
+.faq__item {
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  margin-bottom: var(--space-3);
+  overflow: hidden;
+}
+
+.faq__question {
+  width: 100%;
+  padding: var(--space-4) var(--space-5);
+  background: var(--bg-light);
+  border: none;
+  text-align: left;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: var(--text-base);
+  font-weight: var(--weight-medium);
+  color: var(--text-dark);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  transition: background-color var(--transition-base);
+}
+
+.faq__question:hover {
+  background: var(--bg-medium);
+}
+
+.faq__question-icon {
+  color: var(--text-light);
+  transition: transform var(--transition-base);
+}
+
+.faq__item--open .faq__question-icon {
+  transform: rotate(180deg);
+}
+
+.faq__answer {
+  display: none;
+  padding: var(--space-4) var(--space-5);
+  background: var(--bg-white);
+}
+
+.faq__item--open .faq__answer {
+  display: block;
+}
+
+.faq__answer p {
+  font-size: var(--text-base);
+  color: var(--text-light);
+  line-height: var(--leading-relaxed);
+  margin: 0;
+}
+
+.faq__cta-link {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  color: var(--accent-color);
+  font-size: var(--text-base);
+  font-weight: var(--weight-medium);
+  text-decoration: none;
+  margin-top: var(--space-6);
+}
+
+.faq__cta-link:hover {
+  text-decoration: underline;
+}
+
+/* ==========================================================================
+   How To Promote Section
+   ========================================================================== */
+
+.how-promote {
+  background: var(--bg-light);
+  padding: var(--space-12) var(--space-5);
+  text-align: center;
+}
+
+.how-promote__container {
+  max-width: 1140px;
+  margin: 0 auto;
+}
+
+.how-promote__title {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: var(--text-3xl);
+  font-weight: var(--weight-semibold);
+  color: var(--text-dark);
+  margin-bottom: var(--space-3);
+}
+
+.how-promote__text {
+  font-size: var(--text-lg);
+  color: var(--text-light);
+  margin: 0;
+}
+
+/* ==========================================================================
+   Final CTA Section
+   ========================================================================== */
+
+.final-cta {
+  background: linear-gradient(135deg, var(--secondary-color) 0%, #2a4a7f 100%);
+  padding: var(--space-16) var(--space-5);
+  text-align: center;
+}
+
+.final-cta__container {
+  max-width: 1140px;
+  margin: 0 auto;
+}
+
+.final-cta__title {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: var(--text-3xl);
+  font-weight: var(--weight-semibold);
+  color: var(--bg-white);
+  margin-bottom: var(--space-6);
+}
+
+.final-cta__button {
+  display: inline-block;
+  background: var(--accent-color);
+  color: var(--bg-white);
+  padding: var(--space-4) var(--space-8);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-lg);
+  font-weight: var(--weight-semibold);
+  text-decoration: none;
+  transition: background-color var(--transition-normal);
+}
+
+.final-cta__button:hover {
+  background: var(--accent-hover);
+  color: var(--bg-white);
+}
+
+/* ==========================================================================
+   Still Have Questions Section
+   ========================================================================== */
+
+.questions {
+  background: var(--bg-white);
+  padding: var(--space-12) var(--space-5);
+  text-align: center;
+}
+
+.questions__container {
+  max-width: 1140px;
+  margin: 0 auto;
+}
+
+.questions__title {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: var(--text-3xl);
+  font-weight: var(--weight-semibold);
+  color: var(--text-dark);
+  margin-bottom: var(--space-3);
+}
+
+.questions__text {
+  font-size: var(--text-lg);
+  color: var(--text-light);
+  margin: 0;
+}
+
+/* ==========================================================================
+   About Tony Section
+   ========================================================================== */
+
+.about-tony {
+  background: var(--bg-light);
+  padding: var(--space-16) var(--space-5);
+}
+
+.about-tony__container {
+  max-width: 1140px;
+  margin: 0 auto;
+  display: flex;
+  gap: var(--space-12);
+  align-items: center;
+}
+
+.about-tony__left {
+  flex: 0 0 40%;
+}
+
+.about-tony__right {
+  flex: 1;
+}
+
+.about-tony__image {
+  max-width: 100%;
+  height: auto;
+  border-radius: var(--radius-lg);
+}
+
+.about-tony__title {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: var(--text-3xl);
+  font-weight: var(--weight-semibold);
+  color: var(--text-dark);
+  margin-bottom: var(--space-6);
+}
+
+.about-tony__list {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 var(--space-6) 0;
+}
+
+.about-tony__list li {
+  font-size: var(--text-base);
+  color: var(--text-dark);
+  margin-bottom: var(--space-2);
+  line-height: var(--leading-relaxed);
+}
+
+.about-tony__list strong {
+  color: var(--text-dark);
+}
+
+.about-tony__social {
+  display: flex;
+  gap: var(--space-3);
+}
+
+.about-tony__social-link {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--bg-white);
+  font-size: var(--text-lg);
+  text-decoration: none;
+  transition: opacity var(--transition-base);
+}
+
+.about-tony__social-link:hover {
+  opacity: 0.8;
+}
+
+.about-tony__social-link--facebook {
+  background: #1877F2;
+}
+
+.about-tony__social-link--twitter {
+  background: #1DA1F2;
+}
+
+.about-tony__social-link--linkedin {
+  background: #0A66C2;
+}
+
+/* ==========================================================================
+   Responsive Design
+   ========================================================================== */
+
+@media (max-width: 1024px) {
+  .partners-hero__title {
+    font-size: var(--text-3xl);
+  }
+
+  .expect__container {
+    flex-direction: column;
+  }
+
+  .expect__left {
+    flex: none;
+    width: 100%;
+  }
+
+  .benefits__grid {
+    grid-template-columns: 1fr;
+    gap: var(--space-6);
+  }
+
+  .about-pos__container {
+    flex-direction: column;
+  }
+
+  .about-pos__left {
+    flex: none;
+    width: 100%;
+  }
+
+  .partner-fit__container {
+    flex-direction: column;
+  }
+
+  .partner-fit__right {
+    flex: none;
+    width: 100%;
+    order: -1;
+  }
+
+  .product-details__row {
+    flex-direction: column;
+  }
+
+  .product-details__image-col {
+    flex: none;
+    width: 100%;
+  }
+
+  .faq__container {
+    flex-direction: column;
+  }
+
+  .faq__right {
+    display: none;
+  }
+
+  .about-tony__container {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .about-tony__left {
+    flex: none;
+    width: 100%;
+  }
+
+  .about-tony__social {
+    justify-content: center;
+  }
+}
+
+@media (max-width: 767px) {
+  .partners-hero {
+    padding: var(--space-12) var(--space-4);
+  }
+
+  .partners-hero__title {
+    font-size: var(--text-2xl);
+  }
+
+  .partners-hero__subtitle {
+    font-size: var(--text-base);
+  }
+
+  .expect {
+    padding: var(--space-12) var(--space-4);
+  }
+
+  .expect__title {
+    font-size: var(--text-2xl);
+  }
+
+  .benefits {
+    padding: var(--space-10) var(--space-4);
+  }
+
+  .about-pos {
+    padding: var(--space-12) var(--space-4);
+  }
+
+  .about-pos__title {
+    font-size: var(--text-2xl);
+  }
+
+  .testimonial {
+    padding: var(--space-12) var(--space-4);
+  }
+
+  .testimonial__quote {
+    font-size: var(--text-lg);
+  }
+
+  .partner-fit {
+    padding: var(--space-12) var(--space-4);
+  }
+
+  .partner-fit__title {
+    font-size: var(--text-2xl);
+  }
+
+  .product-details {
+    padding: var(--space-10) var(--space-4);
+  }
+
+  .faq {
+    padding: var(--space-12) var(--space-4);
+  }
+
+  .faq__title {
+    font-size: var(--text-2xl);
+  }
+
+  .final-cta {
+    padding: var(--space-12) var(--space-4);
+  }
+
+  .final-cta__title {
+    font-size: var(--text-2xl);
+  }
+
+  .about-tony {
+    padding: var(--space-12) var(--space-4);
+  }
+
+  .about-tony__title {
+    font-size: var(--text-2xl);
+  }
+}
