@@ -235,85 +235,6 @@ function guestify_enqueue_login_css() {
 add_action( 'wp_enqueue_scripts', 'guestify_enqueue_login_css' );
 
 /**
- * Enqueue workshop replay CSS only for workshop-replay page
- */
-function guestify_enqueue_workshop_replay_css() {
-	if ( is_page( 'workshop-replay' ) ) {
-		wp_enqueue_style(
-			'guestify-workshop-replay',
-			get_stylesheet_directory_uri() . '/css/workshop-replay.css',
-			array(),
-			filemtime( get_stylesheet_directory() . '/css/workshop-replay.css' )
-		);
-	}
-}
-add_action( 'wp_enqueue_scripts', 'guestify_enqueue_workshop_replay_css' );
-
-/**
- * Enqueue about CSS only for about page
- */
-function guestify_enqueue_about_css() {
-	if ( is_page( 'about' ) ) {
-		wp_enqueue_style(
-			'guestify-about',
-			get_stylesheet_directory_uri() . '/css/about.css',
-			array(),
-			filemtime( get_stylesheet_directory() . '/css/about.css' )
-		);
-	}
-}
-add_action( 'wp_enqueue_scripts', 'guestify_enqueue_about_css' );
-
-/**
- * Enqueue contact CSS only for contact page
- */
-function guestify_enqueue_contact_css() {
-	if ( is_page( 'contact' ) ) {
-		wp_enqueue_style(
-			'guestify-contact',
-			get_stylesheet_directory_uri() . '/css/contact.css',
-			array(),
-			filemtime( get_stylesheet_directory() . '/css/contact.css' )
-		);
-	}
-}
-add_action( 'wp_enqueue_scripts', 'guestify_enqueue_contact_css' );
-
-/**
- * Enqueue training CSS only for training page
- */
-function guestify_enqueue_training_css() {
-	if ( is_page( 'training' ) ) {
-		wp_enqueue_style(
-			'guestify-training',
-			get_stylesheet_directory_uri() . '/css/training.css',
-			array(),
-			filemtime( get_stylesheet_directory() . '/css/training.css' )
-		);
-	}
-}
-add_action( 'wp_enqueue_scripts', 'guestify_enqueue_training_css' );
-
-/**
- * Enqueue homepage CSS only for homepage (ID: 46263)
- */
-function guestify_enqueue_homepage_css() {
-	if ( is_page( 46263 ) ) {
-		$css_path = WP_CONTENT_DIR . '/css/homepage.css';
-		$css_url  = content_url( '/css/homepage.css' );
-		$version  = file_exists( $css_path ) ? filemtime( $css_path ) : '1.0.0';
-
-		wp_enqueue_style(
-			'guestify-homepage',
-			$css_url,
-			array(),
-			$version
-		);
-	}
-}
-add_action( 'wp_enqueue_scripts', 'guestify_enqueue_homepage_css' );
-
-/**
  * Guestify New Theme Pages CSS Enqueue
  *
  * Data-driven approach for loading section-specific CSS files.
@@ -321,8 +242,8 @@ add_action( 'wp_enqueue_scripts', 'guestify_enqueue_homepage_css' );
  */
 function guestify_enqueue_new_theme_pages_css() {
 	$request_uri = isset( $_SERVER['REQUEST_URI'] ) ? $_SERVER['REQUEST_URI'] : '';
-	$css_dir     = WP_CONTENT_DIR . '/css/';
-	$css_url     = content_url( '/css/' );
+	$css_dir     = get_template_directory() . '/css/';
+	$css_url     = get_template_directory_uri() . '/css/';
 
 	// Configuration: URL patterns mapped to their CSS files
 	// Format: 'key' => [ 'patterns' => [...], 'styles' => [ [handle, file, deps], ... ] ]
@@ -375,6 +296,36 @@ function guestify_enqueue_new_theme_pages_css() {
 			'patterns' => array( '#^/app/?$#' ),
 			'styles'   => array(
 				array( 'app-home', 'app-home.css', array() ),
+			),
+		),
+		'training' => array(
+			'patterns' => array( '#^/training/?$#' ),
+			'styles'   => array(
+				array( 'training', 'training.css', array() ),
+			),
+		),
+		'workshop' => array(
+			'patterns' => array( '#^/workshop-replay/?$#' ),
+			'styles'   => array(
+				array( 'workshop-replay', 'workshop-replay.css', array() ),
+			),
+		),
+		'about' => array(
+			'patterns' => array( '#^/about/?$#' ),
+			'styles'   => array(
+				array( 'about', 'about.css', array() ),
+			),
+		),
+		'contact' => array(
+			'patterns' => array( '#^/contact/?$#' ),
+			'styles'   => array(
+				array( 'contact', 'contact.css', array() ),
+			),
+		),
+		'homepage' => array(
+			'patterns' => array( '#^/$#' ),
+			'styles'   => array(
+				array( 'homepage', 'homepage.css', array() ),
 			),
 		),
 	);
