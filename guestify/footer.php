@@ -11,7 +11,7 @@
 
 ?>
 
-<?php if ( !is_app_page() ) : ?>
+<?php if ( !is_app_page() && !is_blank_canvas_page() ) : ?>
 <!-- Public Footer -->
 <footer id="colophon" class="site-footer">
 <div class="site-info">

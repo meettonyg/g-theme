@@ -25,41 +25,45 @@
 <div id="page" class="site">
 	<a class="skip-link screen-reader-text" href="#primary"><?php esc_html_e( 'Skip to content', 'guestify' ); ?></a>
 
-	<?php if ( is_app_page() ) : ?>
+	<?php if ( is_blank_canvas_page() ) : ?>
+		<!-- Blank Canvas - No Header -->
+	<?php elseif ( is_app_page() ) : ?>
 		<!-- App Header -->
 		<?php get_template_part( 'template-parts/app-navigation' ); ?>
 	<?php else : ?>
-		<!-- Public Header -->
-		<header id="masthead" class="site-header">
-			<div class="site-branding">
-				<?php
-				the_custom_logo();
-				if ( is_front_page() && is_home() ) :
-					?>
-					<h1 class="site-title"><a href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home"><?php bloginfo( 'name' ); ?></a></h1>
+		<!-- Clean Front-End Header -->
+		<header id="masthead" class="site-header frontend-header">
+			<div class="frontend-header__container">
+				<div class="frontend-header__logo">
 					<?php
-				else :
-					?>
-					<p class="site-title"><a href="<?php echo esc_url( home_url( '/' ) ); ?>" rel="home"><?php bloginfo( 'name' ); ?></a></p>
-					<?php
-				endif;
-				$guestify_description = get_bloginfo( 'description', 'display' );
-				if ( $guestify_description || is_customize_preview() ) :
-					?>
-					<p class="site-description"><?php echo $guestify_description; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?></p>
-				<?php endif; ?>
-			</div><!-- .site-branding -->
+					if ( has_custom_logo() ) :
+						the_custom_logo();
+					else :
+						?>
+						<a href="<?php echo esc_url( home_url( '/' ) ); ?>" class="frontend-header__site-title" rel="home">
+							<?php bloginfo( 'name' ); ?>
+						</a>
+					<?php endif; ?>
+				</div><!-- .frontend-header__logo -->
 
-			<nav id="site-navigation" class="main-navigation">
-				<button class="menu-toggle" aria-controls="primary-menu" aria-expanded="false"><?php esc_html_e( 'Primary Menu', 'guestify' ); ?></button>
-				<?php
-				wp_nav_menu(
-					array(
-						'theme_location' => 'menu-1',
-						'menu_id'        => 'primary-menu',
-					)
-				);
-				?>
-			</nav><!-- #site-navigation -->
+				<nav id="site-navigation" class="frontend-header__nav">
+					<button class="frontend-header__menu-toggle" aria-controls="frontend-menu" aria-expanded="false">
+						<span class="frontend-header__menu-icon"></span>
+						<span class="screen-reader-text"><?php esc_html_e( 'Menu', 'guestify' ); ?></span>
+					</button>
+					<?php
+					wp_nav_menu(
+						array(
+							'theme_location' => 'frontend',
+							'menu_id'        => 'frontend-menu',
+							'menu_class'     => 'frontend-header__menu',
+							'container'      => false,
+							'depth'          => 2,
+							'fallback_cb'    => false,
+						)
+					);
+					?>
+				</nav><!-- #site-navigation -->
+			</div><!-- .frontend-header__container -->
 		</header><!-- #masthead -->
 	<?php endif; ?>

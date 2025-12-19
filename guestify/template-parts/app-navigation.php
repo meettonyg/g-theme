@@ -20,11 +20,25 @@ if (empty($user_initials)) {
     $user_initials = strtoupper(substr($current_user->display_name, 0, 1));
 }
 
-// Get the app menu (ID: 1398)
-$app_menu = wp_get_nav_menu_object(1398);
-$menu_items = wp_get_nav_menu_items($app_menu->term_id);
+// Get the app menu from registered location
+$menu_locations = get_nav_menu_locations();
+$app_menu_id = isset($menu_locations['app-menu']) ? $menu_locations['app-menu'] : 0;
+$menu_items = $app_menu_id ? wp_get_nav_menu_items($app_menu_id) : [];
 
-// Organization menu items by parent/child relationship
+// Fallback to menu ID 1398 if no menu assigned to location (for backwards compatibility)
+if (empty($menu_items)) {
+    $app_menu = wp_get_nav_menu_object(1398);
+    if ($app_menu) {
+        $menu_items = wp_get_nav_menu_items($app_menu->term_id);
+    }
+}
+
+// Ensure menu_items is an array
+if (!is_array($menu_items)) {
+    $menu_items = [];
+}
+
+// Organize menu items by parent/child relationship
 $menu_structure = [];
 foreach ($menu_items as $item) {
     if ($item->menu_item_parent == 0) {

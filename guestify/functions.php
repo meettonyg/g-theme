@@ -51,10 +51,12 @@ function guestify_setup() {
 		*/
 	add_theme_support( 'post-thumbnails' );
 
-	// This theme uses wp_nav_menu() in one location.
+	// Register navigation menus
 	register_nav_menus(
 		array(
-			'menu-1' => esc_html__( 'Primary', 'guestify' ),
+			'menu-1'   => esc_html__( 'Primary', 'guestify' ),
+			'frontend' => esc_html__( 'Frontend Menu', 'guestify' ),
+			'app-menu' => esc_html__( 'App Menu', 'guestify' ),
 		)
 	);
 
@@ -161,6 +163,31 @@ function guestify_scripts() {
 add_action( 'wp_enqueue_scripts', 'guestify_scripts' );
 
 /**
+ * Enqueue frontend header styles and scripts for public pages
+ * Only loads on pages that are not app pages and not blank canvas pages
+ */
+function guestify_enqueue_frontend_header_assets() {
+	// Only load on frontend pages (not app, not blank canvas)
+	if ( function_exists( 'is_frontend_page' ) && is_frontend_page() ) {
+		wp_enqueue_style(
+			'guestify-frontend-header',
+			get_template_directory_uri() . '/css/frontend-header.css',
+			array(),
+			filemtime( get_template_directory() . '/css/frontend-header.css' )
+		);
+
+		wp_enqueue_script(
+			'guestify-frontend-header',
+			get_template_directory_uri() . '/js/frontend-header.js',
+			array(),
+			filemtime( get_template_directory() . '/js/frontend-header.js' ),
+			true
+		);
+	}
+}
+add_action( 'wp_enqueue_scripts', 'guestify_enqueue_frontend_header_assets' );
+
+/**
  * Implement the Custom Header feature.
  */
 require get_template_directory() . '/inc/custom-header.php';
@@ -193,10 +220,10 @@ if ( defined( 'JETPACK__VERSION' ) ) {
 require get_template_directory() . '/inc/app-navigation-functions.php';
 
 /**
- * Enqueue login CSS only for login page (ID: 34270)
+ * Enqueue login CSS only for login page
  */
 function guestify_enqueue_login_css() {
-	if ( is_page( 34270 ) ) {
+	if ( is_page( 'login' ) ) {
 		wp_enqueue_style(
 			'guestify-login',
 			get_stylesheet_directory_uri() . '/css/login.css',
