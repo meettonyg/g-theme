@@ -1,0 +1,188 @@
+/* ==========================================================================
+   WORKSHOP-REPLAY.CSS - Workshop Replay Page Styles (BEM Compliant)
+   Brand Standards: Guestify
+   ========================================================================== */
+
+/* ==========================================================================
+   CSS Variables (Brand Colors)
+   ========================================================================== */
+
+:root {
+    /* Primary Brand Colors */
+    --primary-color: #2B7A4C;
+    --secondary-color: #1B365D;
+    --accent-color: #ED8936;
+
+    /* Text Colors */
+    --text-dark: #4A5568;
+    --text-light: #516f90;
+
+    /* Background Colors */
+    --bg-white: #ffffff;
+    --bg-light: #f5f7fa;
+
+    /* Hover States */
+    --accent-hover: #d67326;
+}
+
+/* ==========================================================================
+   Base Styles
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+    font-size: 1rem;
+    line-height: 1.5;
+    background-color: var(--bg-white);
+    color: var(--text-dark);
+}
+
+.page {
+    margin: 0;
+}
+
+/* ==========================================================================
+   Hero Section
+   ========================================================================== */
+
+.hero--replay {
+    position: relative;
+    text-align: center;
+    padding: 60px 20px;
+    background: linear-gradient(135deg, var(--secondary-color) 0%, #152a47 100%);
+    color: var(--bg-white);
+}
+
+.hero__overlay {
+    display: none;
+}
+
+.hero__container {
+    position: relative;
+    z-index: 1;
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.hero__title {
+    font-family: "Arimo", sans-serif;
+    font-size: 28px;
+    font-weight: 600;
+    line-height: 1.3em;
+    color: var(--bg-white);
+    margin: 0 0 15px 0;
+}
+
+@media (min-width: 768px) {
+    .hero__title {
+        font-size: 39px;
+    }
+}
+
+.hero__subtitle {
+    font-family: "Poppins", sans-serif;
+    font-size: 16px;
+    font-weight: normal;
+    line-height: 1.5em;
+    color: rgba(255, 255, 255, 0.9);
+    margin: 0;
+}
+
+@media (min-width: 768px) {
+    .hero__subtitle {
+        font-size: 18px;
+    }
+}
+
+/* ==========================================================================
+   Video Section
+   ========================================================================== */
+
+.video-section {
+    position: relative;
+    padding: 40px 20px;
+    background-color: var(--bg-light);
+}
+
+.video-section__container {
+    max-width: 900px;
+    margin: 0 auto;
+}
+
+.video-section__video-wrapper {
+    position: relative;
+    padding-bottom: 56.25%; /* 16:9 aspect ratio */
+    height: 0;
+    overflow: hidden;
+    border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+}
+
+.video-section__video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+}
+
+/* ==========================================================================
+   CTA Section
+   ========================================================================== */
+
+.cta-section {
+    padding: 50px 20px;
+    text-align: center;
+    background-color: var(--bg-white);
+}
+
+.cta-section__container {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.cta-section__button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    background-color: var(--accent-color);
+    color: var(--bg-white);
+    font-size: 18px;
+    font-weight: 600;
+    padding: 18px 40px;
+    border-radius: 8px;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 15px rgba(237, 137, 54, 0.3);
+}
+
+.cta-section__button:hover {
+    background-color: var(--accent-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(237, 137, 54, 0.4);
+}
+
+.cta-section__button-icon {
+    font-size: 20px;
+}
+
+.cta-section__button-text {
+    font-family: "Roboto", sans-serif;
+}
+
+@media (min-width: 768px) {
+    .cta-section__button {
+        font-size: 22px;
+        padding: 20px 50px;
+    }
+}

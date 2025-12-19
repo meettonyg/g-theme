@@ -1,0 +1,396 @@
+/* ==========================================================================
+   BASE.CSS - Core Foundation Styles
+   Single source of truth for all foundational styles
+   ========================================================================== */
+
+/* ==========================================================================
+   CSS Reset (Meyer Reset v2.0)
+   ========================================================================== */
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote, pre,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed, 
+figure, figcaption, footer, header, hgroup, 
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 100%;
+    font: inherit;
+    vertical-align: baseline;
+}
+
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure, 
+footer, header, hgroup, menu, nav, section {
+    display: block;
+}
+
+body {
+    line-height: 1;
+}
+
+ol, ul {
+    list-style: none;
+}
+
+blockquote, q {
+    quotes: none;
+}
+
+blockquote::before, blockquote::after,
+q::before, q::after {
+    content: '';
+    content: none;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+a:visited {
+    color: inherit;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+a:active, a:focus {
+    outline: none;
+    text-decoration: none;
+}
+
+/* ==========================================================================
+   Root Variables - CONSOLIDATED COLOR SYSTEM
+   ========================================================================== */
+
+:root {
+  /* Primary Brand Colors - EXACT BRAND ALIGNMENT */
+  --primary-color: #2B7A4C; /* Brand's Connection Green */
+  --secondary-color: #1B365D; /* Brand's Intelligence Blue */
+  --accent-color: #ED8936; /* Brand's Transformation Orange - EXACT MATCH */
+  
+  /* Additional Brand Colors */
+  --authority-gray: #4A5568; /* Brand's Authority Gray */
+  --insight-purple: #805AD5; /* Brand's Insight Purple */
+  --success-teal: #38B2AC; /* Brand's Success Teal */
+  
+  /* Text Colors */
+  --text-dark: #4A5568; /* Brand's Authority Gray */
+  --text-light: #516f90; /* CHOSEN: More frequently used */
+  
+  /* Background Colors */
+  --bg-white: #ffffff;
+  --bg-light: #f5f7fa; /* CHOSEN: More frequently used */
+  --bg-lighter: #f8f9fa;
+  --bg-medium: #eaf0f6;
+  --bg-dark: #e0e6ed;
+  
+  /* Border & Structural */
+  --border-color: #cbd6e2; /* CHOSEN: More frequently used */
+  --active-blue: #1B365D; /* Brand's Intelligence Blue - EXACT MATCH */
+  
+  /* Status Colors */
+  --error: #d32f2f;
+  --error-bg: #ffebee;
+  --success: #388e3c;
+  --success-bg: #e8f5e9;
+  --info: #4299E1;           /* Brand's Info Blue - per brand standards */
+  --info-bg: #ebf8ff;        /* Light info background */
+  
+  /* Hover States (calculated darker versions) */
+  --accent-hover: #d67326; /* Darker version of accent */
+  --secondary-hover: #152a47; /* Darker version of secondary */
+  --primary-hover: #1f5a36; /* Darker version of primary */
+  
+  /* Semantic UI Colors */
+  --ui-gray-100: #f8f9fa;
+  --ui-gray-200: #e9ecef;
+  --ui-gray-300: #ddd;
+  --ui-gray-400: #aaa;
+  --ui-gray-500: #666;
+  --ui-gray-600: #444;
+  --ui-gray-700: #333;
+  --ui-gray-800: #2c3e50;
+  --ui-warning: #f1c40f;
+  --ui-info: #3498db;
+  --ui-info-hover: #2980b9;
+  
+  /* Legacy aliases for backwards compatibility */
+  --light-bg: var(--bg-light);
+  --dark-text: var(--text-dark);
+  --light-text: var(--text-light);
+  --theme-orange: var(--accent-color);
+  --theme-blue: var(--active-blue);
+  --theme-text-dark: var(--text-dark);
+  --theme-text-light: var(--text-light);
+  --theme-border: var(--border-color);
+  --theme-bg-light: var(--bg-light);
+  --theme-bg-lighter: var(--bg-lighter);
+  --theme-bg-medium: var(--bg-medium);
+  --theme-bg-dark: var(--bg-dark);
+  --theme-white: var(--bg-white);
+  --theme-error: var(--error);
+  --theme-error-bg: var(--error-bg);
+  --theme-success: var(--success);
+  --theme-success-bg: var(--success-bg);
+  
+  /* ==========================================================================
+     EXTENDED DESIGN TOKENS - Added for Complete Redesign
+     ========================================================================== */
+  
+  /* Spacing Scale (8px base) */
+  --space-0: 0;
+  --space-1: 0.25rem;   /* 4px */
+  --space-2: 0.5rem;    /* 8px */
+  --space-3: 0.75rem;   /* 12px */
+  --space-4: 1rem;      /* 16px */
+  --space-5: 1.25rem;   /* 20px */
+  --space-6: 1.5rem;    /* 24px */
+  --space-8: 2rem;      /* 32px */
+  --space-10: 2.5rem;   /* 40px */
+  --space-12: 3rem;     /* 48px */
+  --space-16: 4rem;     /* 64px */
+  --space-20: 5rem;     /* 80px */
+  --space-24: 6rem;     /* 96px */
+  
+  /* Typography Scale */
+  --text-xs: 0.75rem;    /* 12px */
+  --text-sm: 0.875rem;   /* 14px */
+  --text-base: 1rem;     /* 16px */
+  --text-lg: 1.125rem;   /* 18px */
+  --text-xl: 1.25rem;    /* 20px */
+  --text-2xl: 1.5rem;    /* 24px */
+  --text-3xl: 1.875rem;  /* 30px */
+  --text-4xl: 2.25rem;   /* 36px */
+  --text-5xl: 3rem;      /* 48px */
+  --text-6xl: 3.75rem;   /* 60px */
+  
+  /* Font Weights */
+  --weight-light: 300;
+  --weight-normal: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+  
+  /* Line Heights */
+  --leading-tight: 1.25;
+  --leading-normal: 1.5;
+  --leading-relaxed: 1.625;
+  --leading-loose: 2;
+  
+  /* Border Radius */
+  --radius-sm: 0.25rem;   /* 4px */
+  --radius-md: 0.5rem;    /* 8px */
+  --radius-lg: 0.75rem;   /* 12px */
+  --radius-xl: 1rem;      /* 16px */
+  --radius-full: 9999px;
+  
+  /* Shadows */
+  --shadow-xs: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-sm: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+  
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-base: 200ms ease;
+  --transition-normal: 300ms ease;
+  
+  /* Z-Index Scale */
+  --z-dropdown: 1000;
+  --z-sticky: 1100;
+  --z-modal: 1400;
+}
+
+/* ==========================================================================
+   Global Base Styles
+   ========================================================================== */
+
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  background-color: var(--bg-light);
+  color: var(--text-dark);
+  line-height: 1.5;
+}
+
+/* ==========================================================================
+   Accessibility - Skip Links
+   ========================================================================== */
+
+.skip-link {
+  position: absolute;
+  left: -9999px;
+  top: 6px;
+  z-index: 999999;
+  padding: 8px 16px;
+  background-color: var(--text-dark);
+  color: var(--bg-white);
+  text-decoration: none;
+  border-radius: 3px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.skip-link:focus {
+  left: 6px;
+}
+
+.screen-reader-text {
+  border: 0;
+  clip: rect(1px, 1px, 1px, 1px);
+  clip-path: inset(50%);
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute !important;
+  width: 1px;
+  word-wrap: normal !important;
+}
+
+.screen-reader-text:focus {
+  background-color: var(--bg-light);
+  border-radius: 3px;
+  box-shadow: 0 0 2px 2px rgba(0, 0, 0, 0.6);
+  clip: auto !important;
+  clip-path: none;
+  color: var(--text-dark);
+  display: block;
+  font-size: 14px;
+  font-weight: 600;
+  height: auto;
+  left: 5px;
+  line-height: normal;
+  padding: 15px 23px 14px;
+  text-decoration: none;
+  top: 5px;
+  width: auto;
+  z-index: 100000;
+}
+
+/* ==========================================================================
+   Universal Container Classes
+   ========================================================================== */
+
+.container {
+  max-width: 1200px; /* CHOSEN: More common usage */
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.gvb-container {
+  display: flex;
+  min-height: 100vh;
+  max-width: 1600px;
+  margin: 0 auto;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
+  background-color: var(--bg-white);
+}
+
+/* ==========================================================================
+   Typography Base
+   ========================================================================== */
+
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 0.5em;
+}
+
+h1 { font-size: 2rem; }
+h2 { font-size: 1.75rem; }
+h3 { font-size: 1.5rem; }
+h4 { font-size: 1.25rem; }
+h5 { font-size: 1.125rem; }
+h6 { font-size: 1rem; }
+
+p {
+  margin-bottom: 1em;
+  line-height: 1.6;
+}
+
+/* ==========================================================================
+   Utility Classes
+   ========================================================================== */
+
+.text-center { text-align: center; }
+.text-left { text-align: left; }
+.text-right { text-align: right; }
+
+.mb-0 { margin-bottom: 0; }
+.mb-1 { margin-bottom: 0.5rem; }
+.mb-2 { margin-bottom: 1rem; }
+.mb-3 { margin-bottom: 1.5rem; }
+.mb-4 { margin-bottom: 2rem; }
+
+.mt-0 { margin-top: 0; }
+.mt-1 { margin-top: 0.5rem; }
+.mt-2 { margin-top: 1rem; }
+.mt-3 { margin-top: 1.5rem; }
+.mt-4 { margin-top: 2rem; }
+
+.hidden { display: none; }
+.visible { display: block; }
+
+/* ==========================================================================
+   Error & Success States
+   ========================================================================== */
+
+.error {
+  color: var(--error);
+  background-color: var(--error-bg);
+  padding: 10px;
+  border-radius: 4px;
+  margin: 10px 0;
+}
+
+.success-message {
+  color: var(--success);
+  background-color: var(--success-bg);
+  padding: 10px;
+  border-radius: 4px;
+  margin: 10px 0;
+}
+
+/* ==========================================================================
+   Basic Responsive Foundation
+   ========================================================================== */
+
+@media (max-width: 768px) {
+  .container {
+    padding: 15px;
+  }
+  
+  h1 { font-size: 1.75rem; }
+  h2 { font-size: 1.5rem; }
+  h3 { font-size: 1.25rem; }
+}

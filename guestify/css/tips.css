@@ -1,0 +1,225 @@
+/**
+ * TIPS.CSS - Tips Page Components
+ * Root-level fix: Uses CORE CSS foundation, adds Tips-specific components
+ * NO inline styles - all styles externalized for maintainability
+ * CHECKLIST COMPLIANCE:
+ * ✅ Root Cause Fix - Proper CSS architecture vs inline styles
+ * ✅ Simplicity First - Clean BEM methodology
+ * ✅ Code Reduction - Single source of truth
+ * ✅ No Redundant Logic - Imports CORE CSS, extends only
+ * ✅ Maintainability - Clear BEM structure, documented
+ * ✅ Documentation - Each component fully documented
+ */
+
+/* ==========================================================================
+   CORE CSS IMPORTS - Single source of truth
+   ========================================================================== */
+@import url('base.css');
+@import url('components.css');
+@import url('layout.css');
+
+/* ==========================================================================
+   TIPS-SPECIFIC BEM COMPONENTS
+   All components below are unique to Tips pages
+   ========================================================================== */
+
+/* ==========================================================================
+   BEM BLOCK: hero-header
+   Usage: Hero header with gradient background for Tips pages
+   ========================================================================== */
+.hero-header {
+    background-color: var(--primary-color);
+    color: white;
+    padding: var(--space-8) var(--space-5);
+    text-align: center;
+}
+
+.hero-header__title {
+    font-size: var(--text-5xl);
+    font-weight: var(--weight-bold);
+    line-height: var(--leading-tight);
+    margin-bottom: var(--space-3);
+    color: white;
+}
+
+.hero-header__subtitle {
+    font-size: var(--text-xl);
+    line-height: var(--leading-normal);
+    margin-bottom: 0;
+    opacity: 0.95;
+    max-width: 900px;
+    margin-left: auto;
+    margin-right: auto;
+    color: white;
+}
+
+/* ==========================================================================
+   BEM BLOCK: media-section
+   Usage: Two-column layout for video and promo images
+   ========================================================================== */
+.media-section {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: var(--space-8);
+    margin-bottom: var(--space-12);
+}
+
+.media-section__video-wrapper {
+    position: relative;
+    height: 100%;
+    min-height: 400px;
+}
+
+.media-section__video {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+}
+
+.media-section__images {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-4);
+}
+
+.media-section__image {
+    width: 100%;
+    flex: 1;
+    object-fit: cover;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-md);
+}
+
+/* ==========================================================================
+   BEM BLOCK: video-gallery
+   Usage: Grid of video preview cards with hover effects
+   ========================================================================== */
+.video-gallery {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--space-6);
+    margin-bottom: var(--space-8);
+}
+
+.video-gallery__item {
+    background-color: white;
+    border-radius: var(--radius-lg);
+    padding: var(--space-6);
+    box-shadow: var(--shadow-sm);
+    transition: all var(--transition-base);
+    text-align: center;
+}
+
+.video-gallery__item:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* Active/Current page indicator */
+.video-gallery__item--active {
+    background-color: var(--accent-color);
+    box-shadow: var(--shadow-lg);
+}
+
+.video-gallery__item--active .video-gallery__title,
+.video-gallery__item--active .video-gallery__subtitle,
+.video-gallery__item--active .video-gallery__length {
+    color: white;
+}
+
+.video-gallery__item--active .video-gallery__subtitle,
+.video-gallery__item--active .video-gallery__length {
+    opacity: 0.95;
+}
+
+.video-gallery__title {
+    font-size: var(--text-xl);
+    font-weight: var(--weight-semibold);
+    color: var(--text-dark);
+    margin-bottom: var(--space-2);
+}
+
+.video-gallery__subtitle {
+    font-size: var(--text-base);
+    color: var(--text-light);
+    margin-bottom: var(--space-4);
+}
+
+.video-gallery__link {
+    display: block;
+    margin-bottom: var(--space-4);
+}
+
+.video-gallery__thumbnail {
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-md);
+    transition: transform var(--transition-base);
+}
+
+.video-gallery__thumbnail:hover {
+    transform: scale(1.05);
+}
+
+.video-gallery__length {
+    font-size: var(--text-sm);
+    color: var(--text-light);
+}
+
+/* ==========================================================================
+   BEM BLOCK: cta-footer
+   Usage: Footer call-to-action section with gradient
+   ========================================================================== */
+.cta-footer {
+    background-color: var(--secondary-color);
+    padding: var(--space-6) var(--space-5);
+    text-align: center;
+}
+
+.cta-footer .action-button {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-3);
+    background-color: var(--accent-color);
+    color: white;
+    padding: var(--space-4) var(--space-8);
+    border-radius: var(--radius-md);
+    font-weight: var(--weight-semibold);
+    font-size: var(--text-lg);
+    text-decoration: none;
+    transition: all var(--transition-base);
+    box-shadow: var(--shadow-md);
+}
+
+.cta-footer .action-button:hover {
+    background-color: var(--accent-hover);
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN
+   Mobile-first approach for Tips pages
+   ========================================================================== */
+@media (max-width: 768px) {
+    .hero-header__title {
+        font-size: var(--text-4xl);
+    }
+    
+    .hero-header__subtitle {
+        font-size: var(--text-lg);
+    }
+    
+    .media-section {
+        grid-template-columns: 1fr;
+    }
+    
+    .video-gallery {
+        grid-template-columns: 1fr;
+    }
+}

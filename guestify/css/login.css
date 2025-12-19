@@ -1,67 +1,393 @@
-/* css/login.css — only for the Blank template login page */
+/* ============================================
+   LOGIN PAGE CSS - Guestify Login/Authentication Pages
+   Uses CORE CSS foundation via imports in HTML
+   ============================================ */
 
-/* Container */
+/* ============================================
+   BEM BLOCK: login-page
+   Main container for login layout
+   ============================================ */
 .login-page {
-  display: flex;
-  min-height: 100vh;
-  margin: 0;
+    min-height: 100vh;
+    display: flex;
 }
 
-/* Panel */
-.login-page__panel {
-  flex: 1;
-  max-width: 33.333%;
-  padding: 2rem;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.login-page__logo {
-  max-width: 200px;
-  margin-bottom: 1rem;
-}
-
-.login-page__title {
-  margin-bottom: 1.5rem;
-  font-size: 1.75rem;
-}
-
-.login-page__form {
-  margin-bottom: 1rem;
-}
-
-.login-page__logout {
-  margin-top: 1rem;
-}
-
-.login-page__social {
-  margin-top: 1.5rem;
-}
-
-.login-page__social-item {
-  margin-right: 1rem;
-  color: #666;
-  text-decoration: none;
-}
-
-/* Illustration */
-.login-page__illustration {
-  flex: 2;
-  background: url('https://guestify.ai/wp-content/uploads/2021/01/login_welcome_bck.png')
-              center/cover no-repeat;
-}
-
-/* Mobile fallback */
-@media (max-width: 768px) {
-  .login-page {
+/* ============================================
+   BEM BLOCK: login-panel
+   Left panel containing the login form
+   ============================================ */
+.login-panel {
+    flex: 0 0 480px;
+    background-color: var(--bg-white);
+    display: flex;
     flex-direction: column;
-  }
-  .login-page__illustration {
-    display: none;
-  }
-  .login-page__panel {
+    justify-content: center;
+    padding: 60px;
+    position: relative;
+    z-index: 2;
+}
+
+.login-panel__inner {
+    max-width: 360px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+/* ============================================
+   BEM BLOCK: login-decorations
+   Decorative circles positioned to not overlap logo
+   ============================================ */
+.login-decorations {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 120px;
+    overflow: hidden;
+    z-index: 0;
+}
+
+.login-decorations::before,
+.login-decorations::after {
+    content: '';
+    position: absolute;
+    border-radius: 50%;
+}
+
+.login-decorations::before {
+    width: 180px;
+    height: 180px;
+    background-color: #ec4899;
+    opacity: 0.8;
+    top: -90px;
+    left: 20px;
+}
+
+.login-decorations::after {
+    width: 100px;
+    height: 100px;
+    background-color: #ec4899;
+    opacity: 0.6;
+    top: -20px;
+    right: 60px;
+}
+
+/* ============================================
+   BEM BLOCK: login-logo
+   Logo and title section
+   ============================================ */
+.login-logo {
+    text-align: center;
+    margin-bottom: var(--space-8);
+}
+
+.login-logo__image {
+    max-width: 200px;
+    height: auto;
+}
+
+.login-logo__title {
+    font-size: var(--text-xl);
+    font-weight: var(--weight-bold);
+    color: var(--secondary-color);
+    margin-top: var(--space-4);
+    letter-spacing: 1px;
+}
+
+/* ============================================
+   BEM BLOCK: login-form
+   Form styles for login inputs and buttons
+   ============================================ */
+.login-form {
+    margin-bottom: var(--space-6);
+}
+
+.login-form__group {
+    margin-bottom: var(--space-5);
+}
+
+.login-form__label {
+    display: block;
+    font-size: var(--text-sm);
+    font-weight: var(--weight-medium);
+    color: var(--text-dark);
+    margin-bottom: var(--space-2);
+}
+
+.login-form__input {
+    width: 100%;
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    font-size: var(--text-base);
+    color: var(--text-dark);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    box-sizing: border-box;
+}
+
+.login-form__input:focus {
+    outline: none;
+    border-color: var(--secondary-color);
+    box-shadow: 0 0 0 3px rgba(27, 54, 93, 0.1);
+}
+
+.login-form__input::placeholder {
+    color: var(--text-light);
+}
+
+/* Submit Button */
+.login-form__submit {
+    background-color: var(--secondary-color);
+    color: white;
+    border: none;
+    padding: var(--space-3) var(--space-6);
+    border-radius: var(--radius-md);
+    font-size: var(--text-base);
+    font-weight: var(--weight-semibold);
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.login-form__submit:hover {
+    background-color: var(--secondary-hover);
+    transform: translateY(-1px);
+}
+
+/* Remember Me */
+.login-form__remember {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    margin-top: var(--space-4);
+}
+
+.login-form__remember input[type="checkbox"] {
+    width: 16px;
+    height: 16px;
+    accent-color: var(--secondary-color);
+}
+
+.login-form__remember label {
+    font-size: var(--text-sm);
+    color: var(--text-dark);
+}
+
+/* Forgot Password */
+.login-form__forgot {
+    display: block;
+    margin-top: var(--space-4);
+    font-size: var(--text-sm);
+    color: var(--secondary-color);
+    text-decoration: none;
+    transition: color 0.2s ease;
+}
+
+.login-form__forgot:hover {
+    color: var(--secondary-hover);
+    text-decoration: underline;
+}
+
+/* ============================================
+   BEM BLOCK: login-divider
+   Divider line with text
+   ============================================ */
+.login-divider {
+    display: flex;
+    align-items: center;
+    margin: var(--space-6) 0;
+}
+
+.login-divider::before,
+.login-divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background-color: var(--border-color);
+}
+
+.login-divider__text {
+    padding: 0 var(--space-4);
+    font-size: var(--text-sm);
+    color: var(--text-light);
+}
+
+/* ============================================
+   BEM BLOCK: login-social
+   Social login buttons and icons
+   ============================================ */
+.login-social__button {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-3);
+    width: 100%;
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius-md);
+    background-color: var(--bg-white);
+    font-size: var(--text-base);
+    font-weight: var(--weight-medium);
+    color: var(--text-dark);
+    cursor: pointer;
+    transition: background-color 0.2s ease, border-color 0.2s ease;
+    text-decoration: none;
+}
+
+.login-social__button:hover {
+    background-color: var(--bg-light);
+    border-color: var(--text-light);
+}
+
+.login-social__icon {
+    width: 20px;
+    height: 20px;
+}
+
+/* Social Icons Row */
+.login-social__icons {
+    display: flex;
+    justify-content: center;
+    gap: var(--space-6);
+    margin-top: var(--space-6);
+}
+
+.login-social__link {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-light);
+    font-size: var(--text-lg);
+    transition: color 0.2s ease;
+}
+
+.login-social__link:hover {
+    color: var(--secondary-color);
+}
+
+/* ============================================
+   BEM BLOCK: illustration-panel
+   Right panel with branding/illustration
+   ============================================ */
+.illustration-panel {
+    flex: 1;
+    background: linear-gradient(135deg, var(--secondary-color) 0%, #2a4a6d 100%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: var(--space-10);
+    position: relative;
+    overflow: hidden;
+}
+
+/* Decorative pattern overlay */
+.illustration-panel::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse"><circle cx="10" cy="10" r="1.5" fill="rgba(255,255,255,0.1)"/></pattern></defs><rect width="100" height="100" fill="url(%23grid)"/></svg>');
+    opacity: 0.5;
+}
+
+.illustration-panel__content {
+    position: relative;
+    z-index: 1;
+    text-align: center;
+    max-width: 500px;
+}
+
+.illustration-panel__image {
     max-width: 100%;
-  }
+    max-height: 50vh;
+    object-fit: contain;
+    margin-bottom: var(--space-8);
+    border-radius: var(--radius-lg);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+.illustration-panel__tagline {
+    color: white;
+    font-size: var(--text-3xl);
+    font-weight: var(--weight-bold);
+    line-height: 1.3;
+    margin-bottom: var(--space-4);
+}
+
+.illustration-panel__subtitle {
+    color: rgba(255, 255, 255, 0.85);
+    font-size: var(--text-lg);
+    line-height: 1.6;
+}
+
+.illustration-panel__features {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-4);
+    margin-top: var(--space-8);
+}
+
+.illustration-panel__feature {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    color: rgba(255, 255, 255, 0.9);
+    font-size: var(--text-sm);
+}
+
+.illustration-panel__feature i {
+    color: var(--success-teal);
+}
+
+/* ============================================
+   RESPONSIVE DESIGN - Mobile Overrides
+   ============================================ */
+@media (max-width: 1024px) {
+    .login-page {
+        flex-direction: column;
+    }
+
+    .login-panel {
+        flex: none;
+        padding: 40px 30px;
+    }
+
+    .illustration-panel {
+        display: none;
+    }
+
+    .login-decorations::before {
+        width: 150px;
+        height: 150px;
+        top: -80px;
+    }
+
+    .login-decorations::after {
+        width: 80px;
+        height: 80px;
+        top: -30px;
+    }
+}
+
+@media (max-width: 480px) {
+    .login-panel {
+        padding: 30px 20px;
+    }
+
+    .login-panel__inner {
+        max-width: 100%;
+    }
+
+    .login-logo__image {
+        max-width: 160px;
+    }
+
+    .login-decorations {
+        display: none;
+    }
 }

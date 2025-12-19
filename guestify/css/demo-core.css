@@ -1,0 +1,609 @@
+/* ============================================
+   DEMO CORE CSS - Guestify Demo Pages
+   Root-level fix: Uses CORE CSS foundation, adds Demo-specific components only
+   ============================================ */
+
+/* Import CORE CSS Foundation */
+@import url('base.css');
+@import url('components.css');
+@import url('layout.css');
+
+/* ============================================
+   DEMO-SPECIFIC BEM COMPONENTS
+   All components below are unique to Demo pages
+   ============================================ */
+
+/* ============================================
+   BEM BLOCK: guestify-header
+   Header component for Demo pages
+   ============================================ */
+.guestify-header {
+    background-color: var(--bg-white);
+    padding: var(--space-4) 0;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.guestify-header__container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    max-width: 1165px;
+    margin: 0 auto;
+    padding: 0 var(--space-5);
+}
+
+.guestify-header__logo-link {
+    display: inline-block;
+}
+
+.guestify-header__logo {
+    max-width: 180px;
+    height: auto;
+}
+
+.guestify-header__button {
+    background-color: var(--accent-color);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: var(--text-base);
+    font-weight: var(--weight-semibold);
+    line-height: var(--leading-normal);
+    color: var(--bg-white);
+    text-decoration: none;
+    padding: var(--space-3) var(--space-6);
+    border-radius: var(--radius-md);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    transition: all var(--transition-base);
+    box-shadow: var(--shadow-sm);
+}
+
+.guestify-header__button:hover {
+    background-color: var(--accent-hover);
+    box-shadow: var(--shadow-md);
+    transform: translateY(-1px);
+}
+
+.guestify-header__button-icon {
+    font-size: inherit;
+}
+
+/* ============================================
+   BEM BLOCK: guestify-banner
+   Banner section with main tagline
+   ============================================ */
+.guestify-banner {
+    background: linear-gradient(135deg, var(--secondary-color) 0%, var(--secondary-hover) 100%);
+    padding: var(--space-6) var(--space-5);
+    text-align: center;
+}
+
+.guestify-banner__title {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: var(--text-2xl);
+    color: var(--bg-white);
+    margin: 0;
+    font-weight: var(--weight-semibold);
+    line-height: var(--leading-normal);
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+/* ============================================
+   BEM BLOCK: guestify-video-nav
+   Video navigation component
+   ============================================ */
+.guestify-video-nav {
+    background-color: var(--bg-light);
+    padding: var(--space-10) var(--space-5);
+    border-bottom: 2px solid var(--border-color);
+}
+
+.guestify-video-nav__container {
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    max-width: 1165px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+    gap: var(--space-8);
+}
+
+.guestify-video-nav__item {
+    text-align: center;
+    flex: 0 1 220px;
+    transition: all var(--transition-base);
+    padding: var(--space-4);
+    border-radius: var(--radius-md);
+}
+
+.guestify-video-nav__item:hover {
+    transform: translateY(-4px);
+    background-color: var(--bg-white);
+    box-shadow: var(--shadow-md);
+}
+
+.guestify-video-nav__item--active {
+    background-color: var(--bg-white);
+    box-shadow: var(--shadow-lg);
+    border: 2px solid var(--accent-color);
+}
+
+.guestify-video-nav__link {
+    text-decoration: none;
+    display: block;
+}
+
+.guestify-video-nav__image {
+    width: 100%;
+    max-width: 200px;
+    height: auto;
+    margin: 0 auto;
+    border-radius: var(--radius-sm);
+    transition: all var(--transition-base);
+}
+
+.guestify-video-nav__item:hover .guestify-video-nav__image {
+    transform: scale(1.05);
+}
+
+.guestify-video-nav__title {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: var(--text-lg);
+    font-weight: var(--weight-semibold);
+    line-height: var(--leading-tight);
+    color: var(--text-dark);
+    margin: var(--space-4) 0 var(--space-2) 0;
+}
+
+.guestify-video-nav__subtitle {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: var(--text-sm);
+    font-weight: var(--weight-normal);
+    line-height: var(--leading-normal);
+    color: var(--text-light);
+    margin: 0;
+}
+
+/* ============================================
+   BEM BLOCK: guestify-main
+   Main content area with video
+   ============================================ */
+.guestify-main {
+    background-color: var(--bg-white);
+    padding: var(--space-3) var(--space-5) var(--space-3);
+}
+
+.guestify-main__title {
+    text-align: center;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: var(--text-3xl);
+    font-weight: var(--weight-bold);
+    color: var(--primary-color);
+    margin: 0 0 var(--space-2) 0;
+    line-height: var(--leading-tight);
+}
+
+.guestify-main__cta {
+    text-align: center;
+    margin-top: var(--space-3);
+}
+
+/* ============================================
+   BEM BLOCK: guestify-video-player
+   Video player container with aspect ratio
+   ============================================ */
+.guestify-video-player {
+    max-width: 960px;
+    margin: 0 auto;
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-lg);
+}
+
+.guestify-video-player__iframe {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: var(--radius-lg);
+}
+
+/* ============================================
+   BEM BLOCK: guestify-steps
+   Container for step-by-step guide sections
+   ============================================ */
+.guestify-steps {
+    background-color: var(--bg-lighter);
+    padding: var(--space-12) var(--space-5);
+}
+
+.guestify-steps__title {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: var(--text-3xl);
+    font-weight: var(--weight-bold);
+    color: var(--text-dark);
+    text-align: center;
+    margin: 0 auto var(--space-12);
+    max-width: 900px;
+    line-height: var(--leading-tight);
+}
+
+/* ============================================
+   BEM BLOCK: benefits-grid
+   Three-column benefits cards grid
+   ============================================ */
+.benefits-grid {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--space-8);
+    max-width: 1165px;
+    margin: 0 auto var(--space-16);
+}
+
+/* ============================================
+   BEM BLOCK: benefit-card
+   Individual benefit card with icon, title, and text
+   ============================================ */
+.benefit-card {
+    flex: 1 1 300px;
+    background: white;
+    padding: var(--space-8);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md);
+    text-align: center;
+    transition: all var(--transition-base);
+}
+
+.benefit-card:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--shadow-lg);
+}
+
+.benefit-card__icon {
+    font-size: var(--text-6xl);
+    color: var(--primary-color);
+    margin-bottom: var(--space-4);
+}
+
+.benefit-card__title {
+    font-size: var(--text-2xl);
+    font-weight: var(--weight-semibold);
+    color: var(--text-dark);
+    margin-bottom: var(--space-4);
+}
+
+.benefit-card__text {
+    color: var(--text-light);
+    font-size: var(--text-base);
+    line-height: var(--leading-relaxed);
+}
+
+/* ============================================
+   BEM BLOCK: guestify-step
+   Individual step component with image and text
+   ============================================ */
+.guestify-step {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--space-12);
+    gap: var(--space-10);
+    max-width: 1165px;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: var(--bg-white);
+    padding: var(--space-8);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-md);
+}
+
+.guestify-step--reversed {
+    flex-direction: row-reverse;
+}
+
+.guestify-step__info {
+    flex: 1 1 45%;
+    min-width: 320px;
+}
+
+.guestify-step__icon {
+    font-size: var(--text-6xl);
+    color: var(--primary-color);
+    margin-bottom: var(--space-4);
+}
+
+.guestify-step__number {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 72px;
+    font-weight: var(--weight-bold);
+    color: var(--primary-color);
+    margin: 0 0 var(--space-5) 0;
+    line-height: 1;
+    display: inline-block;
+}
+
+.guestify-step__title {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: var(--text-2xl);
+    font-weight: var(--weight-bold);
+    color: var(--text-dark);
+    margin: 0 0 var(--space-5) 0;
+    line-height: var(--leading-tight);
+}
+
+.guestify-step__description {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: var(--text-lg);
+    font-weight: var(--weight-normal);
+    line-height: var(--leading-loose);
+    color: var(--text-light);
+    margin: 0;
+}
+
+.guestify-step__image-wrapper {
+    flex: 1 1 45%;
+    min-width: 320px;
+}
+
+.guestify-step__image {
+    max-width: 100%;
+    width: 100%;
+    height: auto;
+    border-radius: var(--radius-lg);
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    display: block;
+    transition: transform var(--transition-base);
+}
+
+.guestify-step__image:hover {
+    transform: scale(1.02);
+}
+
+/* ============================================
+   BEM BLOCK: guestify-cta
+   Call-to-action section with image and content
+   ============================================ */
+.guestify-cta {
+    background: linear-gradient(135deg, var(--bg-light) 0%, var(--bg-medium) 100%);
+    padding: var(--space-20) var(--space-5);
+    border-top: 3px solid var(--primary-color);
+}
+
+.guestify-cta__container {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    max-width: 1165px;
+    margin: 0 auto;
+    gap: var(--space-12);
+    background-color: var(--bg-white);
+    padding: var(--space-12);
+    border-radius: var(--radius-xl);
+    box-shadow: var(--shadow-xl);
+}
+
+.guestify-cta__image-wrapper {
+    flex: 1 1 40%;
+    min-width: 300px;
+}
+
+.guestify-cta__image {
+    max-width: 100%;
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: var(--radius-lg);
+}
+
+.guestify-cta__content {
+    flex: 1 1 50%;
+    min-width: 320px;
+}
+
+.guestify-cta__button {
+    background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-hover) 100%);
+    color: var(--bg-white);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: var(--text-lg);
+    font-weight: var(--weight-bold);
+    border-radius: var(--radius-lg);
+    padding: var(--space-4) var(--space-6);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    transition: all var(--transition-base);
+    margin-top: var(--space-4);
+    box-shadow: var(--shadow-md);
+    border: none;
+}
+
+.guestify-cta__button:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--shadow-lg);
+}
+
+.guestify-cta__button-icon {
+    font-size: 1.2em;
+    transition: transform var(--transition-base);
+}
+
+.guestify-cta__button:hover .guestify-cta__button-icon {
+    transform: translateX(4px);
+}
+
+/* ============================================
+   RESPONSIVE DESIGN - Mobile Overrides
+   ============================================ */
+@media (max-width: 968px) {
+    .guestify-banner__title {
+        font-size: var(--text-xl);
+    }
+    
+    .guestify-main__title {
+        font-size: var(--text-2xl);
+    }
+    
+    .guestify-steps__title {
+        font-size: var(--text-2xl);
+    }
+}
+
+@media (max-width: 768px) {
+    .guestify-header__container {
+        flex-direction: column;
+        gap: var(--space-4);
+        text-align: center;
+    }
+    
+    .guestify-video-nav {
+        padding: var(--space-8) var(--space-4);
+    }
+    
+    .guestify-video-nav__container {
+        flex-direction: column;
+        align-items: center;
+        gap: var(--space-6);
+    }
+    
+    .guestify-video-nav__item {
+        max-width: 280px;
+        flex: 0 1 auto;
+    }
+    
+    .guestify-main {
+        padding: var(--space-8) var(--space-4) var(--space-10);
+    }
+    
+    .guestify-main__title {
+        font-size: var(--text-xl);
+    }
+    
+    .guestify-steps {
+        padding: var(--space-10) var(--space-4);
+    }
+    
+    .guestify-steps__title {
+        font-size: var(--text-xl);
+    }
+    
+    .guestify-step {
+        flex-direction: column !important;
+        padding: var(--space-6);
+        gap: var(--space-6);
+        margin-bottom: var(--space-10);
+    }
+    
+    .guestify-step--reversed {
+        flex-direction: column !important;
+    }
+    
+    .guestify-step__info,
+    .guestify-step__image-wrapper {
+        flex: 1 1 100%;
+        min-width: 100%;
+    }
+    
+    .guestify-step__number {
+        font-size: 56px;
+    }
+    
+    .guestify-step__title {
+        font-size: var(--text-xl);
+    }
+    
+    .guestify-cta {
+        padding: var(--space-12) var(--space-4);
+    }
+    
+    .guestify-cta__container {
+        flex-direction: column;
+        padding: var(--space-8);
+        gap: var(--space-8);
+    }
+    
+    .guestify-cta__image-wrapper,
+    .guestify-cta__content {
+        flex: 1 1 100%;
+        min-width: 100%;
+    }
+    
+    .guestify-cta__button {
+        width: 100%;
+        justify-content: center;
+        font-size: var(--text-base);
+    }
+}
+
+@media (max-width: 480px) {
+    .guestify-banner {
+        padding: var(--space-5) var(--space-4);
+    }
+    
+    .guestify-banner__title {
+        font-size: var(--text-lg);
+    }
+    
+    .guestify-header__logo {
+        max-width: 140px;
+    }
+    
+    .guestify-header__button {
+        font-size: var(--text-sm);
+        padding: var(--space-2) var(--space-4);
+    }
+    
+    .guestify-main {
+        padding: var(--space-6) var(--space-3) var(--space-8);
+    }
+    
+    .guestify-main__title {
+        font-size: var(--text-lg);
+    }
+    
+    .guestify-steps {
+        padding: var(--space-8) var(--space-3);
+    }
+    
+    .guestify-steps__title {
+        font-size: var(--text-lg);
+    }
+    
+    .guestify-cta {
+        padding: var(--space-10) var(--space-3);
+    }
+    
+    .guestify-step {
+        padding: var(--space-5);
+    }
+    
+    .guestify-step__number {
+        font-size: 48px;
+    }
+    
+    .guestify-step__title {
+        font-size: var(--text-lg);
+    }
+    
+    .guestify-step__description {
+        font-size: var(--text-base);
+    }
+    
+    .guestify-cta__container {
+        padding: var(--space-6);
+    }
+    
+    .guestify-cta__button {
+        font-size: var(--text-sm);
+        padding: var(--space-3) var(--space-5);
+    }
+}

@@ -1,0 +1,593 @@
+/* ==========================================================================
+   LAYOUT.CSS - Page Layout & Structural Components
+   Grid systems, sidebars, and main content areas
+   ========================================================================== */
+
+/* ==========================================================================
+   Sidebar Layout (GVB Specific)
+   ========================================================================== */
+
+.gvb-sidebar {
+  width: 240px;
+  min-width: 240px;
+  background-color: var(--bg-light);
+  padding: 20px 15px 20px 20px;
+  position: relative;
+  height: auto;
+  min-height: 100vh;
+  overflow-y: auto;
+  border-right: 1px solid var(--border-color);
+}
+
+.gvb-sidebar-header {
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 20px;
+}
+
+.gvb-nav-menu {
+  list-style-type: none;
+  margin: 0;
+  padding: 0;
+}
+
+.gvb-nav-item {
+  margin-bottom: 10px;
+  padding: 8px 10px;
+  border-radius: 4px;
+  font-size: 14px;
+  color: var(--text-light);
+  cursor: pointer;
+  position: relative;
+  padding-left: 15px;
+}
+
+.gvb-nav-item:hover {
+  background-color: rgba(255, 255, 255, 0.5);
+}
+
+.gvb-nav-item.gvb-active {
+  color: var(--active-blue);
+  background-color: rgba(255, 255, 255, 0.8);
+}
+
+.gvb-nav-item.gvb-active::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 4px;
+  height: 100%;
+  background-color: var(--active-blue);
+}
+
+/* ==========================================================================
+   Main Content Areas
+   ========================================================================== */
+
+.gvb-main-content {
+  margin-left: 0;
+  padding: 30px;
+  flex: 1;
+  background-color: var(--bg-white);
+}
+
+.content-wrapper, 
+.content {
+  display: flex;
+  gap: 20px;
+  padding: 20px;
+}
+
+.left-panel {
+  width: 60%;
+}
+
+.right-panel {
+  width: 40%;
+  background-color: var(--bg-white);
+  border-radius: 8px;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05);
+  padding: 20px;
+}
+
+/* ==========================================================================
+   Page Headers
+   ========================================================================== */
+
+.gvb-page-header,
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.gvb-profile-selector {
+  font-size: 14px;
+  color: var(--text-light);
+  text-align: right;
+  margin-left: auto;
+}
+
+.gvb-page-description {
+  color: var(--text-light);
+  font-size: 16px;
+  line-height: 1.5;
+  margin-bottom: 40px;
+  max-width: 800px;
+}
+
+.page-title, 
+.title {
+  font-size: 28px;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin: 0;
+}
+
+.back-link {
+  color: var(--accent-color);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  margin-right: 20px;
+}
+
+.back-link:hover {
+  text-decoration: underline;
+}
+
+/* ==========================================================================
+   Grid Systems
+   ========================================================================== */
+
+/* GVB Tools Grid */
+.gvb-tools-grid {
+  display: flex;
+  flex-wrap: nowrap;
+  gap: 24px;
+  margin-bottom: 30px;
+}
+
+.gvb-tool-card {
+  flex: 1;
+  min-width: 0;
+  background-color: var(--bg-white);
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+  transition: transform 0.2s, box-shadow 0.2s;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.gvb-tool-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+}
+
+.gvb-tool-icon {
+  height: 120px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--bg-light);
+  padding: 20px;
+}
+
+.gvb-tool-icon svg {
+  width: 64px;
+  height: 64px;
+}
+
+.gvb-tool-content {
+  padding: 20px;
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+}
+
+.gvb-tool-title {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 12px;
+}
+
+.gvb-tool-description {
+  font-size: 14px;
+  color: var(--text-light);
+  line-height: 1.5;
+  margin-bottom: 20px;
+  flex-grow: 1;
+}
+
+/* Guestify Profile Grid */
+.guestify-card-grid {
+  display: flex;
+  flex-wrap: wrap;
+  margin: -10px;
+}
+
+.guestify-profile-card {
+  flex: 1 0 calc(100% - 20px);
+  margin: 10px;
+  min-width: 280px;
+  background-color: var(--bg-white);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  transition: all 0.2s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.guestify-profile-card:hover {
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+}
+
+.guestify-card-content {
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
+.guestify-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.guestify-title-wrapper {
+  display: flex;
+  align-items: center;
+}
+
+.guestify-icon-wrapper {
+  background-color: #f1f5f9;
+  padding: 8px;
+  border-radius: 6px;
+  margin-right: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.guestify-icon {
+  width: 16px;
+  height: 16px;
+}
+
+.guestify-card-title {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text-dark);
+}
+
+.guestify-card-date {
+  font-size: 12px;
+  color: #94a3b8;
+}
+
+.guestify-tags-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.guestify-tag {
+  background-color: #f1f5f9;
+  color: var(--text-light);
+  font-size: 12px;
+  padding: 4px 8px;
+  border-radius: 4px;
+}
+
+.guestify-progress-container {
+  margin-bottom: 4px;
+  margin-top: auto;
+}
+
+.guestify-progress-bar {
+  width: 100%;
+  height: 8px;
+  background-color: #f1f5f9;
+  border-radius: 4px;
+  margin-top: 8px;
+}
+
+.guestify-progress-fill {
+  height: 100%;
+  border-radius: 4px;
+  background: linear-gradient(to right, var(--accent-color), var(--active-blue));
+}
+
+.guestify-progress-labels {
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+  color: #94a3b8;
+  margin-top: 4px;
+}
+
+.guestify-card-footer {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.guestify-view-button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent-color);
+  font-size: 14px;
+  font-weight: 500;
+  background: none;
+  border: none;
+  cursor: pointer;
+  padding: 4px 0;
+}
+
+.guestify-view-button:hover {
+  color: var(--accent-hover);
+}
+
+.guestify-button-icon {
+  margin-left: 4px;
+  width: 16px;
+  height: 16px;
+}
+
+.guestify-add-card {
+  border: 1px dashed var(--border-color);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 24px 16px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 200px;
+  flex: 1 0 calc(100% - 20px);
+  margin: 10px;
+  min-width: 280px;
+  background-color: var(--bg-white);
+  border-radius: 8px;
+}
+
+.guestify-add-card:hover {
+  border-color: var(--accent-color);
+}
+
+.guestify-add-icon {
+  width: 32px;
+  height: 32px;
+  color: var(--accent-color);
+  margin-bottom: 8px;
+}
+
+.guestify-add-title {
+  font-size: 14px;
+  font-weight: 500;
+  color: var(--text-dark);
+  margin-bottom: 4px;
+  text-align: center;
+}
+
+.guestify-add-subtitle {
+  font-size: 12px;
+  color: var(--text-light);
+  text-align: center;
+}
+
+/* ==========================================================================
+   Form Steps & Containers
+   ========================================================================== */
+
+.form-step, 
+.step-container {
+  background-color: var(--bg-white);
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 1px 5px rgba(0, 0, 0, 0.05);
+  margin-bottom: 20px;
+}
+
+.step-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+  cursor: pointer;
+}
+
+.step-number {
+  background-color: var(--accent-color);
+  color: var(--bg-white);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: bold;
+  margin-right: 12px;
+  flex-shrink: 0;
+}
+
+.step-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+/* ==========================================================================
+   Right Panel Components
+   ========================================================================== */
+
+.right-panel-header {
+  font-size: 24px;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin-bottom: 15px;
+}
+
+.right-panel-subtitle {
+  font-size: 14px;
+  color: var(--text-light);
+  line-height: 1.5;
+  margin-bottom: 20px;
+}
+
+.formula-box {
+  background-color: var(--bg-medium);
+  padding: 15px;
+  border-radius: 8px;
+  margin: 20px 0;
+  font-weight: 500;
+}
+
+.process-step, 
+.info-section {
+  display: flex;
+  margin-bottom: 30px;
+}
+
+.process-icon, 
+.info-icon {
+  width: 50px;
+  height: 50px;
+  margin-right: 15px;
+  background-color: var(--bg-light);
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--active-blue);
+}
+
+.info-icon {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+}
+
+.process-content, 
+.info-content {
+  flex: 1;
+  font-size: 14px;
+  color: var(--text-light);
+  line-height: 1.5;
+}
+
+.process-title, 
+.info-title {
+  font-weight: 600;
+  margin-bottom: 5px;
+  color: var(--text-dark);
+}
+
+.info-title {
+  font-size: 18px;
+}
+
+.highlight {
+  color: var(--active-blue);
+  font-weight: 500;
+}
+
+/* ==========================================================================
+   Responsive Layout
+   ========================================================================== */
+
+@media (max-width: 1024px) {
+  .gvb-tools-grid {
+    flex-wrap: wrap;
+  }
+  
+  .gvb-tool-card {
+    flex: 0 0 calc(50% - 12px);
+  }
+  
+  .guestify-profile-card, 
+  .guestify-add-card {
+    flex: 1 0 calc(50% - 20px);
+    max-width: calc(50% - 20px);
+  }
+}
+
+@media (max-width: 768px) {
+  .gvb-container {
+    flex-direction: column;
+  }
+  
+  .gvb-sidebar {
+    width: 100%;
+    position: static;
+    height: auto;
+    min-width: 0;
+    min-height: auto;
+  }
+  
+  .gvb-main-content {
+    margin-left: 0;
+    width: 100%;
+    padding: 20px;
+  }
+  
+  .gvb-tool-card {
+    flex: 0 0 100%;
+  }
+  
+  .gvb-page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 15px;
+  }
+  
+  .content-wrapper, 
+  .content {
+    flex-direction: column;
+  }
+  
+  .left-panel, 
+  .right-panel {
+    width: 100%;
+    padding-right: 0;
+  }
+  
+  .right-panel {
+    margin-top: 30px;
+  }
+  
+  .guestify-profile-card, 
+  .guestify-add-card {
+    flex: 1 0 calc(100% - 20px);
+    max-width: calc(100% - 20px);
+  }
+}
+
+/* Ensure Guestify grid works correctly at different breakpoints */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .guestify-profile-card, 
+  .guestify-add-card {
+    flex: 1 0 calc(50% - 20px);
+    max-width: calc(50% - 20px);
+  }
+}
+
+@media (min-width: 1024px) {
+  .guestify-profile-card, 
+  .guestify-add-card {
+    flex: 1 0 calc(33.333% - 20px);
+    max-width: calc(33.333% - 20px);
+  }
+}

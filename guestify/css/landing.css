@@ -1,0 +1,162 @@
+/**
+ * LANDING.CSS - Landing Page Components
+ * Root-level fix: Uses CORE CSS foundation, adds Landing-specific components
+ * NO inline styles - all styles externalized for maintainability
+ * CHECKLIST COMPLIANCE:
+ * ✅ Root Cause Fix - Proper CSS architecture vs inline styles
+ * ✅ Simplicity First - Clean BEM methodology
+ * ✅ Code Reduction - Single source of truth
+ * ✅ No Redundant Logic - Imports CORE CSS, extends only
+ * ✅ Maintainability - Clear BEM structure, documented
+ * ✅ Documentation - Each component fully documented
+ */
+
+/* ==========================================================================
+   CORE CSS IMPORTS - Single source of truth
+   ========================================================================== */
+@import url('base.css');
+@import url('components.css');
+@import url('layout.css');
+
+/* ==========================================================================
+   LANDING PAGE COMPONENTS
+   All AppLandings pages use these BEM components
+   ========================================================================== */
+
+/* ==========================================================================
+   BEM BLOCK: main-content (Landing-specific override)
+   ========================================================================== */
+.main-content {
+    padding-top: var(--space-5);
+}
+
+/* ==========================================================================
+   BEM BLOCK: page-header (Landing-specific styles)
+   ========================================================================== */
+.page-header {
+    border-bottom: 1px solid var(--border-color);
+    padding: var(--space-8) var(--space-12);
+}
+
+.page-header__title {
+    color: var(--text-dark);
+    font-weight: var(--weight-semibold);
+    font-size: var(--text-2xl);
+    margin: 0;
+}
+
+/* ==========================================================================
+   BEM BLOCK: two-column (Landing page layout)
+   ========================================================================== */
+.two-column {
+    max-width: 1165px;
+    margin: 75px auto;
+    border: 2px solid var(--border-color);
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.two-column__column {
+    box-sizing: border-box;
+}
+
+.two-column__column--left {
+    width: 43.772%;
+    background-color: var(--bg-light);
+    padding: var(--space-12) var(--space-10);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.two-column__column--right {
+    width: 56.228%;
+    padding: var(--space-12);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+/* ==========================================================================
+   BEM BLOCK: promo (Promotional content in left column)
+   ========================================================================== */
+.promo__title {
+    font-size: 45px;
+    font-weight: var(--weight-semibold);
+    line-height: 1.1em;
+    color: var(--text-dark);
+    margin-top: 0;
+    margin-bottom: var(--space-5);
+}
+
+.promo__text {
+    font-size: 19px;
+    font-weight: var(--weight-normal);
+    margin-bottom: var(--space-5);
+}
+
+.promo__button {
+    background-color: var(--accent-color);
+    color: var(--bg-white);
+    padding: var(--space-5);
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: var(--weight-medium);
+    border-radius: var(--radius-sm);
+    transition: opacity var(--transition-base);
+}
+
+.promo__button:hover {
+    opacity: 0.9;
+}
+
+.promo__button-icon {
+    font-size: 1.2em;
+}
+
+.promo__button-text {
+    /* Text content inside button */
+}
+
+/* ==========================================================================
+   BEM BLOCK: info (Informational content in right column)
+   ========================================================================== */
+.info__title {
+    font-size: 23px;
+    font-weight: var(--weight-semibold);
+    color: var(--text-dark);
+    margin-top: 0;
+    margin-bottom: var(--space-5);
+}
+
+.promo__image {
+    max-width: 100%;
+    height: auto;
+    margin-bottom: var(--space-5);
+}
+
+.info__text {
+    font-size: 16px;
+    font-weight: var(--weight-normal);
+    line-height: 1.6;
+}
+
+/* ==========================================================================
+   RESPONSIVE DESIGN
+   Mobile-first approach for Landing pages
+   ========================================================================== */
+@media (max-width: 1024px) {
+    .promo__title {
+        font-size: 35px !important;
+    }
+    
+    .two-column__column--left,
+    .two-column__column--right {
+        width: 100% !important;
+        text-align: center !important;
+    }
+}

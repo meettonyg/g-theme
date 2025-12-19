@@ -1,0 +1,411 @@
+/* ==========================================================================
+   APP-HOME.CSS - Dashboard Home Styles (BEM Compliant)
+   Brand Standards: Guestify
+   ========================================================================== */
+
+/* ==========================================================================
+   CSS Variables (Brand Colors)
+   ========================================================================== */
+
+:root {
+    /* Primary Brand Colors */
+    --primary-color: #2B7A4C;
+    --secondary-color: #1B365D;
+    --accent-color: #ED8936;
+
+    /* Additional Brand Colors */
+    --success-teal: #38B2AC;
+
+    /* Text Colors */
+    --text-dark: #4A5568;
+    --text-light: #516f90;
+
+    /* Background Colors */
+    --bg-white: #ffffff;
+    --bg-light: #f5f7fa;
+
+    /* Border */
+    --border-color: #cbd6e2;
+
+    /* Hover States */
+    --accent-hover: #d67326;
+    --secondary-hover: #152a47;
+}
+
+/* ==========================================================================
+   Base Styles
+   ========================================================================== */
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+    font-size: 1rem;
+    line-height: 1.6;
+    background-color: var(--bg-light);
+    color: var(--text-dark);
+}
+
+.page--app {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ==========================================================================
+   App Header
+   ========================================================================== */
+
+.app-header {
+    background-color: var(--bg-white);
+    border-bottom: 1px solid var(--border-color);
+    position: sticky;
+    top: 0;
+    z-index: 100;
+}
+
+.app-header__container {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 2rem;
+}
+
+.app-header__logo-img {
+    height: 32px;
+    width: auto;
+}
+
+.app-header__nav {
+    display: flex;
+    gap: 0.5rem;
+}
+
+.app-header__nav-link {
+    padding: 0.5rem 1rem;
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--text-dark);
+    text-decoration: none;
+    border-radius: 6px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.app-header__nav-link:hover {
+    background-color: var(--bg-light);
+}
+
+.app-header__nav-link--active {
+    background-color: var(--secondary-color);
+    color: var(--bg-white);
+}
+
+.app-header__nav-link--active:hover {
+    background-color: var(--secondary-hover);
+}
+
+.app-header__user {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.app-header__user-name {
+    font-size: 0.9375rem;
+    font-weight: 500;
+    color: var(--text-dark);
+}
+
+.app-header__user-avatar {
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-hover) 100%);
+    color: var(--bg-white);
+    font-size: 0.875rem;
+    font-weight: 600;
+    border-radius: 50%;
+}
+
+/* ==========================================================================
+   App Main Content
+   ========================================================================== */
+
+.app-main {
+    flex: 1;
+    padding: 2rem 1.5rem;
+}
+
+.app-main__container {
+    max-width: 1280px;
+    margin: 0 auto;
+}
+
+/* ==========================================================================
+   Welcome Section
+   ========================================================================== */
+
+.welcome-section {
+    margin-bottom: 2rem;
+}
+
+.welcome-section__title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--secondary-color);
+    margin: 0 0 0.5rem 0;
+}
+
+.welcome-section__text {
+    font-size: 1rem;
+    color: var(--text-light);
+    margin: 0;
+}
+
+/* ==========================================================================
+   Stats Grid
+   ========================================================================== */
+
+.stats-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 1.5rem;
+    margin-bottom: 2.5rem;
+}
+
+.stat-card {
+    background-color: var(--bg-white);
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+.stat-card__icon {
+    width: 56px;
+    height: 56px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 12px;
+    font-size: 1.5rem;
+}
+
+.stat-card__icon--primary {
+    background-color: rgba(27, 54, 93, 0.1);
+    color: var(--secondary-color);
+}
+
+.stat-card__icon--accent {
+    background-color: rgba(237, 137, 54, 0.1);
+    color: var(--accent-color);
+}
+
+.stat-card__icon--success {
+    background-color: rgba(43, 122, 76, 0.1);
+    color: var(--primary-color);
+}
+
+.stat-card__icon--info {
+    background-color: rgba(56, 178, 172, 0.1);
+    color: var(--success-teal);
+}
+
+.stat-card__number {
+    display: block;
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--secondary-color);
+    line-height: 1;
+}
+
+.stat-card__label {
+    display: block;
+    font-size: 0.875rem;
+    color: var(--text-light);
+    margin-top: 0.25rem;
+}
+
+/* ==========================================================================
+   Quick Actions
+   ========================================================================== */
+
+.quick-actions {
+    margin-bottom: 2.5rem;
+}
+
+.quick-actions__title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--secondary-color);
+    margin: 0 0 1.5rem 0;
+}
+
+.quick-actions__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+}
+
+.action-card {
+    background-color: var(--bg-white);
+    padding: 1.5rem;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    text-decoration: none;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+    border: 2px solid transparent;
+}
+
+.action-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+    border-color: var(--accent-color);
+}
+
+.action-card__icon {
+    width: 48px;
+    height: 48px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-hover) 100%);
+    color: var(--bg-white);
+    border-radius: 12px;
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+}
+
+.action-card__title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--secondary-color);
+    margin: 0 0 0.5rem 0;
+}
+
+.action-card__text {
+    font-size: 0.9375rem;
+    color: var(--text-light);
+    margin: 0;
+}
+
+/* ==========================================================================
+   Activity Section
+   ========================================================================== */
+
+.activity-section__title {
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: var(--secondary-color);
+    margin: 0 0 1.5rem 0;
+}
+
+.activity-list {
+    background-color: var(--bg-white);
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+}
+
+.activity-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.activity-item:last-child {
+    border-bottom: none;
+}
+
+.activity-item__icon {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 0.875rem;
+}
+
+.activity-item__icon--success {
+    background-color: rgba(43, 122, 76, 0.1);
+    color: var(--primary-color);
+}
+
+.activity-item__icon--accent {
+    background-color: rgba(237, 137, 54, 0.1);
+    color: var(--accent-color);
+}
+
+.activity-item__icon--primary {
+    background-color: rgba(27, 54, 93, 0.1);
+    color: var(--secondary-color);
+}
+
+.activity-item__text {
+    font-size: 0.9375rem;
+    color: var(--text-dark);
+    margin: 0 0 0.25rem 0;
+}
+
+.activity-item__time {
+    font-size: 0.8125rem;
+    color: var(--text-light);
+}
+
+/* ==========================================================================
+   App Footer
+   ========================================================================== */
+
+.app-footer {
+    background-color: var(--bg-white);
+    border-top: 1px solid var(--border-color);
+    padding: 1.5rem;
+    text-align: center;
+}
+
+.app-footer__container {
+    max-width: 1280px;
+    margin: 0 auto;
+}
+
+.app-footer__copyright {
+    font-size: 0.875rem;
+    color: var(--text-light);
+    margin: 0;
+}
+
+/* ==========================================================================
+   Responsive Adjustments
+   ========================================================================== */
+
+@media (max-width: 768px) {
+    .app-header__nav {
+        display: none;
+    }
+
+    .app-header__user-name {
+        display: none;
+    }
+
+    .welcome-section__title {
+        font-size: 1.5rem;
+    }
+}
