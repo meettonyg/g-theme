@@ -285,8 +285,25 @@ function guestify_generic_login_form_shortcode( $atts ) {
 		'redirect' => get_permalink(),
 	), $atts );
 
+	$output = '';
+
+	// Display login errors from URL parameter
+	if ( isset( $_GET['login_error'] ) ) {
+		$error_code = sanitize_text_field( $_GET['login_error'] );
+		$error_messages = array(
+			'empty_username' => 'Please enter your username or email address.',
+			'empty_password' => 'Please enter your password.',
+			'invalid_username' => 'Unknown username. Please try again.',
+			'invalid_email' => 'Unknown email address. Please try again.',
+			'incorrect_password' => 'Incorrect password. Please try again.',
+			'authentication_failed' => 'Login failed. Please check your credentials.',
+		);
+		$error_message = isset( $error_messages[ $error_code ] ) ? $error_messages[ $error_code ] : 'Login failed. Please try again.';
+		$output .= '<div class="wpc-login-error">' . esc_html( $error_message ) . '</div>';
+	}
+
 	// Output the Standard WP Form (Nextend Social Login attaches here)
-	$output = wp_login_form( array(
+	$output .= wp_login_form( array(
 		'echo'           => false,
 		'redirect'       => esc_url( $atts['redirect'] ),
 		'label_username' => 'Username or Email',
@@ -308,6 +325,50 @@ function guestify_generic_login_form_shortcode( $atts ) {
 	return $output;
 }
 add_shortcode( 'generic_login_form', 'guestify_generic_login_form_shortcode' );
+
+/**
+ * Redirect failed logins back to frontend /login/ page
+ *
+ * Prevents users from seeing wp-login.php on authentication failure.
+ */
+function guestify_login_failed_redirect( $username ) {
+	$referrer = isset( $_SERVER['HTTP_REFERER'] ) ? $_SERVER['HTTP_REFERER'] : '';
+
+	// Only redirect if coming from frontend /login/ page
+	if ( ! empty( $referrer ) && strpos( $referrer, '/login' ) !== false && ! strpos( $referrer, 'wp-login.php' ) ) {
+		$login_url = home_url( '/login/' );
+		wp_redirect( add_query_arg( 'login_error', 'authentication_failed', $login_url ) );
+		exit;
+	}
+}
+add_action( 'wp_login_failed', 'guestify_login_failed_redirect' );
+
+/**
+ * Redirect to frontend /login/ page when username or password is empty
+ *
+ * Catches empty field submissions before WordPress processes them.
+ */
+function guestify_authenticate_empty_fields( $user, $username, $password ) {
+	$referrer = isset( $_SERVER['HTTP_REFERER'] ) ? $_SERVER['HTTP_REFERER'] : '';
+
+	// Only redirect if coming from frontend /login/ page
+	if ( ! empty( $referrer ) && strpos( $referrer, '/login' ) !== false && ! strpos( $referrer, 'wp-login.php' ) ) {
+		$login_url = home_url( '/login/' );
+
+		if ( empty( $username ) ) {
+			wp_redirect( add_query_arg( 'login_error', 'empty_username', $login_url ) );
+			exit;
+		}
+
+		if ( empty( $password ) ) {
+			wp_redirect( add_query_arg( 'login_error', 'empty_password', $login_url ) );
+			exit;
+		}
+	}
+
+	return $user;
+}
+add_filter( 'authenticate', 'guestify_authenticate_empty_fields', 1, 3 );
 
 /**
  * Enqueue partners CSS and JS only for partners page
