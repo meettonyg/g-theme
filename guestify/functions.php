@@ -230,8 +230,8 @@ function guestify_enqueue_login_css() {
 		// Enqueue base CSS files
 		$base_styles = array(
 			array( 'base', 'base.css', array() ),
-			array( 'components', 'components.css', array( 'guestify-login-base' ) ),
-			array( 'layout', 'layout.css', array( 'guestify-login-base' ) ),
+			array( 'components', 'components.css', array( 'base' ) ),
+			array( 'layout', 'layout.css', array( 'base' ) ),
 		);
 
 		foreach ( $base_styles as $style ) {
@@ -242,19 +242,22 @@ function guestify_enqueue_login_css() {
 				wp_enqueue_style(
 					'guestify-login-' . $handle,
 					$css_url . $file,
-					$deps,
+					array_map( function( $d ) { return 'guestify-login-' . $d; }, $deps ),
 					filemtime( $path )
 				);
 			}
 		}
 
 		// Enqueue login-specific CSS
-		wp_enqueue_style(
-			'guestify-login',
-			get_stylesheet_directory_uri() . '/css/login.css',
-			array( 'guestify-login-base', 'guestify-login-components', 'guestify-login-layout' ),
-			filemtime( get_stylesheet_directory() . '/css/login.css' )
-		);
+		$login_css_path = get_stylesheet_directory() . '/css/login.css';
+		if ( file_exists( $login_css_path ) ) {
+			wp_enqueue_style(
+				'guestify-login',
+				get_stylesheet_directory_uri() . '/css/login.css',
+				array( 'guestify-login-base', 'guestify-login-components', 'guestify-login-layout' ),
+				filemtime( $login_css_path )
+			);
+		}
 	}
 }
 add_action( 'wp_enqueue_scripts', 'guestify_enqueue_login_css' );
