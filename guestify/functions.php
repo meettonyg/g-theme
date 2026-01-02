@@ -312,7 +312,7 @@ function guestify_generic_login_form_shortcode( $atts ) {
 
 	// Add "Lost Password" and "Register" links
 	$output .= '<div class="wpc-login-links">';
-	$output .= '<a href="' . esc_url( wp_lostpassword_url() ) . '">Lost Password?</a>';
+	$output .= '<a href="' . esc_url( home_url( '/reset/' ) ) . '">Lost Password?</a>';
 
 	// Register link (only shows if enabled in WP Settings)
 	if ( get_option( 'users_can_register' ) ) {
