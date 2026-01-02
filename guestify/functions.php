@@ -260,6 +260,53 @@ function guestify_enqueue_login_css() {
 add_action( 'wp_enqueue_scripts', 'guestify_enqueue_login_css' );
 
 /**
+ * Generic Login Form Shortcode
+ *
+ * Renders a WordPress login form with Nextend Social Login integration.
+ * Nextend automatically attaches social login buttons to wp_login_form().
+ *
+ * Usage: [generic_login_form] or [generic_login_form redirect="https://example.com/dashboard"]
+ *
+ * @param array $atts Shortcode attributes.
+ * @return string HTML output for the login form.
+ */
+function guestify_generic_login_form_shortcode( $atts ) {
+	// Check if user is already logged in
+	if ( is_user_logged_in() ) {
+		$current_user = wp_get_current_user();
+		return '<div class="wpc-logged-in-msg">You are logged in as ' . esc_html( $current_user->display_name ) . '. <a href="' . esc_url( wp_logout_url( get_permalink() ) ) . '">Log out?</a></div>';
+	}
+
+	// Set defaults
+	$atts = shortcode_atts( array(
+		'redirect' => get_permalink(),
+	), $atts );
+
+	// Output the Standard WP Form (Nextend Social Login attaches here)
+	$output = wp_login_form( array(
+		'echo'           => false,
+		'redirect'       => esc_url( $atts['redirect'] ),
+		'label_username' => 'Username or Email',
+		'label_log_in'   => 'Log In',
+	) );
+
+	// Add "Lost Password" and "Register" links
+	$output .= '<div class="wpc-login-links">';
+	$output .= '<a href="' . esc_url( wp_lostpassword_url() ) . '">Lost Password?</a>';
+
+	// Register link (only shows if enabled in WP Settings)
+	if ( get_option( 'users_can_register' ) ) {
+		$output .= '<span class="wpc-login-links-separator">|</span>';
+		$output .= '<a href="' . esc_url( wp_registration_url() ) . '">Register</a>';
+	}
+
+	$output .= '</div>';
+
+	return $output;
+}
+add_shortcode( 'generic_login_form', 'guestify_generic_login_form_shortcode' );
+
+/**
  * Enqueue partners CSS and JS only for partners page
  */
 function guestify_enqueue_partners_assets() {
