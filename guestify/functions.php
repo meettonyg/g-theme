@@ -371,6 +371,180 @@ function guestify_authenticate_empty_fields( $user, $username, $password ) {
 add_filter( 'authenticate', 'guestify_authenticate_empty_fields', 1, 3 );
 
 /**
+ * Password Reset Form Shortcode
+ *
+ * Displays a password reset form that uses WordPress's built-in reset functionality.
+ *
+ * Usage: [guestify_reset_password]
+ *
+ * @return string HTML output for the password reset form.
+ */
+function guestify_reset_password_shortcode() {
+	// If user is already logged in, show message
+	if ( is_user_logged_in() ) {
+		$current_user = wp_get_current_user();
+		return '<div class="guestify-reset-message guestify-reset-info">You are already logged in as ' . esc_html( $current_user->display_name ) . '. <a href="' . esc_url( home_url( '/login/' ) ) . '">Go to Login</a></div>';
+	}
+
+	$output = '';
+
+	// Handle form submission
+	if ( isset( $_POST['guestify_reset_submit'] ) && isset( $_POST['guestify_reset_nonce'] ) ) {
+		if ( wp_verify_nonce( $_POST['guestify_reset_nonce'], 'guestify_reset_password' ) ) {
+			$user_login = sanitize_text_field( $_POST['user_login'] );
+
+			if ( empty( $user_login ) ) {
+				$output .= '<div class="guestify-reset-message guestify-reset-error">Please enter your username or email address.</div>';
+			} else {
+				// Check if user exists
+				$user = get_user_by( 'email', $user_login );
+				if ( ! $user ) {
+					$user = get_user_by( 'login', $user_login );
+				}
+
+				if ( $user ) {
+					// Generate reset key and send email
+					$reset_key = get_password_reset_key( $user );
+
+					if ( ! is_wp_error( $reset_key ) ) {
+						// Send custom reset email
+						$reset_url = home_url( '/password-reset-confirmation/?key=' . $reset_key . '&login=' . rawurlencode( $user->user_login ) );
+
+						$subject = 'Password Reset Request - Guestify';
+						$message = "Hi " . $user->display_name . ",\n\n";
+						$message .= "Someone requested a password reset for your Guestify account.\n\n";
+						$message .= "If this was you, click the link below to reset your password:\n\n";
+						$message .= $reset_url . "\n\n";
+						$message .= "This link will expire in 24 hours.\n\n";
+						$message .= "If you didn't request this, you can safely ignore this email.\n\n";
+						$message .= "- The Guestify Team";
+
+						$headers = array( 'Content-Type: text/plain; charset=UTF-8' );
+
+						wp_mail( $user->user_email, $subject, $message, $headers );
+					}
+				}
+
+				// Always show success message (security: don't reveal if user exists)
+				$output .= '<div class="guestify-reset-message guestify-reset-success">If an account exists with that username or email, you will receive a password reset link shortly. Please check your inbox and spam folder.</div>';
+				$output .= '<p class="guestify-reset-back"><a href="' . esc_url( home_url( '/login/' ) ) . '">&larr; Back to Login</a></p>';
+				return $output;
+			}
+		} else {
+			$output .= '<div class="guestify-reset-message guestify-reset-error">Security check failed. Please try again.</div>';
+		}
+	}
+
+	// Display form
+	$output .= '<form method="post" class="guestify-reset-form">';
+	$output .= wp_nonce_field( 'guestify_reset_password', 'guestify_reset_nonce', true, false );
+
+	$output .= '<div class="guestify-reset-field">';
+	$output .= '<label for="user_login">Username or Email Address <span class="required">*</span></label>';
+	$output .= '<input type="text" name="user_login" id="user_login" placeholder="Enter your username or email" required />';
+	$output .= '</div>';
+
+	$output .= '<button type="submit" name="guestify_reset_submit" class="guestify-reset-button">Get New Password</button>';
+
+	$output .= '<p class="guestify-reset-back"><a href="' . esc_url( home_url( '/login/' ) ) . '">&larr; Back to Login</a></p>';
+
+	$output .= '</form>';
+
+	return $output;
+}
+add_shortcode( 'guestify_reset_password', 'guestify_reset_password_shortcode' );
+
+/**
+ * Password Reset Confirmation Shortcode
+ *
+ * Handles the password reset link and allows user to set new password.
+ *
+ * Usage: [guestify_reset_confirmation]
+ *
+ * @return string HTML output for the password reset confirmation form.
+ */
+function guestify_reset_confirmation_shortcode() {
+	$output = '';
+
+	// Get key and login from URL
+	$reset_key = isset( $_GET['key'] ) ? sanitize_text_field( $_GET['key'] ) : '';
+	$user_login = isset( $_GET['login'] ) ? sanitize_text_field( $_GET['login'] ) : '';
+
+	// Handle form submission for new password
+	if ( isset( $_POST['guestify_newpass_submit'] ) && isset( $_POST['guestify_newpass_nonce'] ) ) {
+		if ( wp_verify_nonce( $_POST['guestify_newpass_nonce'], 'guestify_new_password' ) ) {
+			$reset_key = sanitize_text_field( $_POST['reset_key'] );
+			$user_login = sanitize_text_field( $_POST['user_login'] );
+			$new_password = $_POST['new_password'];
+			$confirm_password = $_POST['confirm_password'];
+
+			// Validate passwords
+			if ( empty( $new_password ) || empty( $confirm_password ) ) {
+				$output .= '<div class="guestify-reset-message guestify-reset-error">Please enter and confirm your new password.</div>';
+			} elseif ( $new_password !== $confirm_password ) {
+				$output .= '<div class="guestify-reset-message guestify-reset-error">Passwords do not match. Please try again.</div>';
+			} elseif ( strlen( $new_password ) < 8 ) {
+				$output .= '<div class="guestify-reset-message guestify-reset-error">Password must be at least 8 characters long.</div>';
+			} else {
+				// Verify the reset key
+				$user = check_password_reset_key( $reset_key, $user_login );
+
+				if ( is_wp_error( $user ) ) {
+					$output .= '<div class="guestify-reset-message guestify-reset-error">This password reset link is invalid or has expired. <a href="' . esc_url( home_url( '/reset/' ) ) . '">Request a new one</a>.</div>';
+					return $output;
+				}
+
+				// Reset the password
+				reset_password( $user, $new_password );
+
+				$output .= '<div class="guestify-reset-message guestify-reset-success">Your password has been reset successfully!</div>';
+				$output .= '<p class="guestify-reset-back"><a href="' . esc_url( home_url( '/login/' ) ) . '">Log in with your new password &rarr;</a></p>';
+				return $output;
+			}
+		} else {
+			$output .= '<div class="guestify-reset-message guestify-reset-error">Security check failed. Please try again.</div>';
+		}
+	}
+
+	// If no key/login, show error
+	if ( empty( $reset_key ) || empty( $user_login ) ) {
+		$output .= '<div class="guestify-reset-message guestify-reset-error">Invalid password reset link. <a href="' . esc_url( home_url( '/reset/' ) ) . '">Request a new one</a>.</div>';
+		return $output;
+	}
+
+	// Verify the reset key
+	$user = check_password_reset_key( $reset_key, $user_login );
+
+	if ( is_wp_error( $user ) ) {
+		$output .= '<div class="guestify-reset-message guestify-reset-error">This password reset link is invalid or has expired. <a href="' . esc_url( home_url( '/reset/' ) ) . '">Request a new one</a>.</div>';
+		return $output;
+	}
+
+	// Display new password form
+	$output .= '<form method="post" class="guestify-reset-form">';
+	$output .= wp_nonce_field( 'guestify_new_password', 'guestify_newpass_nonce', true, false );
+	$output .= '<input type="hidden" name="reset_key" value="' . esc_attr( $reset_key ) . '" />';
+	$output .= '<input type="hidden" name="user_login" value="' . esc_attr( $user_login ) . '" />';
+
+	$output .= '<div class="guestify-reset-field">';
+	$output .= '<label for="new_password">New Password <span class="required">*</span></label>';
+	$output .= '<input type="password" name="new_password" id="new_password" placeholder="Enter new password" required minlength="8" />';
+	$output .= '</div>';
+
+	$output .= '<div class="guestify-reset-field">';
+	$output .= '<label for="confirm_password">Confirm Password <span class="required">*</span></label>';
+	$output .= '<input type="password" name="confirm_password" id="confirm_password" placeholder="Confirm new password" required minlength="8" />';
+	$output .= '</div>';
+
+	$output .= '<button type="submit" name="guestify_newpass_submit" class="guestify-reset-button">Reset Password</button>';
+
+	$output .= '</form>';
+
+	return $output;
+}
+add_shortcode( 'guestify_reset_confirmation', 'guestify_reset_confirmation_shortcode' );
+
+/**
  * Enqueue partners CSS and JS only for partners page
  */
 function guestify_enqueue_partners_assets() {
