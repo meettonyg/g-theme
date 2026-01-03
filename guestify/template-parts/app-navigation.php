@@ -100,12 +100,32 @@ foreach ($menu_items as $item) {
         <!-- User Section -->
         <div class="app-nav__user">
             <!-- Notifications -->
-            <button class="app-nav__notifications" aria-label="Notifications">
-                <svg class="app-nav__icon" viewBox="0 0 20 20" fill="currentColor">
-                    <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"/>
-                </svg>
-                <span class="app-nav__notifications-badge"></span>
-            </button>
+            <div class="app-nav__notifications-wrapper">
+                <button class="app-nav__notifications" aria-label="Notifications" onclick="toggleNotificationsPanel()">
+                    <svg class="app-nav__icon" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"/>
+                    </svg>
+                    <span class="app-nav__notifications-badge" id="notificationsBadge"></span>
+                </button>
+
+                <!-- Notifications Panel -->
+                <div class="app-nav__notifications-panel" id="notificationsPanel">
+                    <div class="app-nav__notifications-header">
+                        <h3>Notifications</h3>
+                        <button class="app-nav__notifications-mark-read" onclick="markAllNotificationsRead()">
+                            Mark all as read
+                        </button>
+                    </div>
+                    <div class="app-nav__notifications-list" id="notificationsList">
+                        <div class="app-nav__notifications-loading">
+                            <span>Loading...</span>
+                        </div>
+                    </div>
+                    <div class="app-nav__notifications-footer">
+                        <a href="<?php echo home_url('/app/settings/'); ?>">Notification Settings</a>
+                    </div>
+                </div>
+            </div>
 
             <!-- User Dropdown -->
             <div class="app-nav__user-dropdown">
