@@ -1,0 +1,1051 @@
+/* ==========================================================================
+   COMPONENTS.CSS - Reusable UI Components
+   Common components used across multiple pages
+   ========================================================================== */
+
+/* ==========================================================================
+   Buttons
+   ========================================================================== */
+
+/* Primary Action Buttons */
+.action-button, 
+.next-btn, 
+.save-hook-button,
+.gvb-tool-button {
+  background-color: var(--accent-color);
+  color: var(--bg-white);
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: inline-flex;
+  align-items: center;
+  text-decoration: none;
+  margin: 10px 0;
+}
+
+.action-button:hover, 
+.next-btn:hover, 
+.save-hook-button:hover,
+.gvb-tool-button:hover {
+  background-color: var(--accent-hover);
+}
+
+/* Secondary/Blue Buttons */
+.generate-btn, 
+.copy-btn, 
+.copy-button {
+  background-color: var(--active-blue);
+  color: var(--bg-white);
+  border: none;
+  border-radius: 3px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  margin: 5px 0;
+}
+
+.generate-btn:hover, 
+.copy-btn:hover, 
+.copy-button:hover {
+  background-color: var(--secondary-hover);
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.15);
+}
+
+/* Outline Buttons */
+.use-suggestion-btn, 
+.use-topic-btn, 
+.use-question-btn {
+  background-color: transparent;
+  color: var(--active-blue);
+  border: 1px solid var(--active-blue);
+  border-radius: 3px;
+  padding: 6px 12px;
+  font-size: 12px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  white-space: nowrap;
+}
+
+.use-suggestion-btn:hover, 
+.use-topic-btn:hover, 
+.use-question-btn:hover {
+  background-color: var(--active-blue);
+  color: var(--bg-white);
+}
+
+/* Delete/Clear Buttons */
+.delete-question-btn,
+.clear-question-btn {
+  background: transparent;
+  border: none;
+  color: var(--border-color);
+  cursor: pointer;
+  font-size: 16px;
+  padding: 4px;
+  border-radius: 50%;
+  transition: all 0.2s ease;
+  z-index: 10;
+}
+
+.delete-question-btn:hover,
+.clear-question-btn:hover {
+  color: var(--accent-color);
+  background-color: rgba(255, 122, 89, 0.1);
+}
+
+/* ==========================================================================
+   Form Elements
+   ========================================================================== */
+
+/* Basic Input Styling */
+.text-input, 
+.dropdown,
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea,
+select {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border-color);
+  border-radius: 3px;
+  font-size: 14px;
+  font-family: inherit;
+  background-color: var(--bg-white);
+  transition: border-color 0.2s, box-shadow 0.2s;
+  margin-bottom: 10px;
+}
+
+.text-input:focus, 
+.dropdown:focus,
+input:focus,
+textarea:focus,
+select:focus {
+  outline: none;
+  border-color: var(--active-blue);
+  box-shadow: 0 0 0 1px var(--active-blue);
+}
+
+/* Form Fields */
+.form-field,
+.field-group {
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.field-label {
+  display: block;
+  font-size: 14px;
+  color: var(--text-light);
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+/* Input with Icon */
+.input-wrapper {
+  position: relative;
+}
+
+.input-icon {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-light, #6b7280);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.form-input--with-icon,
+input.form-input--with-icon,
+input[type="text"].form-input--with-icon,
+input[type="email"].form-input--with-icon,
+input[type="password"].form-input--with-icon {
+  padding-left: 45px !important;
+}
+
+/* Textarea Specific */
+textarea {
+  min-height: 80px;
+  resize: vertical;
+}
+
+/* Formidable Forms Overrides */
+.frm_form_field input[type="text"],
+.frm_form_field textarea,
+.frm_form_field select {
+  width: 100% !important;
+  padding: 10px 12px !important;
+  border: 1px solid var(--border-color) !important;
+  border-radius: 3px !important;
+  font-size: 14px !important;
+  background-color: var(--bg-white) !important;
+  box-shadow: none !important;
+}
+
+.frm_form_field input:focus,
+.frm_form_field textarea:focus,
+.frm_form_field select:focus {
+  border-color: var(--active-blue) !important;
+  box-shadow: 0 0 0 1px var(--active-blue) !important;
+}
+
+.frm_primary_label {
+  font-size: 14px !important;
+  color: var(--text-light) !important;
+  font-weight: 500 !important;
+}
+
+.frm_error {
+  color: var(--error) !important;
+  font-size: 12px !important;
+  margin-top: 5px !important;
+}
+
+/* ==========================================================================
+   Tags & Badges
+   ========================================================================== */
+
+.tag,
+.badge,
+.beta-tag,
+.ai-tag,
+.ai-generated-tag {
+  display: inline-block;
+  background-color: var(--bg-medium);
+  color: var(--text-light);
+  padding: 3px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  margin-right: 5px;
+  margin-bottom: 5px;
+}
+
+.ai-tag,
+.ai-generated-tag {
+  background-color: var(--text-light);
+  color: var(--bg-white);
+}
+
+.ai-tag-large {
+  background-color: var(--accent-color);
+  color: var(--bg-white);
+  padding: 4px 8px;
+  border-radius: 3px;
+  font-size: 11px;
+  font-weight: bold;
+  margin-right: 8px;
+}
+
+.formula-label {
+  background-color: var(--active-blue);
+  color: var(--bg-white);
+  padding: 2px 8px;
+  border-radius: 3px;
+  font-size: 12px;
+}
+
+.approach {
+  background-color: var(--active-blue);
+  color: var(--bg-white);
+  padding: 2px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  text-transform: uppercase;
+  font-weight: 600;
+  display: inline-block;
+  margin-bottom: 5px;
+}
+
+/* ==========================================================================
+   Toggle Switch
+   ========================================================================== */
+
+.toggle-container {
+  position: relative;
+  display: inline-block;
+  width: 50px;
+  height: 24px;
+  vertical-align: middle;
+}
+
+.toggle-input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+  position: absolute;
+  visibility: hidden;
+}
+
+.toggle-slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: var(--bg-dark);
+  transition: 0.3s;
+  border-radius: 34px;
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.toggle-slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: var(--bg-white);
+  transition: 0.3s;
+  border-radius: 50%;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.2);
+}
+
+.toggle-input:checked + .toggle-slider {
+  background-color: var(--active-blue) !important;
+}
+
+.toggle-input:checked + .toggle-slider:before {
+  transform: translateX(26px);
+}
+
+/* ==========================================================================
+   Cards (Base)
+   ========================================================================== */
+
+.card {
+  background-color: var(--bg-white);
+  border: 1px solid var(--border-color);
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+  transition: box-shadow 0.2s;
+}
+
+.card:hover {
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+}
+
+.card-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--text-dark);
+  margin: 0;
+}
+
+.card-content {
+  font-size: 14px;
+  line-height: 1.5;
+  color: var(--text-light);
+}
+
+/* ==========================================================================
+   Modal Components
+   ========================================================================== */
+
+.custom-modal {
+  display: none;
+  position: fixed;
+  z-index: 99999;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  background-color: rgba(0,0,0,0.4);
+}
+
+.custom-modal-content {
+  position: relative;
+  background-color: var(--bg-white);
+  margin: 5% auto;
+  padding: 0;
+  border: 1px solid var(--border-color);
+  width: 80%;
+  max-width: 800px;
+  box-shadow: 0 4px 8px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+  border-radius: 8px;
+}
+
+.custom-modal-close {
+  color: var(--ui-gray-400);
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+  margin-right: 10px;
+}
+
+.custom-modal-close:hover,
+.custom-modal-close:focus {
+  color: var(--text-dark);
+  text-decoration: none;
+}
+
+.custom-modal-header {
+  padding: 15px;
+  background-color: var(--bg-light);
+  color: var(--text-dark);
+  border-bottom: 1px solid var(--border-color);
+  border-top-left-radius: 8px;
+  border-top-right-radius: 8px;
+}
+
+.custom-modal-body {
+  padding: 20px;
+  min-height: 400px;
+  max-height: 70vh;
+  overflow-y: auto;
+}
+
+/* ==========================================================================
+   Navigation Elements
+   ========================================================================== */
+
+.nav-link {
+  color: var(--text-light);
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  transition: all 0.2s;
+  display: block;
+}
+
+.nav-link:hover {
+  background-color: var(--bg-light);
+  color: var(--text-dark);
+}
+
+.nav-link.active {
+  background-color: var(--active-blue);
+  color: var(--bg-white);
+}
+
+/* ==========================================================================
+   Dropdown Components
+   ========================================================================== */
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  right: 0;
+  background-color: var(--bg-white);
+  min-width: 160px;
+  box-shadow: 0 8px 16px rgba(0,0,0,0.1);
+  z-index: 1000;
+  border-radius: 4px;
+  border: 1px solid var(--border-color);
+}
+
+.dropdown-content a {
+  color: var(--text-dark);
+  padding: 10px 15px;
+  text-decoration: none;
+  display: block;
+  font-size: 14px;
+}
+
+.dropdown-content a:hover {
+  background-color: var(--bg-light);
+}
+
+.dropdown.show .dropdown-content {
+  display: block;
+}
+
+/* ==========================================================================
+   Loading States
+   ========================================================================== */
+
+.loading {
+  display: flex;
+  align-items: center;
+  color: var(--text-light);
+  font-size: 14px;
+}
+
+.loading svg {
+  margin-right: 8px;
+  animation: spin 1.5s linear infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* ==========================================================================
+   Character Counter
+   ========================================================================== */
+
+.char-counter {
+  font-size: 12px;
+  color: var(--text-light);
+  text-align: right;
+  margin-top: -5px;
+  margin-bottom: 10px;
+}
+
+.char-counter.near-limit {
+  color: var(--accent-color);
+}
+
+.char-counter.at-limit {
+  color: var(--error);
+  font-weight: bold;
+}
+
+/* ==========================================================================
+   Upgrade Banner (Reusable Component)
+   ========================================================================== */
+
+.upgrade-banner {
+    background-color: white;
+    border: 1px dashed #e9ecef;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    margin-top: 30px;
+    margin-bottom: 20px;
+}
+
+.upgrade-button {
+    background-color: white;
+    border: 1px solid #ff9776;
+    color: #ff9776;
+    padding: 10px 15px;
+    border-radius: 4px;
+    font-weight: 500;
+    text-decoration: none;
+    display: inline-block;
+    margin-top: 10px;
+    transition: background-color 0.2s;
+}
+
+.upgrade-button:hover {
+    background-color: #fff5f2;
+}
+
+/* ==========================================================================
+   Filter Bar & Search Components
+   ========================================================================== */
+
+/* Filter bar styling */
+.filter-bar {
+    background-color: white;
+    border-radius: 8px;
+    padding: 15px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 15px;
+}
+
+.filter-label {
+    font-weight: 500;
+    margin-right: 10px;
+}
+
+.filter-dropdown {
+    padding: 8px 12px;
+    border-radius: 4px;
+    border: 1px solid var(--ui-gray-300);
+    background-color: white;
+    font-size: 14px;
+    min-width: 140px;
+    cursor: pointer;
+}
+
+.search-box {
+    flex-grow: 1;
+    position: relative;
+    max-width: 300px;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 8px 12px 8px 36px;
+    border-radius: 4px;
+    border: 1px solid var(--ui-gray-300);
+    font-size: 14px;
+    background-color: white;
+}
+
+.search-icon {
+    position: absolute;
+    left: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: #95a5a6;
+}
+
+/* CSS to remove extra whitespace from only the filter-bar form */
+form.filter-bar {
+    padding-bottom: 0 !important;
+}
+
+form.filter-bar .frm_form_fields fieldset {
+    padding-bottom: 0 !important;
+    margin-bottom: 0 !important;
+}
+
+form.filter-bar .frm_fields_container {
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+form.filter-bar .frm_form_field {
+    margin-bottom: 8px !important;
+}
+
+form.filter-bar .frm_section_spacing {
+    padding-top: 5px !important;
+    padding-bottom: 5px !important;
+    margin-bottom: 8px !important;
+}
+
+form.filter-bar #frm_field_10189_container {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+form.filter-bar .frm_submit {
+    margin-top: 0 !important;
+    margin-bottom: 0 !important;
+    padding: 5px 0 !important;
+}
+
+form.filter-bar .frm_verify,
+form.filter-bar input[type="hidden"] {
+    margin: 0 !important;
+    padding: 0 !important;
+    height: 0 !important;
+}
+
+form.filter-bar .frm_switch_block {
+    margin-bottom: 0 !important;
+}
+
+form.filter-bar .frm_form_field:last-child {
+    margin-bottom: 0 !important;
+}
+
+form.filter-bar .frm__65367cdadcbd2 {
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+}
+
+/* View Toggle styling */
+.view-toggle {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+}
+
+.toggle-btn {
+    background-color: white;
+    border: 1px solid var(--ui-gray-300);
+    padding: 8px 15px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: all 0.2s;
+    text-decoration: none;
+    color: inherit;
+}
+
+.toggle-btn:first-child {
+    border-top-left-radius: 4px;
+    border-bottom-left-radius: 4px;
+}
+
+.toggle-btn:last-child {
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 4px;
+}
+
+.toggle-btn.active {
+    background-color: var(--ui-info);
+    color: white;
+    border-color: var(--ui-info);
+}
+
+.toggle-btn:hover {
+    text-decoration: none;
+    background-color: var(--ui-gray-100);
+}
+
+.toggle-btn.active:hover {
+    background-color: var(--ui-info-hover);
+}
+
+/* ==========================================================================
+   Toggle Content System (CSS-only checkbox hack)
+   Reusable component for expand/collapse functionality
+   ========================================================================== */
+
+/* Hide the actual toggle checkboxes */
+.toggle-checkbox {
+    display: none;
+}
+
+/* Style the toggle labels to look like buttons/links */
+.expand-toggle {
+    color: #3b82f6;
+    cursor: pointer;
+    font-size: 0.875rem;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: color 0.2s ease;
+}
+
+.expand-toggle:hover {
+    text-decoration: underline;
+    color: #2563eb;
+}
+
+/* Add a chevron icon using CSS */
+.expand-toggle::after {
+    content: "▼";
+    font-size: 0.75rem;
+    transition: transform 0.2s ease;
+    color: #64748b;
+}
+
+/* Rotate chevron when expanded */
+.toggle-checkbox:checked + .expand-toggle::after {
+    transform: rotate(180deg);
+}
+
+/* Hide expandable content by default */
+.expandcontent {
+    display: none;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #e5e7eb;
+}
+
+/* Show expandable content when checkbox is checked */
+.toggle-checkbox:checked ~ .expandcontent {
+    display: block;
+}
+
+/* Style the expanded content */
+.expandcontent section {
+    line-height: 1.6;
+    color: #4b5563;
+    font-size: 0.875rem;
+}
+
+.expandcontent section p {
+    margin: 0 0 10px 0;
+}
+
+/* Ensure proper specificity for simple-expand containers */
+.simple-expand .toggle-checkbox {
+    display: none;
+}
+
+.simple-expand .expand-toggle {
+    color: #3b82f6;
+    cursor: pointer;
+    font-size: 0.875rem;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: color 0.2s ease;
+}
+
+.simple-expand .expand-toggle:hover {
+    text-decoration: underline;
+    color: #2563eb;
+}
+
+.simple-expand .expand-toggle::after {
+    content: "▼";
+    font-size: 0.75rem;
+    transition: transform 0.2s ease;
+    color: #64748b;
+}
+
+.simple-expand .toggle-checkbox:checked + .expand-toggle::after {
+    transform: rotate(180deg);
+}
+
+.simple-expand .expandcontent {
+    display: none;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.simple-expand .toggle-checkbox:checked ~ .expandcontent {
+    display: block;
+}
+
+/* Shared expand containers */
+.shared-expand {
+    margin: 10px 0;
+}
+
+.shared-expand .toggle-checkbox {
+    display: none;
+}
+
+.shared-expand .expand-toggle {
+    color: #3b82f6;
+    cursor: pointer;
+    font-size: 0.875rem;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    transition: color 0.2s ease;
+}
+
+.shared-expand .expand-toggle:hover {
+    text-decoration: underline;
+    color: #2563eb;
+}
+
+.shared-expand .expand-toggle::after {
+    content: "▼";
+    font-size: 0.75rem;
+    transition: transform 0.2s ease;
+    color: #64748b;
+}
+
+.shared-expand .toggle-checkbox:checked + .expand-toggle::after {
+    transform: rotate(180deg);
+}
+
+.shared-expand .expandcontent {
+    display: none;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #e5e7eb;
+}
+
+.shared-expand .toggle-checkbox:checked ~ .expandcontent {
+    display: block;
+}
+
+/* Search highlighting styles for expanded content */
+.search-highlight {
+    background-color: #fef3c7;
+    color: #92400e;
+    padding: 0.1em 0.2em;
+    border-radius: 3px;
+    font-weight: 600;
+}
+
+/* Ensure highlight doesn't override link colors */
+.expandcontent a .search-highlight {
+    color: inherit;
+}
+
+/* ==========================================================================
+   AppLandings Components (BEM)
+   ========================================================================== */
+
+/* BLOCK: page */
+.page {
+  margin: 0;
+}
+
+/* BLOCK: main-content */
+.main-content {
+  padding-top: var(--space-5);
+}
+
+/* BLOCK: page-header */
+.page-header {
+  border-bottom: 1px solid var(--border-color);
+  padding: var(--space-8) var(--space-12);
+}
+
+.page-header__title {
+  color: var(--text-dark);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-weight: var(--weight-semibold);
+  font-size: var(--text-2xl);
+  margin: 0;
+}
+
+/* BLOCK: two-column */
+.two-column {
+  max-width: 1165px;
+  margin: var(--space-20) auto;
+  border: 2px solid var(--border-color);
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.two-column__column {
+  box-sizing: border-box;
+}
+
+.two-column__column--left {
+  width: 43.772%;
+  background-color: var(--bg-light);
+  padding: var(--space-12) var(--space-10);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.two-column__column--right {
+  width: 56.228%;
+  padding: var(--space-12);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+}
+
+/* BLOCK: promo */
+.promo__image {
+  max-width: 100%;
+  height: auto;
+  margin-bottom: var(--space-5);
+}
+
+.promo__title {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: var(--text-5xl);
+  font-weight: var(--weight-semibold);
+  line-height: var(--leading-tight);
+  color: var(--text-dark);
+  margin-top: 0;
+  margin-bottom: var(--space-5);
+}
+
+.promo__text {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: var(--text-lg);
+  font-weight: var(--weight-normal);
+  margin-bottom: var(--space-5);
+}
+
+.promo__button {
+  background-color: var(--accent-color);
+  color: var(--bg-white);
+  padding: var(--space-5);
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-weight: var(--weight-medium);
+  border-radius: var(--radius-sm);
+  transition: opacity var(--transition-base);
+}
+
+.promo__button:hover {
+  opacity: 0.9;
+}
+
+.promo__button-icon {
+  font-size: 1.2em;
+}
+
+.promo__link {
+  margin-top: var(--space-4);
+}
+
+.promo__link a {
+  color: var(--accent-color);
+  text-decoration: none;
+  transition: color var(--transition-base);
+}
+
+.promo__link a:hover {
+  text-decoration: underline;
+}
+
+/* BLOCK: info */
+.info__title {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: var(--text-2xl);
+  font-weight: var(--weight-semibold);
+  color: var(--text-dark);
+  margin-top: 0;
+  margin-bottom: var(--space-5);
+}
+
+.info__text {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  font-size: var(--text-base);
+  font-weight: var(--weight-normal);
+  line-height: var(--leading-relaxed);
+}
+
+/* ==========================================================================
+   Responsive Components
+   ========================================================================== */
+
+@media (max-width: 768px) {
+  .custom-modal-content {
+    width: 95%;
+    margin: 10% auto;
+  }
+  
+  .dropdown-content {
+    position: fixed;
+    left: 10px;
+    right: 10px;
+    width: auto;
+  }
+  
+  .toggle-container {
+    width: 45px;
+    height: 22px;
+  }
+  
+  .toggle-slider:before {
+    height: 16px;
+    width: 16px;
+  }
+  
+  .toggle-input:checked + .toggle-slider:before {
+    transform: translateX(23px);
+  }
+  
+  /* Mobile optimizations for toggle content */
+  .expand-toggle {
+    font-size: 0.8rem;
+  }
+  
+  .expandcontent section {
+    font-size: 0.8rem;
+  }
+}

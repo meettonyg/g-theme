@@ -224,15 +224,388 @@ require get_template_directory() . '/inc/app-navigation-functions.php';
  */
 function guestify_enqueue_login_css() {
 	if ( is_page( 'login' ) ) {
-		wp_enqueue_style(
-			'guestify-login',
-			get_stylesheet_directory_uri() . '/css/login.css',
-			array(),
-			filemtime( get_stylesheet_directory() . '/css/login.css' )
+		$wp_css_dir = WP_CONTENT_DIR . '/css/';
+		$wp_css_url = content_url( '/css/' );
+		$theme_css_dir = get_stylesheet_directory() . '/css/';
+		$theme_css_url = get_stylesheet_directory_uri() . '/css/';
+
+		// Enqueue base CSS files from wp-content/css/
+		$wp_content_styles = array(
+			array( 'base', 'base.css', array() ),
+			array( 'layout', 'layout.css', array( 'base' ) ),
 		);
+
+		foreach ( $wp_content_styles as $style ) {
+			list( $handle, $file, $deps ) = $style;
+			$path = $wp_css_dir . $file;
+
+			if ( file_exists( $path ) ) {
+				wp_enqueue_style(
+					'guestify-login-' . $handle,
+					$wp_css_url . $file,
+					array_map( function( $d ) { return 'guestify-login-' . $d; }, $deps ),
+					filemtime( $path )
+				);
+			}
+		}
+
+		// Enqueue components.css from theme directory
+		$components_path = $theme_css_dir . 'components.css';
+		if ( file_exists( $components_path ) ) {
+			wp_enqueue_style(
+				'guestify-login-components',
+				$theme_css_url . 'components.css',
+				array( 'guestify-login-base' ),
+				filemtime( $components_path )
+			);
+		}
+
+		// Enqueue login-specific CSS
+		$login_css_path = $theme_css_dir . 'login.css';
+		if ( file_exists( $login_css_path ) ) {
+			wp_enqueue_style(
+				'guestify-login',
+				$theme_css_url . 'login.css',
+				array( 'guestify-login-base', 'guestify-login-components', 'guestify-login-layout' ),
+				filemtime( $login_css_path )
+			);
+		}
 	}
 }
 add_action( 'wp_enqueue_scripts', 'guestify_enqueue_login_css' );
+
+/**
+ * Generic Login Form Shortcode
+ *
+ * Renders a WordPress login form with Nextend Social Login integration.
+ * Nextend automatically attaches social login buttons to wp_login_form().
+ *
+ * Usage: [generic_login_form] or [generic_login_form redirect="https://example.com/dashboard"]
+ *
+ * @param array $atts Shortcode attributes.
+ * @return string HTML output for the login form.
+ */
+function guestify_generic_login_form_shortcode( $atts ) {
+	// Check if user is already logged in
+	if ( is_user_logged_in() ) {
+		$current_user = wp_get_current_user();
+		return '<div class="wpc-logged-in-msg">You are logged in as ' . esc_html( $current_user->display_name ) . '. <a href="' . esc_url( wp_logout_url( get_permalink() ) ) . '">Log out?</a></div>';
+	}
+
+	// Set defaults
+	$atts = shortcode_atts( array(
+		'redirect' => home_url( '/app/' ),
+	), $atts );
+
+	$output = '';
+
+	// Display login errors from URL parameter
+	if ( isset( $_GET['login_error'] ) ) {
+		$error_code = sanitize_text_field( $_GET['login_error'] );
+		$error_messages = array(
+			'empty_username' => 'Please enter your username or email address.',
+			'empty_password' => 'Please enter your password.',
+			'invalid_username' => 'Unknown username. Please try again.',
+			'invalid_email' => 'Unknown email address. Please try again.',
+			'incorrect_password' => 'Incorrect password. Please try again.',
+			'authentication_failed' => 'Login failed. Please check your credentials.',
+		);
+		$error_message = isset( $error_messages[ $error_code ] ) ? $error_messages[ $error_code ] : 'Login failed. Please try again.';
+		$output .= '<div class="wpc-login-error">' . esc_html( $error_message ) . '</div>';
+	}
+
+	// Output the Standard WP Form (Nextend Social Login attaches here)
+	$output .= wp_login_form( array(
+		'echo'           => false,
+		'redirect'       => esc_url( $atts['redirect'] ),
+		'label_username' => 'Username or Email',
+		'label_log_in'   => 'Log In',
+	) );
+
+	// Add "Lost Password" and "Register" links
+	$output .= '<div class="wpc-login-links">';
+	$output .= '<a href="' . esc_url( home_url( '/reset/' ) ) . '">Lost Password?</a>';
+
+	// Register link (only shows if enabled in WP Settings)
+	if ( get_option( 'users_can_register' ) ) {
+		$output .= '<span class="wpc-login-links-separator">|</span>';
+		$output .= '<a href="' . esc_url( wp_registration_url() ) . '">Register</a>';
+	}
+
+	$output .= '</div>';
+
+	return $output;
+}
+add_shortcode( 'generic_login_form', 'guestify_generic_login_form_shortcode' );
+
+/**
+ * Redirect failed logins back to frontend /login/ page
+ *
+ * Prevents users from seeing wp-login.php on authentication failure.
+ */
+function guestify_login_failed_redirect( $username ) {
+	$referrer = isset( $_SERVER['HTTP_REFERER'] ) ? $_SERVER['HTTP_REFERER'] : '';
+
+	// Only redirect if coming from frontend /login/ page
+	if ( ! empty( $referrer ) && strpos( $referrer, '/login' ) !== false && ! strpos( $referrer, 'wp-login.php' ) ) {
+		$login_url = home_url( '/login/' );
+		wp_redirect( add_query_arg( 'login_error', 'authentication_failed', $login_url ) );
+		exit;
+	}
+}
+add_action( 'wp_login_failed', 'guestify_login_failed_redirect' );
+
+/**
+ * Redirect to frontend /login/ page when username or password is empty
+ *
+ * Catches empty field submissions before WordPress processes them.
+ */
+function guestify_authenticate_empty_fields( $user, $username, $password ) {
+	$referrer = isset( $_SERVER['HTTP_REFERER'] ) ? $_SERVER['HTTP_REFERER'] : '';
+
+	// Only redirect if coming from frontend /login/ page
+	if ( ! empty( $referrer ) && strpos( $referrer, '/login' ) !== false && ! strpos( $referrer, 'wp-login.php' ) ) {
+		$login_url = home_url( '/login/' );
+
+		if ( empty( $username ) ) {
+			wp_redirect( add_query_arg( 'login_error', 'empty_username', $login_url ) );
+			exit;
+		}
+
+		if ( empty( $password ) ) {
+			wp_redirect( add_query_arg( 'login_error', 'empty_password', $login_url ) );
+			exit;
+		}
+	}
+
+	return $user;
+}
+add_filter( 'authenticate', 'guestify_authenticate_empty_fields', 1, 3 );
+
+/**
+ * Password Reset Form Shortcode
+ *
+ * Displays a password reset form that uses WordPress's built-in reset functionality.
+ * Uses existing theme CSS classes from admin.css/components.css.
+ *
+ * Usage: [guestify_reset_password]
+ *
+ * @return string HTML output for the password reset form.
+ */
+function guestify_reset_password_shortcode() {
+	// If user is already logged in, show message
+	if ( is_user_logged_in() ) {
+		$current_user = wp_get_current_user();
+		return '<div class="form-message form-message--info">You are already logged in as ' . esc_html( $current_user->display_name ) . '. <a href="' . esc_url( home_url( '/login/' ) ) . '">Go to Login</a></div>';
+	}
+
+	$output = '';
+
+	// Handle form submission
+	if ( isset( $_POST['guestify_reset_submit'] ) && isset( $_POST['guestify_reset_nonce'] ) ) {
+		if ( wp_verify_nonce( $_POST['guestify_reset_nonce'], 'guestify_reset_password' ) ) {
+			$user_login = sanitize_text_field( $_POST['user_login'] );
+
+			if ( empty( $user_login ) ) {
+				$output .= '<div class="form-message form-message--error">Please enter your username or email address.</div>';
+			} else {
+				// Check if user exists
+				$user = get_user_by( 'email', $user_login );
+				if ( ! $user ) {
+					$user = get_user_by( 'login', $user_login );
+				}
+
+				if ( $user ) {
+					// Generate reset key and send email
+					$reset_key = get_password_reset_key( $user );
+
+					if ( ! is_wp_error( $reset_key ) ) {
+						// Send custom reset email
+						$reset_url = home_url( '/set-new-password/?key=' . $reset_key . '&login=' . rawurlencode( $user->user_login ) );
+
+						$subject = 'Password Reset Request - Guestify';
+						$message = "Hi " . $user->display_name . ",\n\n";
+						$message .= "Someone requested a password reset for your Guestify account.\n\n";
+						$message .= "If this was you, click the link below to reset your password:\n\n";
+						$message .= $reset_url . "\n\n";
+						$message .= "This link will expire in 24 hours.\n\n";
+						$message .= "If you didn't request this, you can safely ignore this email.\n\n";
+						$message .= "- The Guestify Team";
+
+						$headers = array( 'Content-Type: text/plain; charset=UTF-8' );
+
+						wp_mail( $user->user_email, $subject, $message, $headers );
+					}
+				}
+
+				// Redirect to confirmation page (security: don't reveal if user exists)
+				wp_redirect( home_url( '/password-reset-confirmation/' ) );
+				exit;
+			}
+		} else {
+			$output .= '<div class="form-message form-message--error">Security check failed. Please try again.</div>';
+		}
+	}
+
+	// Display form
+	$output .= '<form method="post" class="reset-form">';
+	$output .= wp_nonce_field( 'guestify_reset_password', 'guestify_reset_nonce', true, false );
+
+	$output .= '<div class="form-group">';
+	$output .= '<label for="user_login" class="form-label">Username or Email Address <span class="required">*</span></label>';
+	$output .= '<div class="input-wrapper">';
+	$output .= '<span class="input-icon"><i class="fas fa-user" aria-hidden="true"></i></span>';
+	$output .= '<input type="text" name="user_login" id="user_login" class="form-input form-input--with-icon" placeholder="Enter your username or email" required autocomplete="username" />';
+	$output .= '</div>';
+	$output .= '</div>';
+
+	$output .= '<div class="form-group">';
+	$output .= '<button type="submit" name="guestify_reset_submit" class="submit-button submit-button--secondary"><i class="fas fa-paper-plane" aria-hidden="true"></i> Get New Password</button>';
+	$output .= '</div>';
+
+	$output .= '<div class="form-footer">';
+	$output .= '<a href="' . esc_url( home_url( '/login/' ) ) . '" class="back-link"><i class="fas fa-arrow-left" aria-hidden="true"></i> <span>Back to Login</span></a>';
+	$output .= '</div>';
+
+	$output .= '</form>';
+
+	return $output;
+}
+add_shortcode( 'guestify_reset_password', 'guestify_reset_password_shortcode' );
+
+/**
+ * Password Reset Confirmation Shortcode
+ *
+ * Handles the password reset link and allows user to set new password.
+ * Outputs full page structure matching the /reset/ page design.
+ *
+ * Usage: [guestify_reset_confirmation]
+ *
+ * @return string HTML output for the password reset confirmation form.
+ */
+function guestify_reset_confirmation_shortcode() {
+	$logo_url = 'https://guestify.ai/wp-content/uploads/2024/01/guestify-logo_500px.png';
+	$form_content = '';
+	$show_form = true;
+
+	// Get key and login from URL
+	$reset_key = isset( $_GET['key'] ) ? sanitize_text_field( $_GET['key'] ) : '';
+	$user_login = isset( $_GET['login'] ) ? sanitize_text_field( $_GET['login'] ) : '';
+
+	// Handle form submission for new password
+	if ( isset( $_POST['guestify_newpass_submit'] ) && isset( $_POST['guestify_newpass_nonce'] ) ) {
+		if ( wp_verify_nonce( $_POST['guestify_newpass_nonce'], 'guestify_new_password' ) ) {
+			$reset_key = sanitize_text_field( $_POST['reset_key'] );
+			$user_login = sanitize_text_field( $_POST['user_login'] );
+			$new_password = $_POST['new_password'];
+			$confirm_password = $_POST['confirm_password'];
+
+			// Validate passwords
+			if ( empty( $new_password ) || empty( $confirm_password ) ) {
+				$form_content .= '<div class="form-message form-message--error">Please enter and confirm your new password.</div>';
+			} elseif ( $new_password !== $confirm_password ) {
+				$form_content .= '<div class="form-message form-message--error">Passwords do not match. Please try again.</div>';
+			} elseif ( strlen( $new_password ) < 8 ) {
+				$form_content .= '<div class="form-message form-message--error">Password must be at least 8 characters long.</div>';
+			} else {
+				// Verify the reset key
+				$user = check_password_reset_key( $reset_key, $user_login );
+
+				if ( is_wp_error( $user ) ) {
+					$form_content .= '<div class="form-message form-message--error">This password reset link is invalid or has expired. <a href="' . esc_url( home_url( '/reset/' ) ) . '">Request a new one</a>.</div>';
+					$show_form = false;
+				} else {
+					// Reset the password
+					reset_password( $user, $new_password );
+
+					$form_content .= '<div class="form-message form-message--success">Your password has been reset successfully!</div>';
+					$form_content .= '<p class="reset-description"><a href="' . esc_url( home_url( '/login/' ) ) . '">Log in with your new password <i class="fas fa-arrow-right" aria-hidden="true"></i></a></p>';
+					$show_form = false;
+				}
+			}
+		} else {
+			$form_content .= '<div class="form-message form-message--error">Security check failed. Please try again.</div>';
+		}
+	}
+
+	// If no key/login, show error
+	if ( empty( $reset_key ) || empty( $user_login ) ) {
+		$form_content .= '<div class="form-message form-message--error">Invalid password reset link. <a href="' . esc_url( home_url( '/reset/' ) ) . '">Request a new one</a>.</div>';
+		$show_form = false;
+	} elseif ( $show_form ) {
+		// Verify the reset key
+		$user = check_password_reset_key( $reset_key, $user_login );
+
+		if ( is_wp_error( $user ) ) {
+			$form_content .= '<div class="form-message form-message--error">This password reset link is invalid or has expired. <a href="' . esc_url( home_url( '/reset/' ) ) . '">Request a new one</a>.</div>';
+			$show_form = false;
+		}
+	}
+
+	// Build the form if needed
+	if ( $show_form ) {
+		$form_content .= '<form method="post" class="reset-form">';
+		$form_content .= wp_nonce_field( 'guestify_new_password', 'guestify_newpass_nonce', true, false );
+		$form_content .= '<input type="hidden" name="reset_key" value="' . esc_attr( $reset_key ) . '" />';
+		$form_content .= '<input type="hidden" name="user_login" value="' . esc_attr( $user_login ) . '" />';
+
+		$form_content .= '<div class="form-group">';
+		$form_content .= '<label for="new_password" class="form-label">New Password <span class="required">*</span></label>';
+		$form_content .= '<div class="input-wrapper">';
+		$form_content .= '<span class="input-icon"><i class="fas fa-lock" aria-hidden="true"></i></span>';
+		$form_content .= '<input type="password" name="new_password" id="new_password" class="form-input form-input--with-icon" placeholder="Enter new password" required minlength="8" autocomplete="new-password" />';
+		$form_content .= '</div>';
+		$form_content .= '</div>';
+
+		$form_content .= '<div class="form-group">';
+		$form_content .= '<label for="confirm_password" class="form-label">Confirm Password <span class="required">*</span></label>';
+		$form_content .= '<div class="input-wrapper">';
+		$form_content .= '<span class="input-icon"><i class="fas fa-lock" aria-hidden="true"></i></span>';
+		$form_content .= '<input type="password" name="confirm_password" id="confirm_password" class="form-input form-input--with-icon" placeholder="Confirm new password" required minlength="8" autocomplete="new-password" />';
+		$form_content .= '</div>';
+		$form_content .= '</div>';
+
+		$form_content .= '<div class="form-group">';
+		$form_content .= '<button type="submit" name="guestify_newpass_submit" class="submit-button submit-button--secondary"><i class="fas fa-check" aria-hidden="true"></i> Reset Password</button>';
+		$form_content .= '</div>';
+
+		$form_content .= '</form>';
+	}
+
+	// Build full page structure
+	$output = '<div class="page-container page-container--gradient">';
+	$output .= '<main id="main-content" class="reset-container">';
+
+	// Logo
+	$output .= '<div class="logo-section">';
+	$output .= '<img decoding="async" class="reset-logo" src="' . esc_url( $logo_url ) . '" alt="Guestify Logo">';
+	$output .= '</div>';
+
+	// Lock Icon
+	$output .= '<div class="icon-wrapper">';
+	$output .= '<i class="fas fa-lock" aria-hidden="true"></i>';
+	$output .= '</div>';
+
+	// Title
+	$output .= '<h1 class="reset-title">Set New Password</h1>';
+
+	// Description
+	$output .= '<p class="reset-description">Enter your new password below. Make sure it\'s at least 8 characters long.</p>';
+
+	// Form content (form or error messages)
+	$output .= $form_content;
+
+	// Security Notice
+	$output .= '<div class="security-notice">';
+	$output .= '<p><i class="fas fa-shield-alt" aria-hidden="true"></i> Your new password will be securely saved</p>';
+	$output .= '</div>';
+
+	$output .= '</main>';
+	$output .= '</div>';
+
+	return $output;
+}
+add_shortcode( 'guestify_reset_confirmation', 'guestify_reset_confirmation_shortcode' );
 
 /**
  * Enqueue partners CSS and JS only for partners page
@@ -342,8 +715,10 @@ add_action( 'wp_enqueue_scripts', 'guestify_enqueue_homepage_css' );
  */
 function guestify_enqueue_new_theme_pages_css() {
 	$request_uri = isset( $_SERVER['REQUEST_URI'] ) ? $_SERVER['REQUEST_URI'] : '';
-	$css_dir     = WP_CONTENT_DIR . '/css/';
-	$css_url     = content_url( '/css/' );
+	$wp_css_dir     = WP_CONTENT_DIR . '/css/';
+	$wp_css_url     = content_url( '/css/' );
+	$theme_css_dir  = get_stylesheet_directory() . '/css/';
+	$theme_css_url  = get_stylesheet_directory_uri() . '/css/';
 
 	// Configuration: URL patterns mapped to their CSS files
 	// Format: 'key' => [ 'patterns' => [...], 'styles' => [ [handle, file, deps], ... ] ]
@@ -360,7 +735,7 @@ function guestify_enqueue_new_theme_pages_css() {
 		'admin' => array(
 			'patterns' => array(
 				'#^/app/downgrade(-confirmation)?/?$#',
-				'#^/(reset|whitelist|password-reset-confirmation)/?$#',
+				'#^/(reset|whitelist|password-reset-confirmation|set-new-password)/?$#',
 			),
 			'styles' => array(
 				array( 'base', 'base.css', array() ),
@@ -443,12 +818,20 @@ function guestify_enqueue_new_theme_pages_css() {
 	// Enqueue matched CSS files
 	foreach ( $matched_styles as $style ) {
 		list( $handle, $file, $deps ) = $style;
-		$path = $css_dir . $file;
+
+		// components.css is in theme directory, others in wp-content/css/
+		if ( 'components.css' === $file ) {
+			$path = $theme_css_dir . $file;
+			$url  = $theme_css_url . $file;
+		} else {
+			$path = $wp_css_dir . $file;
+			$url  = $wp_css_url . $file;
+		}
 
 		if ( file_exists( $path ) ) {
 			wp_enqueue_style(
 				'guestify-new-theme-' . $handle,
-				$css_url . $file,
+				$url,
 				array_map( function( $d ) { return 'guestify-new-theme-' . $d; }, $deps ),
 				filemtime( $path )
 			);
@@ -584,6 +967,12 @@ add_filter( 'wp_resource_hints', 'guestify_remove_emoji_dns_prefetch', 10, 2 );
 add_filter( 'xmlrpc_enabled', '__return_false' );
 
 /**
+ * Disable admin email verification prompt
+ * Prevents WordPress from showing the "Administration email verification" screen
+ */
+add_filter( 'admin_email_check_interval', '__return_false' );
+
+/**
  * Remove query strings from static resources for better caching
  */
 function guestify_remove_query_strings( $src ) {
@@ -629,9 +1018,9 @@ function guestify_dequeue_public_assets_on_app_pages() {
         // Tips pages (4 pages)
         '#^/tips(/|/tip-[1-3]/?)?$#',
         
-        // Admin pages (5 pages)
+        // Admin pages (6 pages)
         '#^/app/downgrade(-confirmation)?/?$#',
-        '#^/(reset|whitelist|password-reset-confirmation)/?$#',
+        '#^/(reset|whitelist|password-reset-confirmation|set-new-password)/?$#',
         
         // Demo pages (5 pages)
         '#^/demo(/demo-[1-4])?/?$#',
