@@ -294,7 +294,7 @@ function guestify_generic_login_form_shortcode( $atts ) {
 
 	// Set defaults
 	$atts = shortcode_atts( array(
-		'redirect' => get_permalink(),
+		'redirect' => home_url( '/app/' ),
 	), $atts );
 
 	$output = '';
