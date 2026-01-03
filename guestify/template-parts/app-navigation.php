@@ -122,7 +122,7 @@ foreach ($menu_items as $item) {
                         </div>
                     </div>
                     <div class="app-nav__notifications-footer">
-                        <a href="<?php echo home_url('/app/settings/'); ?>">Notification Settings</a>
+                        <a href="<?php echo esc_url(home_url('/app/settings/')); ?>">Notification Settings</a>
                     </div>
                 </div>
             </div>

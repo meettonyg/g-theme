@@ -128,11 +128,19 @@
             return;
         }
 
-        list.innerHTML = notifications.map(n => `
-            <div class="app-nav__notification-item ${n.is_read ? '' : 'app-nav__notification-item--unread'}"
-                 data-id="${n.id}"
-                 onclick="handleNotificationClick(${n.id}, '${n.action_url || ''}')">
-                <div class="app-nav__notification-icon app-nav__notification-icon--${n.type}">
+        // Use DocumentFragment and addEventListener to prevent XSS vulnerabilities
+        const fragment = document.createDocumentFragment();
+
+        notifications.forEach(n => {
+            const item = document.createElement('div');
+            item.className = `app-nav__notification-item ${n.is_read ? '' : 'app-nav__notification-item--unread'}`;
+            item.dataset.id = n.id;
+
+            // Sanitize notification type for class name (allow only alphanumeric and underscore)
+            const safeType = (n.type || 'info').replace(/[^a-zA-Z0-9_]/g, '');
+
+            item.innerHTML = `
+                <div class="app-nav__notification-icon app-nav__notification-icon--${safeType}">
                     ${getNotificationIcon(n.type)}
                 </div>
                 <div class="app-nav__notification-content">
@@ -140,13 +148,29 @@
                     ${n.message ? `<div class="app-nav__notification-message">${escapeHtml(n.message)}</div>` : ''}
                     <div class="app-nav__notification-time">${formatTimeAgo(n.created_at)}</div>
                 </div>
-                <button class="app-nav__notification-dismiss" onclick="event.stopPropagation(); dismissNotification(${n.id})" title="Dismiss">
+                <button class="app-nav__notification-dismiss" title="Dismiss">
                     <svg viewBox="0 0 20 20" fill="currentColor" width="16" height="16">
                         <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
                     </svg>
                 </button>
-            </div>
-        `).join('');
+            `;
+
+            // Attach event listeners safely (no inline onclick)
+            item.addEventListener('click', () => handleNotificationClick(n.id, n.action_url || ''));
+
+            const dismissButton = item.querySelector('.app-nav__notification-dismiss');
+            if (dismissButton) {
+                dismissButton.addEventListener('click', (event) => {
+                    event.stopPropagation();
+                    window.dismissNotification(n.id);
+                });
+            }
+
+            fragment.appendChild(item);
+        });
+
+        list.innerHTML = '';
+        list.appendChild(fragment);
     }
 
     // Get notification icon based on type
@@ -160,8 +184,35 @@
         return icons[type] || icons.info;
     }
 
+    // Validate URL is safe for redirect (same origin only)
+    function isSafeRedirectUrl(url) {
+        if (!url) return false;
+
+        try {
+            // Parse the URL relative to current origin
+            const parsedUrl = new URL(url, window.location.origin);
+
+            // Only allow same-origin URLs to prevent open redirect attacks
+            if (parsedUrl.origin !== window.location.origin) {
+                console.error('Refusing to redirect to external URL:', url);
+                return false;
+            }
+
+            // Block javascript: and data: URLs
+            if (parsedUrl.protocol === 'javascript:' || parsedUrl.protocol === 'data:') {
+                console.error('Refusing to redirect to unsafe protocol:', url);
+                return false;
+            }
+
+            return true;
+        } catch (e) {
+            console.error('Invalid action URL:', url);
+            return false;
+        }
+    }
+
     // Handle notification click
-    window.handleNotificationClick = async function(id, actionUrl) {
+    function handleNotificationClick(id, actionUrl) {
         // Mark as read (fire and forget, don't block navigation)
         fetch(`/wp-json/guestify/v1/notifications/${id}/read`, {
             method: 'POST',
@@ -182,12 +233,12 @@
             item.classList.remove('app-nav__notification-item--unread');
         }
 
-        // Navigate if action URL provided
-        if (actionUrl) {
+        // Navigate if action URL provided and is safe
+        if (actionUrl && isSafeRedirectUrl(actionUrl)) {
             closeNotificationsPanel();
             window.location.href = actionUrl;
         }
-    };
+    }
 
     // Dismiss notification
     window.dismissNotification = async function(id) {

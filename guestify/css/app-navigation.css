@@ -27,6 +27,28 @@
     --near-black: #1A202C;
     --border-color: #E5E7EB;
     --hover-bg: #F9FAFB;
+
+    /* Notification panel colors */
+    --notification-accent: #667eea;
+    --notification-text-primary: #1e293b;
+    --notification-text-secondary: #64748b;
+    --notification-text-muted: #94a3b8;
+    --notification-text-subtle: #334155;
+    --notification-border: #e2e8f0;
+    --notification-border-light: #f1f5f9;
+    --notification-bg-hover: #f8fafc;
+    --notification-bg-unread: #eff6ff;
+    --notification-bg-unread-hover: #dbeafe;
+    --notification-icon-empty: #cbd5e1;
+    --notification-badge-bg: #ef4444;
+    --notification-type-reminder-bg: #dbeafe;
+    --notification-type-reminder-color: #2563eb;
+    --notification-type-overdue-bg: #fee2e2;
+    --notification-type-overdue-color: #dc2626;
+    --notification-type-interview-bg: #d1fae5;
+    --notification-type-interview-color: #059669;
+    --notification-type-info-bg: #e0e7ff;
+    --notification-type-info-color: #4f46e5;
 }
 
 /* Hide skip link on app pages (style.css is not loaded here) */
@@ -653,8 +675,8 @@
     min-width: 18px;
     height: 18px;
     padding: 0 5px;
-    background: #ef4444;
-    color: white;
+    background: var(--notification-badge-bg);
+    color: var(--pure-white);
     font-size: 10px;
     font-weight: 600;
     border-radius: 9px;
@@ -696,14 +718,14 @@
     justify-content: space-between;
     align-items: center;
     padding: 16px 20px;
-    border-bottom: 1px solid #e2e8f0;
+    border-bottom: 1px solid var(--notification-border);
 }
 
 .app-nav__notifications-header h3 {
     margin: 0;
     font-size: 16px;
     font-weight: 600;
-    color: #1e293b;
+    color: var(--notification-text-primary);
 }
 
 .app-nav__notifications-mark-read {
@@ -711,14 +733,14 @@
     border: none;
     padding: 6px 12px;
     font-size: 13px;
-    color: #667eea;
+    color: var(--notification-accent);
     cursor: pointer;
     border-radius: 6px;
     transition: background 0.2s;
 }
 
 .app-nav__notifications-mark-read:hover {
-    background: #f1f5f9;
+    background: var(--notification-border-light);
 }
 
 .app-nav__notifications-list {
@@ -730,26 +752,26 @@
 .app-nav__notifications-loading {
     padding: 40px 20px;
     text-align: center;
-    color: #64748b;
+    color: var(--notification-text-secondary);
 }
 
 .app-nav__notifications-empty {
     padding: 40px 20px;
     text-align: center;
-    color: #64748b;
+    color: var(--notification-text-secondary);
 }
 
 .app-nav__notifications-empty svg {
     display: block;
     margin: 0 auto 12px;
-    color: #cbd5e1;
+    color: var(--notification-icon-empty);
 }
 
 .app-nav__notifications-empty p {
     margin: 0 0 4px;
     font-size: 15px;
     font-weight: 500;
-    color: #334155;
+    color: var(--notification-text-subtle);
 }
 
 .app-nav__notifications-empty span {
@@ -763,19 +785,19 @@
     padding: 14px 20px;
     cursor: pointer;
     transition: background 0.2s;
-    border-bottom: 1px solid #f1f5f9;
+    border-bottom: 1px solid var(--notification-border-light);
 }
 
 .app-nav__notification-item:hover {
-    background: #f8fafc;
+    background: var(--notification-bg-hover);
 }
 
 .app-nav__notification-item--unread {
-    background: #eff6ff;
+    background: var(--notification-bg-unread);
 }
 
 .app-nav__notification-item--unread:hover {
-    background: #dbeafe;
+    background: var(--notification-bg-unread-hover);
 }
 
 .app-nav__notification-icon {
@@ -786,7 +808,7 @@
     align-items: center;
     justify-content: center;
     border-radius: 8px;
-    background: #f1f5f9;
+    background: var(--notification-border-light);
 }
 
 .app-nav__notification-icon svg {
@@ -795,23 +817,23 @@
 }
 
 .app-nav__notification-icon--task_reminder {
-    background: #dbeafe;
-    color: #2563eb;
+    background: var(--notification-type-reminder-bg);
+    color: var(--notification-type-reminder-color);
 }
 
 .app-nav__notification-icon--task_overdue {
-    background: #fee2e2;
-    color: #dc2626;
+    background: var(--notification-type-overdue-bg);
+    color: var(--notification-type-overdue-color);
 }
 
 .app-nav__notification-icon--interview_soon {
-    background: #d1fae5;
-    color: #059669;
+    background: var(--notification-type-interview-bg);
+    color: var(--notification-type-interview-color);
 }
 
 .app-nav__notification-icon--info {
-    background: #e0e7ff;
-    color: #4f46e5;
+    background: var(--notification-type-info-bg);
+    color: var(--notification-type-info-color);
 }
 
 .app-nav__notification-content {
@@ -822,14 +844,14 @@
 .app-nav__notification-title {
     font-size: 14px;
     font-weight: 500;
-    color: #1e293b;
+    color: var(--notification-text-primary);
     line-height: 1.4;
     margin-bottom: 2px;
 }
 
 .app-nav__notification-message {
     font-size: 13px;
-    color: #64748b;
+    color: var(--notification-text-secondary);
     line-height: 1.4;
     margin-bottom: 4px;
     white-space: nowrap;
@@ -839,7 +861,7 @@
 
 .app-nav__notification-time {
     font-size: 12px;
-    color: #94a3b8;
+    color: var(--notification-text-muted);
 }
 
 .app-nav__notification-dismiss {
@@ -848,7 +870,7 @@
     background: none;
     border: none;
     cursor: pointer;
-    color: #94a3b8;
+    color: var(--notification-text-muted);
     border-radius: 4px;
     opacity: 0;
     transition: all 0.2s;
@@ -859,19 +881,19 @@
 }
 
 .app-nav__notification-dismiss:hover {
-    background: #e2e8f0;
-    color: #64748b;
+    background: var(--notification-border);
+    color: var(--notification-text-secondary);
 }
 
 .app-nav__notifications-footer {
     padding: 12px 20px;
-    border-top: 1px solid #e2e8f0;
+    border-top: 1px solid var(--notification-border);
     text-align: center;
 }
 
 .app-nav__notifications-footer a {
     font-size: 13px;
-    color: #667eea;
+    color: var(--notification-accent);
     text-decoration: none;
 }
 
