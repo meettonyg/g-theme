@@ -477,14 +477,16 @@ add_shortcode( 'guestify_reset_password', 'guestify_reset_password_shortcode' );
  * Password Reset Confirmation Shortcode
  *
  * Handles the password reset link and allows user to set new password.
- * Uses existing theme CSS classes from admin.css/components.css.
+ * Outputs full page structure matching the /reset/ page design.
  *
  * Usage: [guestify_reset_confirmation]
  *
  * @return string HTML output for the password reset confirmation form.
  */
 function guestify_reset_confirmation_shortcode() {
-	$output = '';
+	$logo_url = 'https://guestify.ai/wp-content/uploads/2024/01/guestify-logo_500px.png';
+	$form_content = '';
+	$show_form = true;
 
 	// Get key and login from URL
 	$reset_key = isset( $_GET['key'] ) ? sanitize_text_field( $_GET['key'] ) : '';
@@ -500,73 +502,106 @@ function guestify_reset_confirmation_shortcode() {
 
 			// Validate passwords
 			if ( empty( $new_password ) || empty( $confirm_password ) ) {
-				$output .= '<div class="form-message form-message--error">Please enter and confirm your new password.</div>';
+				$form_content .= '<div class="form-message form-message--error">Please enter and confirm your new password.</div>';
 			} elseif ( $new_password !== $confirm_password ) {
-				$output .= '<div class="form-message form-message--error">Passwords do not match. Please try again.</div>';
+				$form_content .= '<div class="form-message form-message--error">Passwords do not match. Please try again.</div>';
 			} elseif ( strlen( $new_password ) < 8 ) {
-				$output .= '<div class="form-message form-message--error">Password must be at least 8 characters long.</div>';
+				$form_content .= '<div class="form-message form-message--error">Password must be at least 8 characters long.</div>';
 			} else {
 				// Verify the reset key
 				$user = check_password_reset_key( $reset_key, $user_login );
 
 				if ( is_wp_error( $user ) ) {
-					$output .= '<div class="form-message form-message--error">This password reset link is invalid or has expired. <a href="' . esc_url( home_url( '/reset/' ) ) . '">Request a new one</a>.</div>';
-					return $output;
+					$form_content .= '<div class="form-message form-message--error">This password reset link is invalid or has expired. <a href="' . esc_url( home_url( '/reset/' ) ) . '">Request a new one</a>.</div>';
+					$show_form = false;
+				} else {
+					// Reset the password
+					reset_password( $user, $new_password );
+
+					$form_content .= '<div class="form-message form-message--success">Your password has been reset successfully!</div>';
+					$form_content .= '<p class="reset-description"><a href="' . esc_url( home_url( '/login/' ) ) . '">Log in with your new password <i class="fas fa-arrow-right" aria-hidden="true"></i></a></p>';
+					$show_form = false;
 				}
-
-				// Reset the password
-				reset_password( $user, $new_password );
-
-				$output .= '<div class="form-message form-message--success">Your password has been reset successfully!</div>';
-				$output .= '<div class="form-footer"><a href="' . esc_url( home_url( '/login/' ) ) . '" class="back-link">Log in with your new password <i class="fas fa-arrow-right" aria-hidden="true"></i></a></div>';
-				return $output;
 			}
 		} else {
-			$output .= '<div class="form-message form-message--error">Security check failed. Please try again.</div>';
+			$form_content .= '<div class="form-message form-message--error">Security check failed. Please try again.</div>';
 		}
 	}
 
 	// If no key/login, show error
 	if ( empty( $reset_key ) || empty( $user_login ) ) {
-		$output .= '<div class="form-message form-message--error">Invalid password reset link. <a href="' . esc_url( home_url( '/reset/' ) ) . '">Request a new one</a>.</div>';
-		return $output;
+		$form_content .= '<div class="form-message form-message--error">Invalid password reset link. <a href="' . esc_url( home_url( '/reset/' ) ) . '">Request a new one</a>.</div>';
+		$show_form = false;
+	} elseif ( $show_form ) {
+		// Verify the reset key
+		$user = check_password_reset_key( $reset_key, $user_login );
+
+		if ( is_wp_error( $user ) ) {
+			$form_content .= '<div class="form-message form-message--error">This password reset link is invalid or has expired. <a href="' . esc_url( home_url( '/reset/' ) ) . '">Request a new one</a>.</div>';
+			$show_form = false;
+		}
 	}
 
-	// Verify the reset key
-	$user = check_password_reset_key( $reset_key, $user_login );
+	// Build the form if needed
+	if ( $show_form ) {
+		$form_content .= '<form method="post" class="reset-form">';
+		$form_content .= wp_nonce_field( 'guestify_new_password', 'guestify_newpass_nonce', true, false );
+		$form_content .= '<input type="hidden" name="reset_key" value="' . esc_attr( $reset_key ) . '" />';
+		$form_content .= '<input type="hidden" name="user_login" value="' . esc_attr( $user_login ) . '" />';
 
-	if ( is_wp_error( $user ) ) {
-		$output .= '<div class="form-message form-message--error">This password reset link is invalid or has expired. <a href="' . esc_url( home_url( '/reset/' ) ) . '">Request a new one</a>.</div>';
-		return $output;
+		$form_content .= '<div class="form-group">';
+		$form_content .= '<label for="new_password" class="form-label">New Password <span class="required">*</span></label>';
+		$form_content .= '<div class="input-wrapper">';
+		$form_content .= '<span class="input-icon"><i class="fas fa-lock" aria-hidden="true"></i></span>';
+		$form_content .= '<input type="password" name="new_password" id="new_password" class="form-input form-input--with-icon" placeholder="Enter new password" required minlength="8" autocomplete="new-password" />';
+		$form_content .= '</div>';
+		$form_content .= '</div>';
+
+		$form_content .= '<div class="form-group">';
+		$form_content .= '<label for="confirm_password" class="form-label">Confirm Password <span class="required">*</span></label>';
+		$form_content .= '<div class="input-wrapper">';
+		$form_content .= '<span class="input-icon"><i class="fas fa-lock" aria-hidden="true"></i></span>';
+		$form_content .= '<input type="password" name="confirm_password" id="confirm_password" class="form-input form-input--with-icon" placeholder="Confirm new password" required minlength="8" autocomplete="new-password" />';
+		$form_content .= '</div>';
+		$form_content .= '</div>';
+
+		$form_content .= '<div class="form-group">';
+		$form_content .= '<button type="submit" name="guestify_newpass_submit" class="submit-button submit-button--secondary"><i class="fas fa-check" aria-hidden="true"></i> Reset Password</button>';
+		$form_content .= '</div>';
+
+		$form_content .= '</form>';
 	}
 
-	// Display new password form
-	$output .= '<form method="post" class="reset-form">';
-	$output .= wp_nonce_field( 'guestify_new_password', 'guestify_newpass_nonce', true, false );
-	$output .= '<input type="hidden" name="reset_key" value="' . esc_attr( $reset_key ) . '" />';
-	$output .= '<input type="hidden" name="user_login" value="' . esc_attr( $user_login ) . '" />';
+	// Build full page structure
+	$output = '<div class="page-container page-container--gradient">';
+	$output .= '<main id="main-content" class="reset-container">';
 
-	$output .= '<div class="form-group">';
-	$output .= '<label for="new_password" class="form-label">New Password <span class="required">*</span></label>';
-	$output .= '<div class="input-wrapper">';
-	$output .= '<span class="input-icon"><i class="fas fa-lock" aria-hidden="true"></i></span>';
-	$output .= '<input type="password" name="new_password" id="new_password" class="form-input form-input--with-icon" placeholder="Enter new password" required minlength="8" autocomplete="new-password" />';
-	$output .= '</div>';
+	// Logo
+	$output .= '<div class="logo-section">';
+	$output .= '<img decoding="async" class="reset-logo" src="' . esc_url( $logo_url ) . '" alt="Guestify Logo">';
 	$output .= '</div>';
 
-	$output .= '<div class="form-group">';
-	$output .= '<label for="confirm_password" class="form-label">Confirm Password <span class="required">*</span></label>';
-	$output .= '<div class="input-wrapper">';
-	$output .= '<span class="input-icon"><i class="fas fa-lock" aria-hidden="true"></i></span>';
-	$output .= '<input type="password" name="confirm_password" id="confirm_password" class="form-input form-input--with-icon" placeholder="Confirm new password" required minlength="8" autocomplete="new-password" />';
-	$output .= '</div>';
+	// Lock Icon
+	$output .= '<div class="icon-wrapper">';
+	$output .= '<i class="fas fa-lock" aria-hidden="true"></i>';
 	$output .= '</div>';
 
-	$output .= '<div class="form-group">';
-	$output .= '<button type="submit" name="guestify_newpass_submit" class="submit-button submit-button--secondary"><i class="fas fa-check" aria-hidden="true"></i> Reset Password</button>';
+	// Title
+	$output .= '<h1 class="reset-title">Set New Password</h1>';
+
+	// Description
+	$output .= '<p class="reset-description">Enter your new password below. Make sure it\'s at least 8 characters long.</p>';
+
+	// Form content (form or error messages)
+	$output .= $form_content;
+
+	// Security Notice
+	$output .= '<div class="security-notice">';
+	$output .= '<p><i class="fas fa-shield-alt" aria-hidden="true"></i> Your new password will be securely saved</p>';
 	$output .= '</div>';
 
-	$output .= '</form>';
+	$output .= '</main>';
+	$output .= '</div>';
 
 	return $output;
 }
