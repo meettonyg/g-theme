@@ -421,7 +421,7 @@ function guestify_reset_password_shortcode() {
 
 					if ( ! is_wp_error( $reset_key ) ) {
 						// Send custom reset email
-						$reset_url = home_url( '/password-reset-confirmation/?key=' . $reset_key . '&login=' . rawurlencode( $user->user_login ) );
+						$reset_url = home_url( '/set-new-password/?key=' . $reset_key . '&login=' . rawurlencode( $user->user_login ) );
 
 						$subject = 'Password Reset Request - Guestify';
 						$message = "Hi " . $user->display_name . ",\n\n";
@@ -438,10 +438,9 @@ function guestify_reset_password_shortcode() {
 					}
 				}
 
-				// Always show success message (security: don't reveal if user exists)
-				$output .= '<div class="form-message form-message--success">If an account exists with that username or email, you will receive a password reset link shortly. Please check your inbox and spam folder.</div>';
-				$output .= '<div class="form-footer"><a href="' . esc_url( home_url( '/login/' ) ) . '" class="back-link"><i class="fas fa-arrow-left" aria-hidden="true"></i> <span>Back to Login</span></a></div>';
-				return $output;
+				// Redirect to confirmation page (security: don't reveal if user exists)
+				wp_redirect( home_url( '/password-reset-confirmation/' ) );
+				exit;
 			}
 		} else {
 			$output .= '<div class="form-message form-message--error">Security check failed. Please try again.</div>';
@@ -701,7 +700,7 @@ function guestify_enqueue_new_theme_pages_css() {
 		'admin' => array(
 			'patterns' => array(
 				'#^/app/downgrade(-confirmation)?/?$#',
-				'#^/(reset|whitelist|password-reset-confirmation)/?$#',
+				'#^/(reset|whitelist|password-reset-confirmation|set-new-password)/?$#',
 			),
 			'styles' => array(
 				array( 'base', 'base.css', array() ),
@@ -978,9 +977,9 @@ function guestify_dequeue_public_assets_on_app_pages() {
         // Tips pages (4 pages)
         '#^/tips(/|/tip-[1-3]/?)?$#',
         
-        // Admin pages (5 pages)
+        // Admin pages (6 pages)
         '#^/app/downgrade(-confirmation)?/?$#',
-        '#^/(reset|whitelist|password-reset-confirmation)/?$#',
+        '#^/(reset|whitelist|password-reset-confirmation|set-new-password)/?$#',
         
         // Demo pages (5 pages)
         '#^/demo(/demo-[1-4])?/?$#',
