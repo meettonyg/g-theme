@@ -165,8 +165,12 @@ select:focus {
   z-index: 1;
 }
 
-.form-input--with-icon {
-  padding-left: 45px;
+.form-input--with-icon,
+input.form-input--with-icon,
+input[type="text"].form-input--with-icon,
+input[type="email"].form-input--with-icon,
+input[type="password"].form-input--with-icon {
+  padding-left: 45px !important;
 }
 
 /* Textarea Specific */
