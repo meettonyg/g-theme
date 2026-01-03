@@ -241,6 +241,16 @@ function enqueue_app_navigation_assets() {
         filemtime(get_template_directory() . '/js/app-navigation.js'),
         true
     );
+
+    // Localize script with nonce for notification API calls
+    wp_localize_script(
+        'guestify-app-nav',
+        'guestifyAppNav',
+        [
+            'nonce' => wp_create_nonce('wp_rest'),
+            'restUrl' => rest_url('guestify/v1/'),
+        ]
+    );
 }
 add_action('wp_enqueue_scripts', 'enqueue_app_navigation_assets');
 

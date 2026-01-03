@@ -266,7 +266,11 @@
 
     // Get WordPress nonce
     function getWPNonce() {
-        // Try to get from various sources
+        // Try to get from our localized script data first
+        if (window.guestifyAppNav && window.guestifyAppNav.nonce) {
+            return window.guestifyAppNav.nonce;
+        }
+        // Fallback to other sources
         if (window.wpApiSettings && window.wpApiSettings.nonce) {
             return window.wpApiSettings.nonce;
         }
