@@ -81,7 +81,8 @@
         list.innerHTML = '<div class="app-nav__notifications-loading"><span>Loading...</span></div>';
 
         try {
-            const response = await fetch('/wp-json/guestify/v1/notifications?per_page=10', {
+            const response = await fetch(`${getRestUrl()}guestify/v1/notifications?per_page=10`, {
+                method: 'GET',
                 credentials: 'same-origin',
                 headers: {
                     'X-WP-Nonce': getWPNonce(),
@@ -96,7 +97,13 @@
                 return;
             }
 
-            if (!response.ok) throw new Error('Failed to fetch: ' + response.status);
+            if (!response.ok) {
+                // Log specifically if it's a 403 to help future debugging
+                if (response.status === 403) {
+                    console.error('API Permission Denied (403): Check Nonce or User Role');
+                }
+                throw new Error('Failed to fetch: ' + response.status);
+            }
 
             const data = await response.json();
             notificationsLoaded = true;
@@ -214,7 +221,7 @@
     // Handle notification click
     function handleNotificationClick(id, actionUrl) {
         // Mark as read (fire and forget, don't block navigation)
-        fetch(`/wp-json/guestify/v1/notifications/${id}/read`, {
+        fetch(`${getRestUrl()}guestify/v1/notifications/${id}/read`, {
             method: 'POST',
             credentials: 'same-origin',
             headers: {
@@ -255,7 +262,7 @@
         }
 
         // Fire API call in background
-        fetch(`/wp-json/guestify/v1/notifications/${id}/dismiss`, {
+        fetch(`${getRestUrl()}guestify/v1/notifications/${id}/dismiss`, {
             method: 'POST',
             credentials: 'same-origin',
             headers: {
@@ -277,7 +284,7 @@
         });
 
         // Fire API call in background
-        fetch('/wp-json/guestify/v1/notifications/read-all', {
+        fetch(`${getRestUrl()}guestify/v1/notifications/read-all`, {
             method: 'POST',
             credentials: 'same-origin',
             headers: {
@@ -297,7 +304,8 @@
         if (!badge) return;
 
         try {
-            const response = await fetch('/wp-json/guestify/v1/notifications/count', {
+            const response = await fetch(`${getRestUrl()}guestify/v1/notifications/count`, {
+                method: 'GET',
                 credentials: 'same-origin',
                 headers: {
                     'X-WP-Nonce': getWPNonce(),
@@ -331,9 +339,9 @@
 
     // Get WordPress nonce
     function getWPNonce() {
-        // Try to get from our localized script data first
-        if (window.guestifyAppNav && window.guestifyAppNav.nonce) {
-            return window.guestifyAppNav.nonce;
+        // Try to get from our localized script data first (guestify_vars)
+        if (window.guestify_vars && window.guestify_vars.nonce) {
+            return window.guestify_vars.nonce;
         }
         // Fallback to other sources
         if (window.wpApiSettings && window.wpApiSettings.nonce) {
@@ -351,6 +359,15 @@
             return meta.content;
         }
         return '';
+    }
+
+    // Get REST API base URL
+    function getRestUrl() {
+        if (window.guestify_vars && window.guestify_vars.root) {
+            return window.guestify_vars.root;
+        }
+        // Fallback to default WordPress REST path
+        return '/wp-json/';
     }
 
     // Escape HTML for safe rendering

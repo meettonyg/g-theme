@@ -242,13 +242,14 @@ function enqueue_app_navigation_assets() {
         true
     );
 
-    // Localize script with nonce for notification API calls
+    // Localize script with REST API nonce for notification API calls
     wp_localize_script(
         'guestify-app-nav',
-        'guestifyAppNav',
+        'guestify_vars',
         [
-            'nonce' => wp_create_nonce('wp_rest'),
-            'restUrl' => rest_url('guestify/v1/'),
+            'root'            => esc_url_raw( rest_url() ),
+            'nonce'           => wp_create_nonce( 'wp_rest' ),
+            'current_user_id' => get_current_user_id(),
         ]
     );
 }
