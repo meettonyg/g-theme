@@ -967,6 +967,12 @@ add_filter( 'wp_resource_hints', 'guestify_remove_emoji_dns_prefetch', 10, 2 );
 add_filter( 'xmlrpc_enabled', '__return_false' );
 
 /**
+ * Disable admin email verification prompt
+ * Prevents WordPress from showing the "Administration email verification" screen
+ */
+add_filter( 'admin_email_check_interval', '__return_false' );
+
+/**
  * Remove query strings from static resources for better caching
  */
 function guestify_remove_query_strings( $src ) {
