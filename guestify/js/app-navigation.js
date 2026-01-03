@@ -85,17 +85,27 @@
                 credentials: 'same-origin',
                 headers: {
                     'X-WP-Nonce': getWPNonce(),
+                    'Content-Type': 'application/json',
                 }
             });
 
-            if (!response.ok) throw new Error('Failed to fetch');
+            if (response.status === 404) {
+                // Endpoint doesn't exist yet
+                notificationsLoaded = true;
+                renderNotifications([]);
+                return;
+            }
+
+            if (!response.ok) throw new Error('Failed to fetch: ' + response.status);
 
             const data = await response.json();
             notificationsLoaded = true;
             renderNotifications(data.data || []);
         } catch (error) {
             console.error('Failed to fetch notifications:', error);
-            list.innerHTML = '<div class="app-nav__notifications-empty">Unable to load notifications</div>';
+            // Show empty state instead of error for better UX
+            notificationsLoaded = true;
+            renderNotifications([]);
         }
     }
 
@@ -152,26 +162,24 @@
 
     // Handle notification click
     window.handleNotificationClick = async function(id, actionUrl) {
-        // Mark as read
-        try {
-            await fetch(`/wp-json/guestify/v1/notifications/${id}/read`, {
-                method: 'POST',
-                credentials: 'same-origin',
-                headers: {
-                    'X-WP-Nonce': getWPNonce(),
-                }
-            });
-
-            // Update UI
-            const item = document.querySelector(`.app-nav__notification-item[data-id="${id}"]`);
-            if (item) {
-                item.classList.remove('app-nav__notification-item--unread');
+        // Mark as read (fire and forget, don't block navigation)
+        fetch(`/wp-json/guestify/v1/notifications/${id}/read`, {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: {
+                'X-WP-Nonce': getWPNonce(),
+                'Content-Type': 'application/json',
             }
-
-            // Update badge
+        }).then(() => {
             updateNotificationBadge();
-        } catch (error) {
-            console.error('Failed to mark notification as read:', error);
+        }).catch(() => {
+            // Silently fail
+        });
+
+        // Update UI immediately
+        const item = document.querySelector(`.app-nav__notification-item[data-id="${id}"]`);
+        if (item) {
+            item.classList.remove('app-nav__notification-item--unread');
         }
 
         // Navigate if action URL provided
@@ -183,55 +191,53 @@
 
     // Dismiss notification
     window.dismissNotification = async function(id) {
-        try {
-            await fetch(`/wp-json/guestify/v1/notifications/${id}/dismiss`, {
-                method: 'POST',
-                credentials: 'same-origin',
-                headers: {
-                    'X-WP-Nonce': getWPNonce(),
-                }
-            });
-
-            // Remove from UI
-            const item = document.querySelector(`.app-nav__notification-item[data-id="${id}"]`);
-            if (item) {
-                item.remove();
-            }
-
-            // Check if list is empty
-            const list = document.getElementById('notificationsList');
-            if (list && list.children.length === 0) {
-                renderNotifications([]);
-            }
-
-            // Update badge
-            updateNotificationBadge();
-        } catch (error) {
-            console.error('Failed to dismiss notification:', error);
+        // Remove from UI immediately for responsiveness
+        const item = document.querySelector(`.app-nav__notification-item[data-id="${id}"]`);
+        if (item) {
+            item.remove();
         }
+
+        // Check if list is empty
+        const list = document.getElementById('notificationsList');
+        if (list && list.children.length === 0) {
+            renderNotifications([]);
+        }
+
+        // Fire API call in background
+        fetch(`/wp-json/guestify/v1/notifications/${id}/dismiss`, {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: {
+                'X-WP-Nonce': getWPNonce(),
+                'Content-Type': 'application/json',
+            }
+        }).then(() => {
+            updateNotificationBadge();
+        }).catch(() => {
+            // Silently fail
+        });
     };
 
     // Mark all notifications as read
     window.markAllNotificationsRead = async function() {
-        try {
-            await fetch('/wp-json/guestify/v1/notifications/read-all', {
-                method: 'POST',
-                credentials: 'same-origin',
-                headers: {
-                    'X-WP-Nonce': getWPNonce(),
-                }
-            });
+        // Update UI immediately
+        document.querySelectorAll('.app-nav__notification-item--unread').forEach(item => {
+            item.classList.remove('app-nav__notification-item--unread');
+        });
 
-            // Update UI
-            document.querySelectorAll('.app-nav__notification-item--unread').forEach(item => {
-                item.classList.remove('app-nav__notification-item--unread');
-            });
-
-            // Update badge
+        // Fire API call in background
+        fetch('/wp-json/guestify/v1/notifications/read-all', {
+            method: 'POST',
+            credentials: 'same-origin',
+            headers: {
+                'X-WP-Nonce': getWPNonce(),
+                'Content-Type': 'application/json',
+            }
+        }).then(() => {
             updateNotificationBadge();
-        } catch (error) {
-            console.error('Failed to mark all as read:', error);
-        }
+        }).catch(() => {
+            // Silently fail
+        });
     };
 
     // Update notification badge count
@@ -244,10 +250,16 @@
                 credentials: 'same-origin',
                 headers: {
                     'X-WP-Nonce': getWPNonce(),
+                    'Content-Type': 'application/json',
                 }
             });
 
-            if (!response.ok) throw new Error('Failed to fetch');
+            // Silently handle missing endpoint or auth errors
+            if (!response.ok) {
+                badge.textContent = '';
+                badge.classList.remove('app-nav__notifications-badge--visible');
+                return;
+            }
 
             const data = await response.json();
             const count = data.count || 0;
@@ -260,7 +272,9 @@
                 badge.classList.remove('app-nav__notifications-badge--visible');
             }
         } catch (error) {
-            console.error('Failed to update badge:', error);
+            // Silently fail - don't spam console for missing endpoints
+            badge.textContent = '';
+            badge.classList.remove('app-nav__notifications-badge--visible');
         }
     }
 
