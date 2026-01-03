@@ -681,8 +681,10 @@ add_action( 'wp_enqueue_scripts', 'guestify_enqueue_homepage_css' );
  */
 function guestify_enqueue_new_theme_pages_css() {
 	$request_uri = isset( $_SERVER['REQUEST_URI'] ) ? $_SERVER['REQUEST_URI'] : '';
-	$css_dir     = WP_CONTENT_DIR . '/css/';
-	$css_url     = content_url( '/css/' );
+	$wp_css_dir     = WP_CONTENT_DIR . '/css/';
+	$wp_css_url     = content_url( '/css/' );
+	$theme_css_dir  = get_stylesheet_directory() . '/css/';
+	$theme_css_url  = get_stylesheet_directory_uri() . '/css/';
 
 	// Configuration: URL patterns mapped to their CSS files
 	// Format: 'key' => [ 'patterns' => [...], 'styles' => [ [handle, file, deps], ... ] ]
@@ -782,12 +784,20 @@ function guestify_enqueue_new_theme_pages_css() {
 	// Enqueue matched CSS files
 	foreach ( $matched_styles as $style ) {
 		list( $handle, $file, $deps ) = $style;
-		$path = $css_dir . $file;
+
+		// components.css is in theme directory, others in wp-content/css/
+		if ( 'components.css' === $file ) {
+			$path = $theme_css_dir . $file;
+			$url  = $theme_css_url . $file;
+		} else {
+			$path = $wp_css_dir . $file;
+			$url  = $wp_css_url . $file;
+		}
 
 		if ( file_exists( $path ) ) {
 			wp_enqueue_style(
 				'guestify-new-theme-' . $handle,
-				$css_url . $file,
+				$url,
 				array_map( function( $d ) { return 'guestify-new-theme-' . $d; }, $deps ),
 				filemtime( $path )
 			);
