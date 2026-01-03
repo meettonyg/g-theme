@@ -81,7 +81,7 @@ function is_app_page($section = '') {
     $url_path = rtrim($url_path, '/');
     
     // Define all paths that should show app navigation
-    $app_navigation_paths = ['/app', '/account', '/courses', '/tools'];
+    $app_navigation_paths = ['/app', '/account', '/courses', '/tools', '/onboarding'];
     
     // Check if URL matches any app navigation path
     foreach ($app_navigation_paths as $app_path) {
@@ -219,12 +219,17 @@ function get_svg_icon($type) {
 
 /**
  * Enqueue app navigation assets
+ *
+ * Loads CSS/JS on app pages. The REST API nonce is provided directly
+ * in the app-navigation.php template to ensure it's available on any
+ * page where the nav bar is displayed.
  */
 function enqueue_app_navigation_assets() {
+    // Only load assets on app pages
     if (!is_app_page()) {
         return;
     }
-    
+
     // Enqueue CSS
     wp_enqueue_style(
         'guestify-app-nav',
@@ -232,7 +237,7 @@ function enqueue_app_navigation_assets() {
         [],
         filemtime(get_template_directory() . '/css/app-navigation.css')
     );
-    
+
     // Enqueue JavaScript
     wp_enqueue_script(
         'guestify-app-nav',
@@ -240,16 +245,6 @@ function enqueue_app_navigation_assets() {
         [],
         filemtime(get_template_directory() . '/js/app-navigation.js'),
         true
-    );
-
-    // Localize script with nonce for notification API calls
-    wp_localize_script(
-        'guestify-app-nav',
-        'guestifyAppNav',
-        [
-            'nonce' => wp_create_nonce('wp_rest'),
-            'restUrl' => rest_url('guestify/v1/'),
-        ]
     );
 }
 add_action('wp_enqueue_scripts', 'enqueue_app_navigation_assets');

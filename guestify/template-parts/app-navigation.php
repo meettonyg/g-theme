@@ -1,10 +1,10 @@
 <?php
 /**
  * App Navigation Header
- * 
+ *
  * Displays on /app/, /account/, /courses/, /tools/ and their child pages
  * Uses Guestify Visual Brand Standards with dark theme
- * 
+ *
  * @package Guestify
  */
 
@@ -12,6 +12,19 @@
 if (!is_app_page()) {
     return;
 }
+
+// Output REST API nonce for JavaScript notification calls
+// This is output directly in the template to ensure it's available
+// on any page where the nav bar is displayed
+if (is_user_logged_in()) :
+?>
+<script>
+window.guestifyAppNav = {
+    nonce: '<?php echo wp_create_nonce('wp_rest'); ?>',
+    restUrl: '<?php echo esc_url(rest_url('guestify/v1/')); ?>'
+};
+</script>
+<?php endif;
 
 $current_user = wp_get_current_user();
 $user_avatar_url = get_avatar_url($current_user->ID, ['size' => 32]);
@@ -122,7 +135,7 @@ foreach ($menu_items as $item) {
                         </div>
                     </div>
                     <div class="app-nav__notifications-footer">
-                        <a href="<?php echo esc_url(home_url('/app/settings/')); ?>">Notification Settings</a>
+                        <a href="<?php echo esc_url(home_url('/account/notifications/')); ?>">Notification Settings</a>
                     </div>
                 </div>
             </div>
