@@ -1184,3 +1184,25 @@ add_action( 'after_setup_theme', function() {
 		show_admin_bar( false );
 	}
 });
+
+/**
+ * Add dynamic Login/Logout menu item to frontend menu
+ *
+ * Replaces the need for "Login or Logout Menu Item" plugin.
+ * Shows "Log In" link when logged out, "Log Out" link when logged in.
+ */
+function guestify_add_login_logout_menu_item( $items, $args ) {
+	// Only add to the frontend menu
+	if ( $args->theme_location !== 'frontend' ) {
+		return $items;
+	}
+
+	if ( is_user_logged_in() ) {
+		$items .= '<li class="menu-item menu-item-logout"><a href="' . esc_url( wp_logout_url( home_url() ) ) . '">Log Out</a></li>';
+	} else {
+		$items .= '<li class="menu-item menu-item-login"><a href="' . esc_url( home_url( '/login/' ) ) . '">Log In</a></li>';
+	}
+
+	return $items;
+}
+add_filter( 'wp_nav_menu_items', 'guestify_add_login_logout_menu_item', 10, 2 );
