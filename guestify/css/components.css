@@ -150,6 +150,25 @@ select:focus {
   font-weight: 500;
 }
 
+/* Input with Icon */
+.input-wrapper {
+  position: relative;
+}
+
+.input-icon {
+  position: absolute;
+  left: 15px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--text-light, #6b7280);
+  pointer-events: none;
+  z-index: 1;
+}
+
+.form-input--with-icon {
+  padding-left: 45px;
+}
+
 /* Textarea Specific */
 textarea {
   min-height: 80px;
