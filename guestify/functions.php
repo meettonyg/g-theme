@@ -1198,9 +1198,9 @@ function guestify_add_login_logout_menu_item( $items, $args ) {
 	}
 
 	if ( is_user_logged_in() ) {
-		$items .= '<li class="menu-item menu-item-logout"><a href="' . esc_url( wp_logout_url( home_url() ) ) . '">Log Out</a></li>';
+		$items .= '<li class="menu-item menu-item-logout"><a href="' . esc_url( wp_logout_url( home_url() ) ) . '">' . esc_html__( 'Log Out', 'guestify' ) . '</a></li>';
 	} else {
-		$items .= '<li class="menu-item menu-item-login"><a href="' . esc_url( home_url( '/login/' ) ) . '">Log In</a></li>';
+		$items .= '<li class="menu-item menu-item-login"><a href="' . esc_url( home_url( '/login/' ) ) . '">' . esc_html__( 'Log In', 'guestify' ) . '</a></li>';
 	}
 
 	return $items;
