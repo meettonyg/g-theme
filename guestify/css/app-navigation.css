@@ -458,7 +458,7 @@
 }
 
 .app-nav .app-nav__user-menu-item--progress::after {
-    content: '20%';
+    content: attr(data-progress) '%';
     position: absolute;
     right: 20px;
     font-size: 12px;

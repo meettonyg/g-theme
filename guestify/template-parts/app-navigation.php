@@ -33,6 +33,22 @@ if (empty($user_initials)) {
     $user_initials = strtoupper(substr($current_user->display_name, 0, 1));
 }
 
+// Get onboarding progress from cached usermeta (synced by mk4 plugin)
+// Only show if GMKB_Onboarding_Repository is available (mk4 plugin active)
+$onboarding_progress = null;
+if (class_exists('GMKB_Onboarding_Repository')) {
+    // Use cached value for performance; falls back to fresh calculation if empty
+    $cached_progress = get_user_meta($current_user->ID, 'guestify_onboarding_progress_percent', true);
+    if ($cached_progress !== '' && $cached_progress !== false) {
+        $onboarding_progress = (int) $cached_progress;
+    } else {
+        // Fallback: calculate fresh if no cached value exists
+        $repo = new GMKB_Onboarding_Repository();
+        $progress_data = $repo->calculate_progress($current_user->ID);
+        $onboarding_progress = $progress_data['points']['percentage'] ?? 0;
+    }
+}
+
 // Get the app menu from registered location
 $menu_locations = get_nav_menu_locations();
 $app_menu_id = isset($menu_locations['app-menu']) ? $menu_locations['app-menu'] : 0;
@@ -167,12 +183,16 @@ foreach ($menu_items as $item) {
                     <div class="app-nav__user-menu-divider"></div>
                     
                     <div class="app-nav__user-menu-section">
-                        <a href="<?php echo home_url('/app/onboarding/'); ?>" class="app-nav__user-menu-item app-nav__user-menu-item--progress">
+                        <?php if ($onboarding_progress !== null) : ?>
+                        <a href="<?php echo home_url('/app/onboarding/'); ?>"
+                           class="app-nav__user-menu-item app-nav__user-menu-item--progress"
+                           data-progress="<?php echo esc_attr($onboarding_progress); ?>">
                             <svg class="app-nav__user-menu-icon" viewBox="0 0 20 20" fill="currentColor">
                                 <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-8-3a1 1 0 00-.867.5 1 1 0 11-1.731-1A3 3 0 0113 8a3.001 3.001 0 01-2 2.83V11a1 1 0 11-2 0v-1a1 1 0 011-1 1 1 0 100-2zm0 8a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/>
                             </svg>
                             Guest Onboarding
                         </a>
+                        <?php endif; ?>
                         
                         <a href="<?php echo home_url('/courses/'); ?>" class="app-nav__user-menu-item">
                             <svg class="app-nav__user-menu-icon" viewBox="0 0 20 20" fill="currentColor">

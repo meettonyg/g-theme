@@ -142,10 +142,48 @@ function guestify_widgets_init() {
 add_action( 'widgets_init', 'guestify_widgets_init' );
 
 /**
+ * Enqueue Guestify Design Tokens (Global)
+ *
+ * This function registers and enqueues the unified design token system.
+ * All Guestify plugins should depend on this stylesheet.
+ *
+ * The tokens are registered with handle 'guestify-tokens' which plugins
+ * can check for using wp_style_is('guestify-tokens', 'registered').
+ *
+ * @since 1.0.0
+ */
+function guestify_enqueue_design_tokens() {
+	$tokens_path = get_template_directory() . '/css/guestify-tokens.css';
+
+	if ( file_exists( $tokens_path ) ) {
+		wp_register_style(
+			'guestify-tokens',
+			get_template_directory_uri() . '/css/guestify-tokens.css',
+			array(),
+			filemtime( $tokens_path )
+		);
+		wp_enqueue_style( 'guestify-tokens' );
+	}
+}
+// Priority 1 ensures tokens load before any other styles
+add_action( 'wp_enqueue_scripts', 'guestify_enqueue_design_tokens', 1 );
+add_action( 'admin_enqueue_scripts', 'guestify_enqueue_design_tokens', 1 );
+
+/**
+ * Filter to indicate design tokens are available
+ *
+ * Plugins can check: apply_filters('guestify_design_tokens_available', false)
+ * Returns true if the theme is active and tokens are registered.
+ *
+ * @since 1.0.0
+ */
+add_filter( 'guestify_design_tokens_available', '__return_true' );
+
+/**
  * Enqueue scripts and styles.
  */
 function guestify_scripts() {
-	wp_enqueue_style( 'guestify-style', get_stylesheet_uri(), array(), _S_VERSION );
+	wp_enqueue_style( 'guestify-style', get_stylesheet_uri(), array( 'guestify-tokens' ), _S_VERSION );
 	wp_style_add_data( 'guestify-style', 'rtl', 'replace' );
 
 	// Enqueue Font Awesome
