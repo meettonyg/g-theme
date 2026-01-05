@@ -1,5 +1,27 @@
 /* css/login.css — only for the Blank template login page */
 
+/* ==================== Unified Token Variables ==================== */
+:root {
+    /* Login page colors - mapped to unified Guestify tokens */
+    --login-bg: var(--gfy-white, #fff);
+    --login-text: var(--gfy-gray-800, #333);
+    --login-text-muted: var(--gfy-gray-500, #666);
+    --login-panel-gradient-start: var(--gfy-primary-800, #1a365d);
+    --login-panel-gradient-end: var(--gfy-primary-700, #2c5282);
+    --login-panel-text: var(--gfy-white, #fff);
+    --login-feature-icon: var(--gfy-success, #68d391);
+    --login-btn-gradient-start: var(--gfy-info-600, #0073aa);
+    --login-btn-gradient-end: var(--gfy-info-700, #005a87);
+    --login-btn-hover-start: var(--gfy-info-700, #005a87);
+    --login-btn-hover-end: var(--gfy-info-800, #004266);
+    --login-error-bg: var(--gfy-error-50, #fef2f2);
+    --login-error-text: var(--gfy-error-600, #dc2626);
+    --login-error-border: var(--gfy-error-600, #dc2626);
+    --login-link: var(--gfy-info-600, #0073aa);
+    --login-link-hover: var(--gfy-info-700, #005a87);
+    --login-separator: var(--gfy-gray-300, #ccc);
+}
+
 /* Container */
 .login-page {
   display: flex;
@@ -44,14 +66,14 @@
 
 .login-social__link {
   margin-right: 1rem;
-  color: #666;
+  color: var(--login-text-muted);
   text-decoration: none;
 }
 
 /* Right Panel - Illustration */
 .illustration-panel {
   flex: 2;
-  background: linear-gradient(135deg, #1a365d 0%, #2c5282 100%);
+  background: linear-gradient(135deg, var(--login-panel-gradient-start) 0%, var(--login-panel-gradient-end) 100%);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -60,7 +82,7 @@
 
 .illustration-panel__content {
   max-width: 500px;
-  color: #fff;
+  color: var(--login-panel-text);
 }
 
 .illustration-panel__tagline {
@@ -68,7 +90,7 @@
   font-weight: 700;
   margin-bottom: 1rem;
   line-height: 1.3;
-  color: #fff;
+  color: var(--login-panel-text);
 }
 
 .illustration-panel__subtitle {
@@ -92,13 +114,13 @@
 }
 
 .illustration-panel__feature i {
-  color: #68d391;
+  color: var(--login-feature-icon);
 }
 
 /* Login Button */
 #wp-submit {
-  background: linear-gradient(135deg, #0073aa 0%, #005a87 100%);
-  color: #fff;
+  background: linear-gradient(135deg, var(--login-btn-gradient-start) 0%, var(--login-btn-gradient-end) 100%);
+  color: var(--login-panel-text);
   border: none;
   padding: 12px 32px;
   font-size: 1rem;
@@ -112,7 +134,7 @@
 }
 
 #wp-submit:hover {
-  background: linear-gradient(135deg, #005a87 0%, #004266 100%);
+  background: linear-gradient(135deg, var(--login-btn-hover-start) 0%, var(--login-btn-hover-end) 100%);
   box-shadow: 0 4px 12px rgba(0, 115, 170, 0.4);
   transform: translateY(-2px);
 }
@@ -129,12 +151,12 @@
 
 /* Login Error Message */
 .wpc-login-error {
-  background: #fef2f2;
-  color: #dc2626;
+  background: var(--login-error-bg);
+  color: var(--login-error-text);
   padding: 12px 16px;
   border-radius: 6px;
   margin-bottom: 16px;
-  border-left: 4px solid #dc2626;
+  border-left: 4px solid var(--login-error-border);
   font-size: 0.9rem;
 }
 
@@ -147,18 +169,18 @@
 }
 
 .wpc-login-links a {
-  color: #0073aa;
+  color: var(--login-link);
   text-decoration: none;
   transition: color 0.2s ease;
 }
 
 .wpc-login-links a:hover {
-  color: #005a87;
+  color: var(--login-link-hover);
   text-decoration: underline;
 }
 
 .wpc-login-links-separator {
-  color: #ccc;
+  color: var(--login-separator);
 }
 
 /* Mobile fallback */

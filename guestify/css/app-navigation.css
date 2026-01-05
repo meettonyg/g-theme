@@ -13,42 +13,44 @@
  */
 
 :root {
-    --intelligence-blue: #1B365D;
-    --connection-green: #2B7A4C;
-    --authority-gray: #4A5568;
-    --transformation-orange: #ED8936;
-    --insight-purple: #805AD5;
-    --success-teal: #38B2AC;
-    --pure-white: #FFFFFF;
-    --off-white: #F7FAFC;
-    --light-gray: #E2E8F0;
-    --medium-gray: #718096;
-    --dark-gray: #2D3748;
-    --near-black: #1A202C;
-    --border-color: #E5E7EB;
-    --hover-bg: #F9FAFB;
+    /* ==================== Unified Token Variables ==================== */
+    /* Brand colors - mapped to unified Guestify tokens */
+    --intelligence-blue: var(--gfy-primary-800, #1B365D);
+    --connection-green: var(--gfy-secondary-500, #2B7A4C);
+    --authority-gray: var(--gfy-gray-600, #4A5568);
+    --transformation-orange: var(--gfy-accent-500, #ED8936);
+    --insight-purple: var(--gfy-purple-500, #805AD5);
+    --success-teal: var(--gfy-teal-400, #38B2AC);
+    --pure-white: var(--gfy-white, #FFFFFF);
+    --off-white: var(--gfy-off-white, #F7FAFC);
+    --light-gray: var(--gfy-gray-200, #E2E8F0);
+    --medium-gray: var(--gfy-gray-500, #718096);
+    --dark-gray: var(--gfy-gray-700, #2D3748);
+    --near-black: var(--gfy-near-black, #1A202C);
+    --border-color: var(--gfy-border-color, #E5E7EB);
+    --hover-bg: var(--gfy-gray-50, #F9FAFB);
 
     /* Notification panel colors */
-    --notification-accent: #667eea;
-    --notification-text-primary: #1e293b;
-    --notification-text-secondary: #64748b;
-    --notification-text-muted: #94a3b8;
-    --notification-text-subtle: #334155;
-    --notification-border: #e2e8f0;
-    --notification-border-light: #f1f5f9;
-    --notification-bg-hover: #f8fafc;
-    --notification-bg-unread: #eff6ff;
-    --notification-bg-unread-hover: #dbeafe;
-    --notification-icon-empty: #cbd5e1;
-    --notification-badge-bg: #ef4444;
-    --notification-type-reminder-bg: #dbeafe;
-    --notification-type-reminder-color: #2563eb;
-    --notification-type-overdue-bg: #fee2e2;
-    --notification-type-overdue-color: #dc2626;
-    --notification-type-interview-bg: #d1fae5;
-    --notification-type-interview-color: #059669;
-    --notification-type-info-bg: #e0e7ff;
-    --notification-type-info-color: #4f46e5;
+    --notification-accent: var(--gfy-purple-400, #667eea);
+    --notification-text-primary: var(--gfy-gray-800, #1e293b);
+    --notification-text-secondary: var(--gfy-gray-500, #64748b);
+    --notification-text-muted: var(--gfy-gray-400, #94a3b8);
+    --notification-text-subtle: var(--gfy-gray-700, #334155);
+    --notification-border: var(--gfy-gray-200, #e2e8f0);
+    --notification-border-light: var(--gfy-gray-100, #f1f5f9);
+    --notification-bg-hover: var(--gfy-gray-50, #f8fafc);
+    --notification-bg-unread: var(--gfy-info-50, #eff6ff);
+    --notification-bg-unread-hover: var(--gfy-info-100, #dbeafe);
+    --notification-icon-empty: var(--gfy-gray-300, #cbd5e1);
+    --notification-badge-bg: var(--gfy-error, #ef4444);
+    --notification-type-reminder-bg: var(--gfy-info-100, #dbeafe);
+    --notification-type-reminder-color: var(--gfy-info-600, #2563eb);
+    --notification-type-overdue-bg: var(--gfy-error-100, #fee2e2);
+    --notification-type-overdue-color: var(--gfy-error-600, #dc2626);
+    --notification-type-interview-bg: var(--gfy-success-100, #d1fae5);
+    --notification-type-interview-color: var(--gfy-success-600, #059669);
+    --notification-type-info-bg: var(--gfy-purple-100, #e0e7ff);
+    --notification-type-info-color: var(--gfy-purple-600, #4f46e5);
 }
 
 /* Hide skip link on app pages (style.css is not loaded here) */
@@ -437,12 +439,12 @@
 }
 
 .app-nav .app-nav__user-menu-item--danger {
-    color: #EF4444;
+    color: var(--gfy-error, #EF4444);
 }
 
 .app-nav .app-nav__user-menu-item--danger:hover {
-    background-color: #FEF2F2;
-    color: #DC2626;
+    background-color: var(--gfy-error-50, #FEF2F2);
+    color: var(--gfy-error-600, #DC2626);
 }
 
 .app-nav .app-nav__user-menu-icon {
