@@ -174,13 +174,13 @@
 }
 
 .app-nav .app-nav__link--active {
-    background: var(--connection-green);
+    background: var(--transformation-orange);
     color: #FFFFFF;
     font-weight: 600;
 }
 
 .app-nav .app-nav__link--active:hover {
-    background: var(--connection-green);
+    background: var(--transformation-orange);
     color: #FFFFFF;
 }
 
@@ -194,6 +194,11 @@
     height: 16px;
     fill: currentColor;
     flex-shrink: 0;
+    /* Support for Font Awesome icons */
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 
 .app-nav .app-nav__dropdown-icon {
@@ -208,24 +213,49 @@
     transform: rotate(180deg);
 }
 
-/* Dropdown Menu */
+/* Dropdown Menu - Matching Mockup Styles */
 .app-nav .app-nav__dropdown {
     position: absolute;
-    top: calc(100% + 4px);
+    top: calc(100% + 8px);
     left: 0;
-    min-width: 220px;
+    min-width: 240px;
     background: var(--pure-white);
-    border: 1px solid var(--border-color);
-    border-radius: 8px;
-    box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.25), 0 10px 10px -5px rgba(0, 0, 0, 0.1);
+    border: none;
+    border-radius: 12px;
+    box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.15), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
     opacity: 0;
     visibility: hidden;
-    transform: translateY(-8px);
-    transition: all 0.2s ease;
+    transform: translateY(-10px);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
     list-style: none;
     margin: 0;
-    padding: 6px 0;
+    padding: 8px;
     z-index: 1001;
+}
+
+/* Dropdown Section Labels */
+.app-nav .app-nav__dropdown-label {
+    padding: 12px 16px 6px;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--medium-gray);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    list-style: none;
+    margin: 0;
+}
+
+/* First label doesn't need extra top padding */
+.app-nav .app-nav__dropdown-label:first-child {
+    padding-top: 8px;
+}
+
+/* Dropdown Divider */
+.app-nav .app-nav__dropdown-divider {
+    height: 1px;
+    background: var(--light-gray);
+    margin: 8px 8px;
+    list-style: none;
 }
 
 .app-nav .app-nav__dropdown-item {
@@ -235,24 +265,44 @@
 .app-nav .app-nav__dropdown-link {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 12px;
     padding: 10px 16px;
     text-decoration: none;
     color: var(--dark-gray);
     font-weight: 500;
     font-size: 14px;
     transition: all 0.15s ease;
-    border-radius: 0;
+    border-radius: 8px;
+    margin: 2px 0;
+}
+
+.app-nav .app-nav__dropdown-link .app-nav__icon {
+    width: 18px;
+    height: 18px;
+    color: var(--medium-gray);
+    transition: color 0.15s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
 }
 
 .app-nav .app-nav__dropdown-link:hover {
     background: var(--hover-bg);
-    color: var(--intelligence-blue);
+    color: var(--gfy-info-600, #2563eb);
+}
+
+.app-nav .app-nav__dropdown-link:hover .app-nav__icon {
+    color: var(--gfy-info-500, #3b82f6);
 }
 
 .app-nav .app-nav__dropdown-link--active {
-    background: var(--intelligence-blue);
-    color: var(--pure-white);
+    background: var(--gfy-info-50, #eff6ff);
+    color: var(--gfy-info-600, #2563eb);
+}
+
+.app-nav .app-nav__dropdown-link--active .app-nav__icon {
+    color: var(--gfy-info-500, #3b82f6);
 }
 
 /* User Section */

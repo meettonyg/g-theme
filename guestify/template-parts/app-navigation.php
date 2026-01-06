@@ -111,15 +111,78 @@ foreach ($menu_items as $item) {
                 
                 <?php if ($has_children): ?>
                 <ul class="app-nav__dropdown">
-                    <?php foreach ($menu_data['children'] as $child_item): ?>
+                    <?php
+                    $child_count = 0;
+                    $total_children = count($menu_data['children']);
+                    $parent_title = strtolower($item->title);
+
+                    // Define section breaks for each parent menu (matching mockup)
+                    $section_config = [
+                        'prospector' => [
+                            'label_at_start' => 'Search By',
+                            'breaks' => [
+                                ['after' => 'Podcasts by Title', 'divider' => true, 'label' => 'Advanced']
+                            ]
+                        ],
+                        'pipeline' => [
+                            'breaks' => [
+                                ['after' => 'Calendar', 'divider' => true]
+                            ]
+                        ],
+                        'intelligence' => [
+                            'breaks' => [
+                                ['after' => 'Social Metrics', 'divider' => true, 'label' => 'Tools']
+                            ]
+                        ],
+                        'outreach' => [
+                            'breaks' => [
+                                ['after' => 'Templates', 'divider' => true]
+                            ]
+                        ],
+                        'media kit' => [
+                            'label_at_start' => 'Profile',
+                            'breaks' => [
+                                ['after' => 'Social Links', 'divider' => true, 'label' => 'Media Kit'],
+                                ['after' => 'AI Content Tools', 'divider' => true]
+                            ]
+                        ],
+                        'insights' => []
+                    ];
+
+                    $config = isset($section_config[$parent_title]) ? $section_config[$parent_title] : [];
+
+                    // Show initial label if configured
+                    if (!empty($config['label_at_start'])): ?>
+                    <li class="app-nav__dropdown-label"><?php echo esc_html($config['label_at_start']); ?></li>
+                    <?php endif;
+
+                    foreach ($menu_data['children'] as $child_item):
+                        $child_title = $child_item->title;
+                    ?>
                     <li class="app-nav__dropdown-item">
-                        <a href="<?php echo esc_url($child_item->url); ?>" 
+                        <a href="<?php echo esc_url($child_item->url); ?>"
                            class="app-nav__dropdown-link <?php echo is_app_page_active($child_item->url) ? 'app-nav__dropdown-link--active' : ''; ?>">
-                            <?php echo get_menu_icon($child_item->title); ?>
-                            <?php echo esc_html($child_item->title); ?>
+                            <?php echo get_menu_icon($child_title); ?>
+                            <?php echo esc_html($child_title); ?>
                         </a>
                     </li>
-                    <?php endforeach; ?>
+                    <?php
+                    // Check if we need a divider/label after this item
+                    if (!empty($config['breaks'])):
+                        foreach ($config['breaks'] as $break):
+                            if ($break['after'] === $child_title):
+                                if (!empty($break['divider'])): ?>
+                    <li class="app-nav__dropdown-divider"></li>
+                                <?php endif;
+                                if (!empty($break['label'])): ?>
+                    <li class="app-nav__dropdown-label"><?php echo esc_html($break['label']); ?></li>
+                                <?php endif;
+                            endif;
+                        endforeach;
+                    endif;
+
+                    $child_count++;
+                    endforeach; ?>
                 </ul>
                 <?php endif; ?>
             </li>
@@ -131,9 +194,7 @@ foreach ($menu_items as $item) {
             <!-- Notifications -->
             <div class="app-nav__notifications-wrapper">
                 <button class="app-nav__notifications" aria-label="Notifications" onclick="toggleNotificationsPanel()">
-                    <svg class="app-nav__icon" viewBox="0 0 20 20" fill="currentColor">
-                        <path d="M10 2a6 6 0 00-6 6v3.586l-.707.707A1 1 0 004 14h12a1 1 0 00.707-1.707L16 11.586V8a6 6 0 00-6-6zM10 18a3 3 0 01-3-3h6a3 3 0 01-3 3z"/>
-                    </svg>
+                    <i class="fa-solid fa-bell" style="font-size: 18px;"></i>
                     <span class="app-nav__notifications-badge" id="notificationsBadge"></span>
                 </button>
 
