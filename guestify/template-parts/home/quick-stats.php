@@ -27,14 +27,16 @@ $revenue = isset($stats['revenue']) ? $stats['revenue'] : 0;
 /**
  * Format large numbers with K/M suffix
  */
-function gfy_format_stat_number($num, $is_currency = false) {
-    if ($num >= 1000000) {
-        return ($is_currency ? '$' : '') . number_format($num / 1000000, 1) . 'M';
+if (!function_exists('gfy_format_stat_number')) {
+    function gfy_format_stat_number($num, $is_currency = false) {
+        if ($num >= 1000000) {
+            return ($is_currency ? '$' : '') . number_format($num / 1000000, 1) . 'M';
+        }
+        if ($num >= 1000) {
+            return ($is_currency ? '$' : '') . number_format($num / 1000, 1) . 'K';
+        }
+        return ($is_currency ? '$' : '') . number_format($num);
     }
-    if ($num >= 1000) {
-        return ($is_currency ? '$' : '') . number_format($num / 1000, 1) . 'K';
-    }
-    return ($is_currency ? '$' : '') . number_format($num);
 }
 ?>
 

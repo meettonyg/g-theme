@@ -18,6 +18,10 @@
     width: 100%;
     padding: 32px 24px;
     flex: 1;
+    font-family: var(--gfy-font-sans, 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif);
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--gfy-text-main, #0f172a);
 }
 
 /* ============================================

@@ -20,21 +20,25 @@ $data = isset($args['data']) ? $args['data'] : array();
 $current_goal = isset($args['current_goal']) ? $args['current_goal'] : 'revenue';
 
 // Format functions
-function gfy_format_currency($amount) {
-    if ($amount >= 1000) {
-        return '$' . number_format($amount / 1000, 1) . 'k';
+if (!function_exists('gfy_format_currency')) {
+    function gfy_format_currency($amount) {
+        if ($amount >= 1000) {
+            return '$' . number_format($amount / 1000, 1) . 'k';
+        }
+        return '$' . number_format($amount);
     }
-    return '$' . number_format($amount);
 }
 
-function gfy_format_audience($num) {
-    if ($num >= 1000000) {
-        return number_format($num / 1000000, 1) . 'M';
+if (!function_exists('gfy_format_audience')) {
+    function gfy_format_audience($num) {
+        if ($num >= 1000000) {
+            return number_format($num / 1000000, 1) . 'M';
+        }
+        if ($num >= 1000) {
+            return number_format($num / 1000, 0) . 'K';
+        }
+        return number_format($num);
     }
-    if ($num >= 1000) {
-        return number_format($num / 1000, 0) . 'K';
-    }
-    return number_format($num);
 }
 ?>
 

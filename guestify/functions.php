@@ -1411,12 +1411,23 @@ function guestify_get_media_kit_status( $user_id ) {
 	if ( class_exists( 'GMKB_Onboarding_Repository' ) ) {
 		try {
 			$repo = new GMKB_Onboarding_Repository();
-			$progress = $repo->get_user_progress( $user_id );
 
-			if ( isset( $progress['completion_percent'] ) ) {
-				$percent = intval( $progress['completion_percent'] );
-				$status['status_text'] = 'Profile Ready (' . $percent . '%)';
-				$status['show_dot'] = $percent >= 80;
+			// Check if the method exists before calling it
+			if ( method_exists( $repo, 'get_user_progress' ) ) {
+				$progress = $repo->get_user_progress( $user_id );
+
+				if ( isset( $progress['completion_percent'] ) ) {
+					$percent = intval( $progress['completion_percent'] );
+					$status['status_text'] = 'Profile Ready (' . $percent . '%)';
+					$status['show_dot'] = $percent >= 80;
+				}
+			} else {
+				// Method doesn't exist, fallback to user meta
+				$cached_progress = get_user_meta( $user_id, 'guestify_onboarding_progress_percent', true );
+				if ( $cached_progress ) {
+					$status['status_text'] = 'Profile Ready (' . intval( $cached_progress ) . '%)';
+					$status['show_dot'] = intval( $cached_progress ) >= 80;
+				}
 			}
 		} catch ( Exception $e ) {
 			// Fallback to user meta

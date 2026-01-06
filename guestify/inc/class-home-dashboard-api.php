@@ -23,7 +23,7 @@ class Guestify_Home_Dashboard_API {
 	/**
 	 * REST namespace
 	 */
-	const NAMESPACE = 'guestify/v1';
+	const API_NAMESPACE = 'guestify/v1';
 
 	/**
 	 * Cache key prefix
@@ -47,14 +47,14 @@ class Guestify_Home_Dashboard_API {
 	 */
 	public function register_routes() {
 		// Dashboard data endpoint
-		register_rest_route( self::NAMESPACE, '/home/dashboard', array(
+		register_rest_route( self::API_NAMESPACE, '/home/dashboard', array(
 			'methods'             => WP_REST_Server::READABLE,
 			'callback'            => array( $this, 'get_dashboard' ),
 			'permission_callback' => array( $this, 'check_permission' ),
 		) );
 
 		// Goal preference endpoint
-		register_rest_route( self::NAMESPACE, '/home/goal', array(
+		register_rest_route( self::API_NAMESPACE, '/home/goal', array(
 			'methods'             => WP_REST_Server::CREATABLE,
 			'callback'            => array( $this, 'save_goal' ),
 			'permission_callback' => array( $this, 'check_permission' ),
@@ -69,7 +69,7 @@ class Guestify_Home_Dashboard_API {
 		) );
 
 		// Recent activity endpoint
-		register_rest_route( self::NAMESPACE, '/home/activity', array(
+		register_rest_route( self::API_NAMESPACE, '/home/activity', array(
 			'methods'             => WP_REST_Server::READABLE,
 			'callback'            => array( $this, 'get_activity' ),
 			'permission_callback' => array( $this, 'check_permission' ),
@@ -85,14 +85,14 @@ class Guestify_Home_Dashboard_API {
 		) );
 
 		// Quick stats endpoint
-		register_rest_route( self::NAMESPACE, '/home/stats', array(
+		register_rest_route( self::API_NAMESPACE, '/home/stats', array(
 			'methods'             => WP_REST_Server::READABLE,
 			'callback'            => array( $this, 'get_stats' ),
 			'permission_callback' => array( $this, 'check_permission' ),
 		) );
 
 		// Clear cache endpoint (admin only)
-		register_rest_route( self::NAMESPACE, '/home/cache/clear', array(
+		register_rest_route( self::API_NAMESPACE, '/home/cache/clear', array(
 			'methods'             => WP_REST_Server::DELETABLE,
 			'callback'            => array( $this, 'clear_cache' ),
 			'permission_callback' => array( $this, 'check_admin_permission' ),

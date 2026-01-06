@@ -259,7 +259,7 @@ function enqueue_inter_font() {
     
     wp_enqueue_style(
         'guestify-inter-font',
-        'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;900&display=swap',
+        'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap',
         [],
         null
     );
