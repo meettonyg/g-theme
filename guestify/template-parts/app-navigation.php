@@ -194,7 +194,7 @@ foreach ($menu_items as $item) {
             <!-- Notifications -->
             <div class="app-nav__notifications-wrapper">
                 <button class="app-nav__notifications" aria-label="Notifications" onclick="toggleNotificationsPanel()">
-                    <i class="fa-solid fa-bell" style="font-size: 18px;"></i>
+                    <i class="fa-solid fa-bell"></i>
                     <span class="app-nav__notifications-badge" id="notificationsBadge"></span>
                 </button>
 
