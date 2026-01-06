@@ -230,11 +230,19 @@ function enqueue_app_navigation_assets() {
         return;
     }
 
-    // Enqueue CSS
+    // Enqueue global resets first (affects entire page layout)
+    wp_enqueue_style(
+        'guestify-app-global-resets',
+        get_template_directory_uri() . '/css/app-global-resets.css',
+        [],
+        filemtime(get_template_directory() . '/css/app-global-resets.css')
+    );
+
+    // Enqueue navigation CSS
     wp_enqueue_style(
         'guestify-app-nav',
         get_template_directory_uri() . '/css/app-navigation.css',
-        [],
+        ['guestify-app-global-resets'],
         filemtime(get_template_directory() . '/css/app-navigation.css')
     );
 

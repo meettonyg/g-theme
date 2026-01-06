@@ -1,0 +1,15 @@
+/* ==========================================================================
+   GLOBAL PAGE RESETS FOR APP PAGES
+   ==========================================================================
+   IMPORTANT: These styles affect the entire page layout, not just navigation.
+   They remove unwanted padding/margin/border inherited from the WordPress theme
+   on app pages where style.css is not loaded.
+
+   Note: #page in header.php has class="site", so .site selector is redundant.
+   ========================================================================== */
+body,
+#page {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}

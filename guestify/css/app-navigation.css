@@ -68,15 +68,6 @@
     word-wrap: normal !important;
 }
 
-/* Reset body and page wrapper for app pages - removes unwanted padding/border */
-body,
-#page,
-.site {
-    margin: 0;
-    padding: 0;
-    border: 0;
-}
-
 /* App Navigation Container */
 .app-nav {
     background: var(--intelligence-blue);
