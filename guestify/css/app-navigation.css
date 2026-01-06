@@ -12,6 +12,20 @@
  * - Near Black: #1A202C
  */
 
+/* ==========================================================================
+   GLOBAL PAGE RESET FOR APP PAGES
+
+   These styles apply to the entire page layout on app pages (/app/, /account/,
+   /courses/, /tools/). They ensure the navigation bar has no unwanted spacing
+   or borders from parent elements.
+   ========================================================================== */
+body,
+#page {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
 :root {
     /* ==================== Unified Token Variables ==================== */
     /* Brand colors - mapped to unified Guestify tokens */
@@ -66,15 +80,6 @@
     position: absolute !important;
     width: 1px;
     word-wrap: normal !important;
-}
-
-/* Reset body and page wrapper for app pages - removes unwanted padding/border */
-body,
-#page,
-.site {
-    margin: 0;
-    padding: 0;
-    border: 0;
 }
 
 /* App Navigation Container */
