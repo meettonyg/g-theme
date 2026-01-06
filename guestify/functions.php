@@ -1244,3 +1244,1354 @@ function guestify_add_login_logout_menu_item( $items, $args ) {
 	return $items;
 }
 add_filter( 'wp_nav_menu_items', 'guestify_add_login_logout_menu_item', 10, 2 );
+
+/**
+ * ============================================
+ * GUESTIFY HOME PAGE FUNCTIONS
+ * ============================================
+ */
+
+/**
+ * Check if current page is the app home page
+ *
+ * @return bool
+ */
+function is_gfy_home_page() {
+	if ( ! isset( $_SERVER['REQUEST_URI'] ) ) {
+		return false;
+	}
+
+	$request_uri = $_SERVER['REQUEST_URI'];
+	$url_path = parse_url( $request_uri, PHP_URL_PATH );
+	$url_path = rtrim( $url_path, '/' );
+
+	// Match /app or /app/ exactly (not subpages)
+	return $url_path === '/app' || $url_path === '';
+}
+
+/**
+ * Enqueue home page assets
+ */
+function guestify_enqueue_home_assets() {
+	// Only load on app home page or pages using the App Home Dashboard template
+	if ( ! is_gfy_home_page() && ! is_page_template( 'page-app-home.php' ) ) {
+		return;
+	}
+
+	$theme_dir = get_template_directory();
+	$theme_url = get_template_directory_uri();
+
+	// Enqueue home page CSS
+	$css_path = $theme_dir . '/css/home.css';
+	if ( file_exists( $css_path ) ) {
+		wp_enqueue_style(
+			'guestify-home',
+			$theme_url . '/css/home.css',
+			array( 'guestify-tokens' ),
+			filemtime( $css_path )
+		);
+	}
+
+	// Enqueue home page JavaScript
+	$js_path = $theme_dir . '/js/home.js';
+	if ( file_exists( $js_path ) ) {
+		wp_enqueue_script(
+			'guestify-home',
+			$theme_url . '/js/home.js',
+			array(),
+			filemtime( $js_path ),
+			true
+		);
+	}
+}
+add_action( 'wp_enqueue_scripts', 'guestify_enqueue_home_assets', 15 );
+
+/**
+ * Get dashboard data for the home page
+ *
+ * Aggregates data from all Guestify plugins with graceful fallbacks.
+ *
+ * @param int $user_id The user ID to get data for
+ * @return array Dashboard data
+ */
+function guestify_get_home_dashboard_data( $user_id = 0 ) {
+	if ( ! $user_id ) {
+		$user_id = get_current_user_id();
+	}
+
+	if ( ! $user_id ) {
+		return guestify_get_default_dashboard_data();
+	}
+
+	// Initialize with defaults
+	$data = guestify_get_default_dashboard_data();
+
+	// Get data from Media Kit Builder (mk4)
+	$data['pillars']['media_kit'] = guestify_get_media_kit_status( $user_id );
+
+	// Get data from Podcast Prospector
+	$data['pillars']['prospector'] = guestify_get_prospector_status( $user_id );
+
+	// Get data from ShowAuthority
+	$data['pillars']['showauthority'] = guestify_get_showauthority_status( $user_id );
+	$data['stats'] = array_merge( $data['stats'], guestify_get_showauthority_stats( $user_id ) );
+
+	// Get data from Email Outreach
+	$data['pillars']['outreach'] = guestify_get_outreach_status( $user_id );
+	$data['stats']['pitches'] = guestify_get_outreach_pitches_count( $user_id );
+
+	// Get tasks due count
+	$data['tasks_due'] = guestify_get_tasks_due_count( $user_id );
+
+	// Get recent activity
+	$data['recent_activity'] = guestify_get_recent_activity( $user_id );
+
+	return $data;
+}
+
+/**
+ * Get default dashboard data structure
+ *
+ * @return array
+ */
+function guestify_get_default_dashboard_data() {
+	return array(
+		'stats' => array(
+			'pitches'    => 0,
+			'interviews' => 0,
+			'episodes'   => 0,
+			'revenue'    => 0,
+		),
+		'pillars' => array(
+			'media_kit' => array(
+				'status_text' => 'Get Started',
+				'is_alert'    => false,
+				'show_dot'    => false,
+				'icon'        => '',
+			),
+			'prospector' => array(
+				'status_text' => '0 Saved Shows',
+				'is_alert'    => false,
+				'show_dot'    => false,
+				'icon'        => '',
+			),
+			'showauthority' => array(
+				'status_text' => '0 Ready to Pitch',
+				'is_alert'    => false,
+				'show_dot'    => false,
+				'icon'        => '',
+			),
+			'outreach' => array(
+				'status_text' => 'No Messages',
+				'is_alert'    => false,
+				'show_dot'    => false,
+				'icon'        => '',
+			),
+		),
+		'tasks_due' => 0,
+		'recent_activity' => array(),
+	);
+}
+
+/**
+ * Get Media Kit status for home page
+ *
+ * @param int $user_id
+ * @return array
+ */
+function guestify_get_media_kit_status( $user_id ) {
+	$status = array(
+		'status_text' => 'Get Started',
+		'is_alert'    => false,
+		'show_dot'    => false,
+		'icon'        => '',
+	);
+
+	// Check if mk4 plugin is active and class exists
+	if ( class_exists( 'GMKB_Onboarding_Repository' ) ) {
+		try {
+			$repo = new GMKB_Onboarding_Repository();
+			$progress = $repo->get_user_progress( $user_id );
+
+			if ( isset( $progress['completion_percent'] ) ) {
+				$percent = intval( $progress['completion_percent'] );
+				$status['status_text'] = 'Profile Ready (' . $percent . '%)';
+				$status['show_dot'] = $percent >= 80;
+			}
+		} catch ( Exception $e ) {
+			// Fallback to user meta
+			$cached_progress = get_user_meta( $user_id, 'guestify_onboarding_progress_percent', true );
+			if ( $cached_progress ) {
+				$status['status_text'] = 'Profile Ready (' . intval( $cached_progress ) . '%)';
+				$status['show_dot'] = intval( $cached_progress ) >= 80;
+			}
+		}
+	} else {
+		// Check for cached progress in user meta
+		$cached_progress = get_user_meta( $user_id, 'guestify_onboarding_progress_percent', true );
+		if ( $cached_progress ) {
+			$status['status_text'] = 'Profile Ready (' . intval( $cached_progress ) . '%)';
+			$status['show_dot'] = intval( $cached_progress ) >= 80;
+		}
+	}
+
+	return $status;
+}
+
+/**
+ * Get Prospector status for home page
+ *
+ * @param int $user_id
+ * @return array
+ */
+function guestify_get_prospector_status( $user_id ) {
+	$status = array(
+		'status_text' => '0 Saved Shows',
+		'is_alert'    => false,
+		'show_dot'    => false,
+		'icon'        => '',
+	);
+
+	global $wpdb;
+
+	// Check if prospector tables exist
+	$table_name = $wpdb->prefix . 'pit_podcasts';
+	$table_exists = $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $table_name ) ) === $table_name;
+
+	if ( $table_exists ) {
+		// Count podcasts saved by user
+		$count = $wpdb->get_var( $wpdb->prepare(
+			"SELECT COUNT(*) FROM {$wpdb->prefix}pit_podcasts WHERE user_id = %d",
+			$user_id
+		) );
+
+		if ( $count !== null ) {
+			$count = intval( $count );
+			$status['status_text'] = $count . ' Saved Show' . ( $count !== 1 ? 's' : '' );
+		}
+	}
+
+	return $status;
+}
+
+/**
+ * Get ShowAuthority status for home page
+ *
+ * @param int $user_id
+ * @return array
+ */
+function guestify_get_showauthority_status( $user_id ) {
+	$status = array(
+		'status_text' => '0 Ready to Pitch',
+		'is_alert'    => false,
+		'show_dot'    => false,
+		'icon'        => '',
+	);
+
+	global $wpdb;
+
+	// Check if ShowAuthority opportunities table exists
+	$table_name = $wpdb->prefix . 'pit_opportunities';
+	$table_exists = $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $table_name ) ) === $table_name;
+
+	if ( $table_exists ) {
+		// Count opportunities in "ready to pitch" stage
+		$count = $wpdb->get_var( $wpdb->prepare(
+			"SELECT COUNT(*) FROM {$wpdb->prefix}pit_opportunities WHERE user_id = %d AND status = 'ready'",
+			$user_id
+		) );
+
+		if ( $count !== null ) {
+			$count = intval( $count );
+			$status['status_text'] = $count . ' Ready to Pitch';
+		}
+	}
+
+	return $status;
+}
+
+/**
+ * Get ShowAuthority stats for home page
+ *
+ * @param int $user_id
+ * @return array
+ */
+function guestify_get_showauthority_stats( $user_id ) {
+	$stats = array(
+		'interviews' => 0,
+		'episodes'   => 0,
+		'revenue'    => 0,
+	);
+
+	global $wpdb;
+
+	// Check if appearances table exists
+	$table_name = $wpdb->prefix . 'pit_appearances';
+	$table_exists = $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $table_name ) ) === $table_name;
+
+	if ( $table_exists ) {
+		// Count booked interviews
+		$interviews = $wpdb->get_var( $wpdb->prepare(
+			"SELECT COUNT(*) FROM {$wpdb->prefix}pit_appearances WHERE user_id = %d AND status IN ('scheduled', 'confirmed')",
+			$user_id
+		) );
+		$stats['interviews'] = intval( $interviews );
+
+		// Count aired episodes
+		$episodes = $wpdb->get_var( $wpdb->prepare(
+			"SELECT COUNT(*) FROM {$wpdb->prefix}pit_appearances WHERE user_id = %d AND status = 'aired'",
+			$user_id
+		) );
+		$stats['episodes'] = intval( $episodes );
+
+		// Sum revenue (if tracked)
+		$revenue = $wpdb->get_var( $wpdb->prepare(
+			"SELECT COALESCE(SUM(revenue), 0) FROM {$wpdb->prefix}pit_appearances WHERE user_id = %d",
+			$user_id
+		) );
+		$stats['revenue'] = floatval( $revenue );
+	}
+
+	return $stats;
+}
+
+/**
+ * Get Outreach status for home page
+ *
+ * @param int $user_id
+ * @return array
+ */
+function guestify_get_outreach_status( $user_id ) {
+	$status = array(
+		'status_text' => 'No Messages',
+		'is_alert'    => false,
+		'show_dot'    => false,
+		'icon'        => '',
+	);
+
+	global $wpdb;
+
+	// Check if messages table exists
+	$table_name = $wpdb->prefix . 'guestify_messages';
+	$table_exists = $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $table_name ) ) === $table_name;
+
+	if ( $table_exists ) {
+		// Count unread replies
+		$unread = $wpdb->get_var( $wpdb->prepare(
+			"SELECT COUNT(*) FROM {$wpdb->prefix}guestify_messages WHERE user_id = %d AND is_reply = 1 AND is_read = 0",
+			$user_id
+		) );
+
+		if ( $unread !== null && intval( $unread ) > 0 ) {
+			$count = intval( $unread );
+			$status['status_text'] = $count . ' Unread Repl' . ( $count !== 1 ? 'ies' : 'y' );
+			$status['is_alert'] = true;
+			$status['icon'] = 'fa-solid fa-envelope';
+		}
+	}
+
+	return $status;
+}
+
+/**
+ * Get outreach pitches count for current month
+ *
+ * @param int $user_id
+ * @return int
+ */
+function guestify_get_outreach_pitches_count( $user_id ) {
+	global $wpdb;
+
+	$table_name = $wpdb->prefix . 'guestify_messages';
+	$table_exists = $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $table_name ) ) === $table_name;
+
+	if ( ! $table_exists ) {
+		return 0;
+	}
+
+	$first_of_month = date( 'Y-m-01 00:00:00' );
+
+	$count = $wpdb->get_var( $wpdb->prepare(
+		"SELECT COUNT(*) FROM {$wpdb->prefix}guestify_messages WHERE user_id = %d AND created_at >= %s AND is_reply = 0",
+		$user_id,
+		$first_of_month
+	) );
+
+	return intval( $count );
+}
+
+/**
+ * Get tasks due count
+ *
+ * @param int $user_id
+ * @return int
+ */
+function guestify_get_tasks_due_count( $user_id ) {
+	global $wpdb;
+
+	// Check ShowAuthority tasks
+	$table_name = $wpdb->prefix . 'pit_appearance_tasks';
+	$table_exists = $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $table_name ) ) === $table_name;
+
+	if ( ! $table_exists ) {
+		return 0;
+	}
+
+	$today = date( 'Y-m-d' );
+
+	$count = $wpdb->get_var( $wpdb->prepare(
+		"SELECT COUNT(*) FROM {$wpdb->prefix}pit_appearance_tasks WHERE user_id = %d AND due_date <= %s AND status != 'completed'",
+		$user_id,
+		$today
+	) );
+
+	return intval( $count );
+}
+
+/**
+ * Get recent activity for home page
+ *
+ * @param int $user_id
+ * @return array
+ */
+function guestify_get_recent_activity( $user_id ) {
+	$activities = array();
+
+	global $wpdb;
+
+	// Get recent outreach messages
+	$messages_table = $wpdb->prefix . 'guestify_messages';
+	if ( $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $messages_table ) ) === $messages_table ) {
+		$messages = $wpdb->get_results( $wpdb->prepare(
+			"SELECT id, subject, created_at, is_reply FROM {$messages_table} WHERE user_id = %d ORDER BY created_at DESC LIMIT 3",
+			$user_id
+		) );
+
+		foreach ( $messages as $msg ) {
+			$activities[] = array(
+				'id'       => 'msg_' . $msg->id,
+				'type'     => $msg->is_reply ? 'message' : 'draft',
+				'icon'     => $msg->is_reply ? 'fa-solid fa-envelope-open' : 'fa-solid fa-pen-to-square',
+				'title'    => $msg->is_reply ? 'Reply: ' . $msg->subject : 'Draft: ' . $msg->subject,
+				'subtitle' => guestify_format_relative_time( $msg->created_at ),
+				'url'      => home_url( '/app/email-system/?message=' . $msg->id ),
+				'timestamp' => strtotime( $msg->created_at ),
+			);
+		}
+	}
+
+	// Get recent interviews/appearances
+	$appearances_table = $wpdb->prefix . 'pit_appearances';
+	if ( $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $appearances_table ) ) === $appearances_table ) {
+		$appearances = $wpdb->get_results( $wpdb->prepare(
+			"SELECT a.id, a.podcast_id, a.scheduled_date, a.status, p.title as podcast_title
+			 FROM {$appearances_table} a
+			 LEFT JOIN {$wpdb->prefix}pit_podcasts p ON a.podcast_id = p.id
+			 WHERE a.user_id = %d
+			 ORDER BY a.scheduled_date DESC LIMIT 3",
+			$user_id
+		) );
+
+		foreach ( $appearances as $app ) {
+			$activities[] = array(
+				'id'       => 'app_' . $app->id,
+				'type'     => 'calendar',
+				'icon'     => 'fa-solid fa-calendar-check',
+				'title'    => 'Interview: ' . ( $app->podcast_title ?: 'Podcast' ),
+				'subtitle' => date( 'M j', strtotime( $app->scheduled_date ) ) . ' - ' . ucfirst( $app->status ),
+				'url'      => home_url( '/app/interviews/?id=' . $app->id ),
+				'timestamp' => strtotime( $app->scheduled_date ),
+			);
+		}
+	}
+
+	// Get recent prospector searches
+	$searches_table = $wpdb->prefix . 'podcast_prospector_searches';
+	if ( $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $searches_table ) ) === $searches_table ) {
+		$searches = $wpdb->get_results( $wpdb->prepare(
+			"SELECT id, search_term, result_count, created_at FROM {$searches_table} WHERE user_id = %d ORDER BY created_at DESC LIMIT 2",
+			$user_id
+		) );
+
+		foreach ( $searches as $search ) {
+			$activities[] = array(
+				'id'       => 'search_' . $search->id,
+				'type'     => 'search',
+				'icon'     => 'fa-solid fa-magnifying-glass',
+				'title'    => 'Search: "' . $search->search_term . '"',
+				'subtitle' => guestify_format_relative_time( $search->created_at ) . ' - ' . $search->result_count . ' results',
+				'url'      => home_url( '/app/prospector/?q=' . urlencode( $search->search_term ) ),
+				'timestamp' => strtotime( $search->created_at ),
+			);
+		}
+	}
+
+	// Sort by timestamp (most recent first) and limit to 5
+	usort( $activities, function( $a, $b ) {
+		return ( $b['timestamp'] ?? 0 ) - ( $a['timestamp'] ?? 0 );
+	} );
+
+	return array_slice( $activities, 0, 5 );
+}
+
+/**
+ * Format relative time string
+ *
+ * @param string $datetime
+ * @return string
+ */
+function guestify_format_relative_time( $datetime ) {
+	$now = time();
+	$diff = $now - strtotime( $datetime );
+
+	if ( $diff < 60 ) {
+		return 'Just now';
+	} elseif ( $diff < 3600 ) {
+		$mins = floor( $diff / 60 );
+		return $mins . ' min' . ( $mins > 1 ? 's' : '' ) . ' ago';
+	} elseif ( $diff < 86400 ) {
+		$hours = floor( $diff / 3600 );
+		return $hours . ' hour' . ( $hours > 1 ? 's' : '' ) . ' ago';
+	} elseif ( $diff < 172800 ) {
+		return 'Yesterday';
+	} else {
+		$days = floor( $diff / 86400 );
+		return $days . ' day' . ( $days > 1 ? 's' : '' ) . ' ago';
+	}
+}
+
+/**
+ * Load Home Dashboard API
+ */
+require_once get_template_directory() . '/inc/class-home-dashboard-api.php';
+
+/**
+ * Clear home dashboard cache when relevant data changes
+ *
+ * @param int $user_id The user ID whose cache should be cleared
+ */
+function guestify_clear_home_cache( $user_id = 0 ) {
+    if ( ! $user_id ) {
+        $user_id = get_current_user_id();
+    }
+
+    if ( $user_id ) {
+        delete_transient( 'gfy_home_dashboard_' . $user_id );
+        delete_transient( 'gfy_home_stats_' . $user_id );
+    }
+}
+
+// Hook into relevant actions to clear cache
+add_action( 'save_post', function( $post_id ) {
+    $post = get_post( $post_id );
+    if ( $post && $post->post_author ) {
+        guestify_clear_home_cache( $post->post_author );
+    }
+} );
+
+add_action( 'updated_user_meta', function( $meta_id, $user_id, $meta_key ) {
+    if ( strpos( $meta_key, 'guestify' ) !== false || strpos( $meta_key, 'gmkb' ) !== false ) {
+        guestify_clear_home_cache( $user_id );
+    }
+}, 10, 3 );
+
+add_action( 'guestify_outreach_message_sent', 'guestify_clear_home_cache' );
+add_action( 'pit_appearance_updated', 'guestify_clear_home_cache' );
+add_action( 'prospector_search_completed', 'guestify_clear_home_cache' );
+
+/**
+ * ============================================
+ * GUESTIFY ACCOUNT PAGE FUNCTIONS
+ * ============================================
+ */
+
+/**
+ * Check if current page is the account page
+ *
+ * @return bool
+ */
+function is_gfy_account_page() {
+	if ( ! isset( $_SERVER['REQUEST_URI'] ) ) {
+		return false;
+	}
+
+	$request_uri = $_SERVER['REQUEST_URI'];
+	$url_path = parse_url( $request_uri, PHP_URL_PATH );
+	$url_path = rtrim( $url_path, '/' );
+
+	return $url_path === '/account' || strpos( $url_path, '/account/' ) === 0;
+}
+
+/**
+ * Enqueue account page assets
+ */
+function guestify_enqueue_account_assets() {
+	if ( ! is_gfy_account_page() && ! is_page_template( 'page-account.php' ) ) {
+		return;
+	}
+
+	$theme_dir = get_template_directory();
+	$theme_url = get_template_directory_uri();
+
+	// Enqueue account page CSS
+	$css_path = $theme_dir . '/css/account.css';
+	if ( file_exists( $css_path ) ) {
+		wp_enqueue_style(
+			'guestify-account',
+			$theme_url . '/css/account.css',
+			array( 'guestify-tokens' ),
+			filemtime( $css_path )
+		);
+	}
+
+	// Enqueue account page JavaScript
+	$js_path = $theme_dir . '/js/account.js';
+	if ( file_exists( $js_path ) ) {
+		wp_enqueue_script(
+			'guestify-account',
+			$theme_url . '/js/account.js',
+			array(),
+			filemtime( $js_path ),
+			true
+		);
+
+		// Pass data to JavaScript
+		wp_localize_script( 'guestify-account', 'gfyAccountData', array(
+			'nonce'   => wp_create_nonce( 'wp_rest' ),
+			'ajaxUrl' => admin_url( 'admin-ajax.php' ),
+			'apiBase' => rest_url( 'guestify/v1/account' ),
+		) );
+	}
+}
+add_action( 'wp_enqueue_scripts', 'guestify_enqueue_account_assets', 15 );
+
+/**
+ * Get user data for the account page
+ *
+ * @param int $user_id User ID
+ * @return array User data
+ */
+function guestify_get_account_user_data( $user_id = 0 ) {
+	if ( ! $user_id ) {
+		$user_id = get_current_user_id();
+	}
+
+	if ( ! $user_id ) {
+		return array();
+	}
+
+	$user = get_userdata( $user_id );
+	if ( ! $user ) {
+		return array();
+	}
+
+	$first_name = $user->first_name ?: '';
+	$last_name = $user->last_name ?: '';
+	$initials = '';
+	if ( $first_name ) {
+		$initials .= strtoupper( substr( $first_name, 0, 1 ) );
+	}
+	if ( $last_name ) {
+		$initials .= strtoupper( substr( $last_name, 0, 1 ) );
+	}
+	if ( empty( $initials ) ) {
+		$initials = strtoupper( substr( $user->display_name, 0, 2 ) );
+	}
+
+	return array(
+		'id'           => $user_id,
+		'first_name'   => $first_name,
+		'last_name'    => $last_name,
+		'display_name' => $user->display_name,
+		'email'        => $user->user_email,
+		'job_title'    => get_user_meta( $user_id, 'job_title', true ),
+		'avatar_url'   => get_avatar_url( $user_id, array( 'size' => 160 ) ),
+		'initials'     => $initials,
+	);
+}
+
+/**
+ * Get billing data for the account page
+ *
+ * Integrates with PMPro if available.
+ *
+ * @param int $user_id User ID
+ * @return array Billing data
+ */
+function guestify_get_account_billing_data( $user_id = 0 ) {
+	if ( ! $user_id ) {
+		$user_id = get_current_user_id();
+	}
+
+	$billing_data = array(
+		'membership_name'   => 'Free Plan',
+		'subscription_date' => '',
+		'renewal_date'      => '',
+		'search_cap'        => 10, // Free tier default
+		'payment_method'    => null,
+		'invoices'          => array(),
+	);
+
+	// Check PMPro integration
+	if ( function_exists( 'pmpro_getMembershipLevelForUser' ) ) {
+		$level = pmpro_getMembershipLevelForUser( $user_id );
+
+		if ( $level ) {
+			$billing_data['membership_name'] = $level->name;
+
+			// Get subscription date
+			if ( ! empty( $level->startdate ) ) {
+				$billing_data['subscription_date'] = date_i18n( get_option( 'date_format' ), strtotime( $level->startdate ) );
+			}
+
+			// Get renewal date
+			if ( ! empty( $level->enddate ) && $level->enddate !== '0000-00-00 00:00:00' ) {
+				$billing_data['renewal_date'] = date_i18n( get_option( 'date_format' ), strtotime( $level->enddate ) );
+			}
+
+			// Set search cap based on membership level
+			$level_caps = array(
+				1 => 50,   // Starter
+				2 => 200,  // Growth
+				3 => 500,  // Pro
+				4 => 1000, // Agency
+			);
+			$billing_data['search_cap'] = isset( $level_caps[ $level->id ] ) ? $level_caps[ $level->id ] : 50;
+		}
+
+		// Get payment method from Stripe if available
+		if ( function_exists( 'pmpro_get_customer_for_user' ) ) {
+			$customer_id = get_user_meta( $user_id, 'pmpro_stripe_customerid', true );
+			if ( $customer_id ) {
+				$billing_data['payment_method'] = array(
+					'brand' => 'Visa', // Would fetch from Stripe API
+					'last4' => '4242', // Would fetch from Stripe API
+				);
+			}
+		}
+
+		// Get invoices from PMPro orders
+		if ( function_exists( 'pmpro_getMemberOrdersByUser' ) ) {
+			$orders = pmpro_getMemberOrdersByUser( $user_id, 'success', null, 10 );
+			if ( $orders ) {
+				foreach ( $orders as $order ) {
+					$billing_data['invoices'][] = array(
+						'id'      => $order->id,
+						'date'    => date_i18n( get_option( 'date_format' ), strtotime( $order->timestamp ) ),
+						'amount'  => pmpro_formatPrice( $order->total ),
+						'status'  => 'paid',
+						'pdf_url' => home_url( '/membership-invoice/?invoice=' . $order->code ),
+					);
+				}
+			}
+		}
+	}
+
+	return $billing_data;
+}
+
+/**
+ * Get usage data for the account page
+ *
+ * Aggregates data from all Guestify plugins.
+ *
+ * @param int $user_id User ID
+ * @return array Usage data
+ */
+function guestify_get_account_usage_data( $user_id = 0 ) {
+	if ( ! $user_id ) {
+		$user_id = get_current_user_id();
+	}
+
+	global $wpdb;
+
+	// Get billing data for caps
+	$billing_data = guestify_get_account_billing_data( $user_id );
+
+	$usage_data = array(
+		'ai_credits' => array(
+			'used'  => 0,
+			'total' => 500, // Default AI credit cap
+		),
+		'prospector' => array(
+			'used'  => 0,
+			'total' => $billing_data['search_cap'],
+		),
+		'outreach' => array(
+			'used'  => 0,
+			'total' => 300, // Default outreach cap
+		),
+		'activity' => array(
+			'ai_generations'   => 0,
+			'podcast_searches' => 0,
+			'emails_sent'      => 0,
+		),
+		'resets_date' => date_i18n( 'M j', strtotime( 'last day of this month' ) ),
+	);
+
+	$first_of_month = date( 'Y-m-01 00:00:00' );
+
+	// Get AI credits usage from ShowAuthority
+	$ai_usage = get_user_meta( $user_id, 'guestify_ai_credits_used', true );
+	if ( $ai_usage ) {
+		$usage_data['ai_credits']['used'] = intval( $ai_usage );
+	}
+
+	// Get AI generations this month
+	$ai_table = $wpdb->prefix . 'pit_ai_generations';
+	if ( $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $ai_table ) ) === $ai_table ) {
+		$ai_count = $wpdb->get_var( $wpdb->prepare(
+			"SELECT COUNT(*) FROM {$ai_table} WHERE user_id = %d AND created_at >= %s",
+			$user_id,
+			$first_of_month
+		) );
+		$usage_data['activity']['ai_generations'] = intval( $ai_count );
+		$usage_data['ai_credits']['used'] = intval( $ai_count );
+	}
+
+	// Get prospector searches from the searches table
+	$searches_table = $wpdb->prefix . 'podcast_prospector_searches';
+	if ( $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $searches_table ) ) === $searches_table ) {
+		$searches_count = $wpdb->get_var( $wpdb->prepare(
+			"SELECT COUNT(*) FROM {$searches_table} WHERE user_id = %d AND created_at >= %s",
+			$user_id,
+			$first_of_month
+		) );
+		$usage_data['prospector']['used'] = intval( $searches_count );
+		$usage_data['activity']['podcast_searches'] = intval( $searches_count );
+	}
+
+	// Get outreach sends from email outreach plugin
+	$messages_table = $wpdb->prefix . 'guestify_messages';
+	if ( $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $messages_table ) ) === $messages_table ) {
+		$emails_count = $wpdb->get_var( $wpdb->prepare(
+			"SELECT COUNT(*) FROM {$messages_table} WHERE user_id = %d AND created_at >= %s AND is_reply = 0",
+			$user_id,
+			$first_of_month
+		) );
+		$usage_data['outreach']['used'] = intval( $emails_count );
+		$usage_data['activity']['emails_sent'] = intval( $emails_count );
+	}
+
+	// Calculate credit caps based on membership level
+	if ( function_exists( 'pmpro_getMembershipLevelForUser' ) ) {
+		$level = pmpro_getMembershipLevelForUser( $user_id );
+		if ( $level ) {
+			// Adjust caps based on level
+			$ai_caps = array( 1 => 500, 2 => 1500, 3 => 5000, 4 => 15000 );
+			$outreach_caps = array( 1 => 300, 2 => 1000, 3 => 5000, 4 => 15000 );
+
+			$usage_data['ai_credits']['total'] = isset( $ai_caps[ $level->id ] ) ? $ai_caps[ $level->id ] : 500;
+			$usage_data['outreach']['total'] = isset( $outreach_caps[ $level->id ] ) ? $outreach_caps[ $level->id ] : 300;
+		}
+	}
+
+	return $usage_data;
+}
+
+/**
+ * Get team members for a user
+ *
+ * @param int $user_id User ID
+ * @return array Team members
+ */
+function guestify_get_team_members( $user_id = 0 ) {
+	if ( ! $user_id ) {
+		$user_id = get_current_user_id();
+	}
+
+	// Placeholder - would integrate with team functionality
+	$team_members = get_user_meta( $user_id, 'guestify_team_members', true );
+
+	if ( ! is_array( $team_members ) ) {
+		return array();
+	}
+
+	$members = array();
+	foreach ( $team_members as $member_id ) {
+		$member = get_userdata( $member_id );
+		if ( $member ) {
+			$members[] = array(
+				'id'         => $member_id,
+				'name'       => $member->display_name,
+				'email'      => $member->user_email,
+				'avatar_url' => get_avatar_url( $member_id, array( 'size' => 80 ) ),
+				'role'       => $member_id === $user_id ? 'Owner' : 'Member',
+				'initials'   => strtoupper( substr( $member->first_name, 0, 1 ) . substr( $member->last_name, 0, 1 ) ),
+			);
+		}
+	}
+
+	return $members;
+}
+
+/**
+ * Get pending team invitations
+ *
+ * @param int $user_id User ID
+ * @return array Pending invitations
+ */
+function guestify_get_pending_invitations( $user_id = 0 ) {
+	if ( ! $user_id ) {
+		$user_id = get_current_user_id();
+	}
+
+	// Placeholder - would integrate with invitation system
+	$invitations = get_user_meta( $user_id, 'guestify_pending_invitations', true );
+
+	if ( ! is_array( $invitations ) ) {
+		return array();
+	}
+
+	return $invitations;
+}
+
+/**
+ * Load Account API
+ */
+require_once get_template_directory() . '/inc/class-account-api.php';
+
+/**
+ * ============================================
+ * GUESTIFY DASHBOARD PAGE FUNCTIONS
+ * ============================================
+ */
+
+/**
+ * Check if current page is the dashboard page
+ *
+ * @return bool
+ */
+function is_gfy_dashboard_page() {
+	if ( ! isset( $_SERVER['REQUEST_URI'] ) ) {
+		return false;
+	}
+
+	$request_uri = $_SERVER['REQUEST_URI'];
+	$url_path = parse_url( $request_uri, PHP_URL_PATH );
+	$url_path = rtrim( $url_path, '/' );
+
+	return $url_path === '/app/dashboard' || $url_path === '/app/reports';
+}
+
+/**
+ * Enqueue dashboard page assets
+ */
+function guestify_enqueue_dashboard_assets() {
+	if ( ! is_gfy_dashboard_page() && ! is_page_template( 'page-dashboard.php' ) ) {
+		return;
+	}
+
+	$theme_dir = get_template_directory();
+	$theme_url = get_template_directory_uri();
+
+	// Enqueue dashboard page CSS
+	$css_path = $theme_dir . '/css/dashboard.css';
+	if ( file_exists( $css_path ) ) {
+		wp_enqueue_style(
+			'guestify-dashboard',
+			$theme_url . '/css/dashboard.css',
+			array( 'guestify-tokens' ),
+			filemtime( $css_path )
+		);
+	}
+
+	// Enqueue dashboard page JavaScript
+	$js_path = $theme_dir . '/js/dashboard.js';
+	if ( file_exists( $js_path ) ) {
+		wp_enqueue_script(
+			'guestify-dashboard',
+			$theme_url . '/js/dashboard.js',
+			array(),
+			filemtime( $js_path ),
+			true
+		);
+
+		// Pass data to JavaScript
+		wp_localize_script( 'guestify-dashboard', 'gfyDashboardData', array(
+			'nonce'   => wp_create_nonce( 'wp_rest' ),
+			'apiBase' => rest_url( 'guestify/v1/dashboard' ),
+		) );
+	}
+}
+add_action( 'wp_enqueue_scripts', 'guestify_enqueue_dashboard_assets', 15 );
+
+/**
+ * Get date range for time period
+ *
+ * @param string $period Time period (30days, 90days, ytd, all)
+ * @return array Array with 'start' and 'end' dates
+ */
+function guestify_get_date_range( $period ) {
+	$end = date( 'Y-m-d 23:59:59' );
+
+	switch ( $period ) {
+		case '90days':
+			$start = date( 'Y-m-d 00:00:00', strtotime( '-90 days' ) );
+			break;
+		case 'ytd':
+			$start = date( 'Y-01-01 00:00:00' );
+			break;
+		case 'all':
+			$start = '2020-01-01 00:00:00';
+			break;
+		case '30days':
+		default:
+			$start = date( 'Y-m-d 00:00:00', strtotime( '-30 days' ) );
+			break;
+	}
+
+	return array(
+		'start' => $start,
+		'end'   => $end,
+	);
+}
+
+/**
+ * Get pipeline data for the dashboard
+ *
+ * Aggregates data from Prospector, ShowAuthority, and Outreach plugins.
+ *
+ * @param int    $user_id User ID
+ * @param string $period  Time period
+ * @return array Pipeline data
+ */
+function guestify_get_pipeline_data( $user_id = 0, $period = '30days' ) {
+	if ( ! $user_id ) {
+		$user_id = get_current_user_id();
+	}
+
+	global $wpdb;
+
+	$dates = guestify_get_date_range( $period );
+	$start = $dates['start'];
+	$end = $dates['end'];
+
+	$data = array(
+		'shows_found'        => 0,
+		'shows_researched'   => 0,
+		'pitches_sent'       => 0,
+		'interviews_booked'  => 0,
+		'episodes_aired'     => 0,
+		'vetted_rate'        => 0,
+		'pitched_rate'       => 0,
+		'booked_rate'        => 0,
+		'aired_rate'         => 0,
+		'ready_to_pitch'     => 0,
+		'insight'            => '',
+	);
+
+	// Get shows found from Prospector
+	$podcasts_table = $wpdb->prefix . 'pit_podcasts';
+	if ( $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $podcasts_table ) ) === $podcasts_table ) {
+		$data['shows_found'] = (int) $wpdb->get_var( $wpdb->prepare(
+			"SELECT COUNT(*) FROM {$podcasts_table} WHERE user_id = %d AND created_at >= %s AND created_at <= %s",
+			$user_id,
+			$start,
+			$end
+		) );
+	}
+
+	// Get shows researched (vetted) from ShowAuthority opportunities
+	$opportunities_table = $wpdb->prefix . 'pit_opportunities';
+	if ( $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $opportunities_table ) ) === $opportunities_table ) {
+		$data['shows_researched'] = (int) $wpdb->get_var( $wpdb->prepare(
+			"SELECT COUNT(*) FROM {$opportunities_table} WHERE user_id = %d AND created_at >= %s AND created_at <= %s",
+			$user_id,
+			$start,
+			$end
+		) );
+
+		// Get ready to pitch count
+		$data['ready_to_pitch'] = (int) $wpdb->get_var( $wpdb->prepare(
+			"SELECT COUNT(*) FROM {$opportunities_table} WHERE user_id = %d AND status = 'ready'",
+			$user_id
+		) );
+	}
+
+	// Get pitches sent from Outreach
+	$messages_table = $wpdb->prefix . 'guestify_messages';
+	if ( $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $messages_table ) ) === $messages_table ) {
+		$data['pitches_sent'] = (int) $wpdb->get_var( $wpdb->prepare(
+			"SELECT COUNT(*) FROM {$messages_table} WHERE user_id = %d AND is_reply = 0 AND created_at >= %s AND created_at <= %s",
+			$user_id,
+			$start,
+			$end
+		) );
+	}
+
+	// Get interviews booked and episodes aired from ShowAuthority appearances
+	$appearances_table = $wpdb->prefix . 'pit_appearances';
+	if ( $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $appearances_table ) ) === $appearances_table ) {
+		$data['interviews_booked'] = (int) $wpdb->get_var( $wpdb->prepare(
+			"SELECT COUNT(*) FROM {$appearances_table} WHERE user_id = %d AND status IN ('scheduled', 'confirmed', 'completed', 'aired') AND created_at >= %s AND created_at <= %s",
+			$user_id,
+			$start,
+			$end
+		) );
+
+		$data['episodes_aired'] = (int) $wpdb->get_var( $wpdb->prepare(
+			"SELECT COUNT(*) FROM {$appearances_table} WHERE user_id = %d AND status = 'aired' AND created_at >= %s AND created_at <= %s",
+			$user_id,
+			$start,
+			$end
+		) );
+	}
+
+	// Calculate conversion rates
+	if ( $data['shows_found'] > 0 ) {
+		$data['vetted_rate'] = round( ( $data['shows_researched'] / $data['shows_found'] ) * 100, 1 );
+	}
+	if ( $data['shows_researched'] > 0 ) {
+		$data['pitched_rate'] = round( ( $data['pitches_sent'] / $data['shows_researched'] ) * 100, 1 );
+	}
+	if ( $data['pitches_sent'] > 0 ) {
+		$data['booked_rate'] = round( ( $data['interviews_booked'] / $data['pitches_sent'] ) * 100, 1 );
+	}
+	if ( $data['interviews_booked'] > 0 ) {
+		$data['aired_rate'] = round( ( $data['episodes_aired'] / $data['interviews_booked'] ) * 100, 1 );
+	}
+
+	// Generate insight
+	$data['insight'] = guestify_generate_pipeline_insight( $data );
+
+	return $data;
+}
+
+/**
+ * Generate insight message based on pipeline data
+ *
+ * @param array $data Pipeline data
+ * @return string Insight HTML
+ */
+function guestify_generate_pipeline_insight( $data ) {
+	$pitches = $data['pitches_sent'];
+	$bookings = $data['interviews_booked'];
+
+	if ( $pitches >= 20 ) {
+		$multiplier = $bookings > 0 ? round( $pitches / $bookings, 1 ) : 0;
+		return sprintf(
+			__( '<strong>Effort-to-Results Insight:</strong> Users who pitch 20+ shows per month see <strong>3x more bookings</strong>. You\'re at %d pitches this month.', 'guestify' ),
+			$pitches
+		);
+	} elseif ( $pitches > 0 ) {
+		$needed = 20 - $pitches;
+		return sprintf(
+			__( '<strong>Tip:</strong> Send %d more pitches to reach the 20+ threshold for 3x booking rates.', 'guestify' ),
+			$needed
+		);
+	} else {
+		return __( '<strong>Get Started:</strong> Begin by searching for podcasts and sending your first pitch.', 'guestify' );
+	}
+}
+
+/**
+ * Get outcomes data for the dashboard
+ *
+ * @param int    $user_id User ID
+ * @param string $period  Time period
+ * @return array Outcomes data
+ */
+function guestify_get_outcomes_data( $user_id = 0, $period = '30days' ) {
+	if ( ! $user_id ) {
+		$user_id = get_current_user_id();
+	}
+
+	global $wpdb;
+
+	$dates = guestify_get_date_range( $period );
+	$start = $dates['start'];
+	$end = $dates['end'];
+
+	$data = array(
+		'revenue'        => 0,
+		'revenue_change' => '',
+		'audience'       => 0,
+		'partners'       => 0,
+	);
+
+	// Get revenue from ShowAuthority appearances
+	$appearances_table = $wpdb->prefix . 'pit_appearances';
+	if ( $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $appearances_table ) ) === $appearances_table ) {
+		// Current period revenue
+		$data['revenue'] = (float) $wpdb->get_var( $wpdb->prepare(
+			"SELECT COALESCE(SUM(revenue), 0) FROM {$appearances_table} WHERE user_id = %d AND created_at >= %s AND created_at <= %s",
+			$user_id,
+			$start,
+			$end
+		) );
+
+		// Previous period revenue for comparison
+		$prev_dates = guestify_get_date_range( $period );
+		$period_length = strtotime( $end ) - strtotime( $start );
+		$prev_start = date( 'Y-m-d H:i:s', strtotime( $start ) - $period_length );
+		$prev_end = $start;
+
+		$prev_revenue = (float) $wpdb->get_var( $wpdb->prepare(
+			"SELECT COALESCE(SUM(revenue), 0) FROM {$appearances_table} WHERE user_id = %d AND created_at >= %s AND created_at < %s",
+			$user_id,
+			$prev_start,
+			$prev_end
+		) );
+
+		if ( $prev_revenue > 0 ) {
+			$change = ( ( $data['revenue'] - $prev_revenue ) / $prev_revenue ) * 100;
+			$data['revenue_change'] = ( $change >= 0 ? '+' : '' ) . round( $change ) . '% vs last period';
+		}
+
+		// Get total audience reach
+		$data['audience'] = (int) $wpdb->get_var( $wpdb->prepare(
+			"SELECT COALESCE(SUM(audience_size), 0) FROM {$appearances_table} WHERE user_id = %d AND status = 'aired'",
+			$user_id
+		) );
+
+		// Get active partners (unique podcasts with collaboration)
+		$data['partners'] = (int) $wpdb->get_var( $wpdb->prepare(
+			"SELECT COUNT(DISTINCT podcast_id) FROM {$appearances_table} WHERE user_id = %d AND status IN ('scheduled', 'confirmed', 'completed', 'aired')",
+			$user_id
+		) );
+	}
+
+	return $data;
+}
+
+/**
+ * Get revenue attribution data for the dashboard
+ *
+ * @param int    $user_id User ID
+ * @param string $period  Time period
+ * @return array Attribution data
+ */
+function guestify_get_attribution_data( $user_id = 0, $period = '30days' ) {
+	if ( ! $user_id ) {
+		$user_id = get_current_user_id();
+	}
+
+	global $wpdb;
+
+	$dates = guestify_get_date_range( $period );
+	$start = $dates['start'];
+	$end = $dates['end'];
+
+	$data = array();
+
+	// Get attribution data from ShowAuthority links table
+	$links_table = $wpdb->prefix . 'pit_tracking_links';
+	$appearances_table = $wpdb->prefix . 'pit_appearances';
+	$podcasts_table = $wpdb->prefix . 'pit_podcasts';
+
+	if ( $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $links_table ) ) === $links_table ) {
+		$results = $wpdb->get_results( $wpdb->prepare(
+			"SELECT
+				l.id,
+				l.slug,
+				l.clicks,
+				l.conversions as leads,
+				COALESCE(a.revenue, 0) as revenue,
+				COALESCE(p.title, 'Unknown Podcast') as name
+			 FROM {$links_table} l
+			 LEFT JOIN {$appearances_table} a ON l.appearance_id = a.id
+			 LEFT JOIN {$podcasts_table} p ON a.podcast_id = p.id
+			 WHERE l.user_id = %d
+			 ORDER BY l.clicks DESC
+			 LIMIT 5",
+			$user_id
+		), ARRAY_A );
+
+		if ( $results ) {
+			foreach ( $results as $row ) {
+				$data[] = array(
+					'name'    => $row['name'],
+					'link'    => '/go/' . $row['slug'],
+					'clicks'  => (int) $row['clicks'],
+					'leads'   => (int) $row['leads'],
+					'revenue' => (float) $row['revenue'],
+				);
+			}
+		}
+	}
+
+	// If no link tracking data, get from appearances directly
+	if ( empty( $data ) && $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $appearances_table ) ) === $appearances_table ) {
+		$results = $wpdb->get_results( $wpdb->prepare(
+			"SELECT
+				a.id,
+				COALESCE(p.title, 'Podcast Appearance') as name,
+				COALESCE(a.revenue, 0) as revenue
+			 FROM {$appearances_table} a
+			 LEFT JOIN {$podcasts_table} p ON a.podcast_id = p.id
+			 WHERE a.user_id = %d AND a.revenue > 0
+			 ORDER BY a.revenue DESC
+			 LIMIT 5",
+			$user_id
+		), ARRAY_A );
+
+		if ( $results ) {
+			foreach ( $results as $row ) {
+				$data[] = array(
+					'name'    => $row['name'],
+					'link'    => '',
+					'clicks'  => 0,
+					'leads'   => 0,
+					'revenue' => (float) $row['revenue'],
+				);
+			}
+		}
+	}
+
+	return $data;
+}
+
+/**
+ * Get user journey stage
+ *
+ * @param int $user_id User ID
+ * @return array Journey stage data
+ */
+function guestify_get_user_journey_stage( $user_id = 0 ) {
+	if ( ! $user_id ) {
+		$user_id = get_current_user_id();
+	}
+
+	// Get pipeline data to determine stage
+	$pipeline = guestify_get_pipeline_data( $user_id, 'all' );
+
+	$stages = array(
+		'identity' => array(
+			'id'    => 'identity',
+			'label' => __( 'Identity Phase', 'guestify' ),
+			'cta'   => __( 'Complete your Media Kit profile.', 'guestify' ),
+		),
+		'discovery' => array(
+			'id'    => 'discovery',
+			'label' => __( 'Discovery Phase', 'guestify' ),
+			'cta'   => __( 'Find podcasts that match your expertise.', 'guestify' ),
+		),
+		'intelligence' => array(
+			'id'    => 'intelligence',
+			'label' => __( 'Intelligence Phase', 'guestify' ),
+			'cta'   => __( 'Research and vet potential shows.', 'guestify' ),
+		),
+		'action' => array(
+			'id'    => 'action',
+			'label' => __( 'Action Phase', 'guestify' ),
+			'cta'   => __( 'Focus on increasing pitch volume.', 'guestify' ),
+		),
+	);
+
+	// Determine current stage based on activity
+	if ( $pipeline['pitches_sent'] > 0 ) {
+		return $stages['action'];
+	} elseif ( $pipeline['shows_researched'] > 0 ) {
+		return $stages['intelligence'];
+	} elseif ( $pipeline['shows_found'] > 0 ) {
+		return $stages['discovery'];
+	} else {
+		return $stages['identity'];
+	}
+}
+
+/**
+ * Load Dashboard API
+ */
+require_once get_template_directory() . '/inc/class-dashboard-api.php';

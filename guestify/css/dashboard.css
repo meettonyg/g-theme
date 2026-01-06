@@ -1,0 +1,696 @@
+/**
+ * Guestify Performance Dashboard Styles
+ *
+ * Based on dashboard-v9.html design and DESIGN-SYSTEM.md
+ * Uses BEM naming convention with .gfy- prefix
+ *
+ * @package Guestify
+ * @version 1.0.0
+ */
+
+/* ============================================
+   MAIN LAYOUT
+   ============================================ */
+
+.gfy-main {
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+    padding: 32px 24px;
+    flex: 1;
+}
+
+/* ============================================
+   HEADER & CONTROLS
+   ============================================ */
+
+.gfy-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    margin-bottom: 24px;
+}
+
+.gfy-page-title {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--gfy-text-main, #0f172a);
+    line-height: 1.2;
+    margin: 0;
+}
+
+.gfy-page-subtitle {
+    color: var(--gfy-text-secondary, #64748b);
+    margin-top: 4px;
+    font-size: 0.95rem;
+}
+
+.gfy-controls {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+}
+
+/* Goal Toggle Tabs */
+.gfy-goal-toggle {
+    display: flex;
+    background: var(--gfy-white, #ffffff);
+    border: 1px solid var(--gfy-border, #e2e8f0);
+    border-radius: var(--gfy-radius-lg, 0.5rem);
+    padding: 4px;
+    box-shadow: var(--gfy-shadow-sm, 0 1px 2px rgba(0,0,0,0.05));
+}
+
+.gfy-goal-btn {
+    padding: 6px 16px;
+    border-radius: var(--gfy-radius-md, 0.375rem);
+    font-weight: 600;
+    font-size: 0.85rem;
+    border: none;
+    background: transparent;
+    color: var(--gfy-text-secondary, #64748b);
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.gfy-goal-btn:hover {
+    color: var(--gfy-text-main, #0f172a);
+}
+
+.gfy-goal-btn.active {
+    background: var(--gfy-action-500, #3b82f6);
+    color: white;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.1);
+}
+
+/* Time Selector */
+.gfy-time-select {
+    padding: 8px 12px;
+    border: 1px solid var(--gfy-border, #e2e8f0);
+    border-radius: var(--gfy-radius-lg, 0.5rem);
+    background: white;
+    color: var(--gfy-text-main, #0f172a);
+    font-size: 0.9rem;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+/* ============================================
+   JOURNEY BAR
+   ============================================ */
+
+.gfy-journey-bar {
+    background: white;
+    border: 1px solid var(--gfy-border, #e2e8f0);
+    border-radius: var(--gfy-radius-lg, 0.5rem);
+    padding: 12px 20px;
+    margin-bottom: 32px;
+    box-shadow: var(--gfy-shadow-sm, 0 1px 2px rgba(0,0,0,0.05));
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.gfy-journey-status {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: var(--gfy-text-main, #0f172a);
+}
+
+.gfy-journey-steps {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-left: 24px;
+}
+
+.gfy-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--gfy-bg-subtle, #f1f5f9);
+    border: 2px solid var(--gfy-border, #e2e8f0);
+}
+
+.gfy-dot.done {
+    background: var(--gfy-success, #10b981);
+    border-color: var(--gfy-success, #10b981);
+}
+
+.gfy-dot.active {
+    background: white;
+    border-color: var(--gfy-action-500, #3b82f6);
+    box-shadow: 0 0 0 2px var(--gfy-action-50, #eff6ff);
+}
+
+.gfy-line {
+    width: 30px;
+    height: 2px;
+    background: var(--gfy-border, #e2e8f0);
+}
+
+.gfy-line.done {
+    background: var(--gfy-success, #10b981);
+}
+
+.gfy-journey-cta {
+    font-size: 0.85rem;
+    color: var(--gfy-text-secondary, #64748b);
+    margin-left: auto;
+    margin-right: 16px;
+}
+
+/* ============================================
+   SECTION HEADERS
+   ============================================ */
+
+.gfy-section-header {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--gfy-text-secondary, #64748b);
+    font-weight: 700;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.gfy-section-line {
+    height: 1px;
+    background: var(--gfy-border, #e2e8f0);
+    flex: 1;
+}
+
+/* ============================================
+   DELIVERY PIPELINE
+   ============================================ */
+
+.gfy-pipeline-grid {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.gfy-pipe-card {
+    background: white;
+    border: 1px solid var(--gfy-border, #e2e8f0);
+    border-radius: var(--gfy-radius-lg, 0.5rem);
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    box-shadow: var(--gfy-shadow-sm, 0 1px 2px rgba(0,0,0,0.05));
+    height: 140px;
+    position: relative;
+    transition: transform 0.2s;
+}
+
+/* Highlight Actionable Step */
+.gfy-pipe-card.actionable {
+    border-color: var(--gfy-action-500, #3b82f6);
+    box-shadow: 0 0 0 1px var(--gfy-action-500, #3b82f6), 0 4px 6px -1px rgba(59, 130, 246, 0.1);
+    background: #fafafa;
+}
+
+.gfy-pipe-card.actionable:hover {
+    transform: translateY(-2px);
+}
+
+.gfy-pipe-top {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--gfy-text-secondary, #64748b);
+    text-transform: uppercase;
+}
+
+.gfy-pipe-icon {
+    width: 28px;
+    height: 28px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.9rem;
+}
+
+/* Step Colors */
+.step-found .gfy-pipe-icon {
+    background: #eff6ff;
+    color: var(--gfy-discovery-blue, #3b82f6);
+}
+
+.step-research .gfy-pipe-icon {
+    background: #ecfdf5;
+    color: var(--gfy-intel-green, #10b981);
+}
+
+.step-pitch .gfy-pipe-icon {
+    background: #fffbeb;
+    color: var(--gfy-action-orange, #f59e0b);
+}
+
+.step-book .gfy-pipe-icon {
+    background: #eef2ff;
+    color: var(--gfy-action-600, #2563eb);
+}
+
+.step-air .gfy-pipe-icon {
+    background: #f3e8ff;
+    color: var(--gfy-identity-purple, #8b5cf6);
+}
+
+.gfy-pipe-val {
+    font-size: 2rem;
+    font-weight: 800;
+    color: var(--gfy-text-main, #0f172a);
+    margin-top: auto;
+    line-height: 1;
+}
+
+.gfy-pipe-lbl {
+    font-size: 0.85rem;
+    color: var(--gfy-text-secondary, #64748b);
+    margin-top: 6px;
+    font-weight: 500;
+}
+
+/* Rate Badges */
+.gfy-rate-badge {
+    position: absolute;
+    right: -24px;
+    top: 50%;
+    transform: translateY(-50%);
+    z-index: 10;
+    background: white;
+    border: 1px solid var(--gfy-border, #e2e8f0);
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-size: 0.7rem;
+    font-weight: 600;
+    color: var(--gfy-text-secondary, #64748b);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+    white-space: nowrap;
+}
+
+/* ============================================
+   INSIGHT BANNER
+   ============================================ */
+
+.gfy-insight-banner {
+    background: linear-gradient(135deg, var(--gfy-primary-800, #1B365D) 0%, #234575 100%);
+    border-radius: var(--gfy-radius-lg, 0.5rem);
+    padding: 16px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    color: white;
+    margin-bottom: 32px;
+    box-shadow: var(--gfy-shadow-md, 0 4px 6px -1px rgba(0,0,0,0.1));
+}
+
+.gfy-insight-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.gfy-insight-icon {
+    font-size: 1.25rem;
+    opacity: 0.9;
+    color: #fbbf24;
+}
+
+.gfy-insight-text {
+    font-size: 0.95rem;
+    opacity: 0.95;
+    line-height: 1.4;
+}
+
+.gfy-insight-text strong {
+    font-weight: 700;
+    color: #fff;
+}
+
+/* ============================================
+   OUTCOMES SECTION
+   ============================================ */
+
+.gfy-outcomes-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+    margin-bottom: 32px;
+}
+
+.gfy-outcome-card {
+    background: var(--gfy-white, #ffffff);
+    border: 1px solid var(--gfy-border, #e2e8f0);
+    border-radius: var(--gfy-radius-lg, 0.5rem);
+    padding: 20px;
+    box-shadow: var(--gfy-shadow-sm, 0 1px 2px rgba(0,0,0,0.05));
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    transition: all 0.3s ease;
+    opacity: 0.7;
+}
+
+/* Highlight Active Goal */
+.gfy-outcome-card.highlight {
+    border-color: var(--gfy-action-500, #3b82f6);
+    box-shadow: 0 0 0 1px var(--gfy-action-500, #3b82f6), var(--gfy-shadow-md, 0 4px 6px -1px rgba(0,0,0,0.1));
+    opacity: 1;
+    transform: translateY(-2px);
+}
+
+.gfy-outcome-icon-box {
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.25rem;
+    flex-shrink: 0;
+}
+
+.card-connect .gfy-outcome-icon-box {
+    background: var(--gfy-info-bg, #eff6ff);
+    color: var(--gfy-info, #3b82f6);
+}
+
+.card-capture .gfy-outcome-icon-box {
+    background: var(--gfy-success-bg, #d1fae5);
+    color: var(--gfy-success, #10b981);
+}
+
+.card-collab .gfy-outcome-icon-box {
+    background: var(--gfy-royal-bg, #eef2ff);
+    color: var(--gfy-royal, #6366f1);
+}
+
+.gfy-outcome-title {
+    font-weight: 700;
+    color: var(--gfy-text-secondary, #64748b);
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-bottom: 4px;
+}
+
+.gfy-outcome-val {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--gfy-text-main, #0f172a);
+    line-height: 1;
+}
+
+.gfy-outcome-sub {
+    font-size: 0.85rem;
+    color: var(--gfy-text-secondary, #64748b);
+    margin-top: 4px;
+}
+
+.gfy-outcome-sub--success {
+    color: var(--gfy-success, #10b981);
+}
+
+/* ============================================
+   SPLIT GRID (ATTRIBUTION & ACTIONS)
+   ============================================ */
+
+.gfy-split-grid {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: 24px;
+}
+
+.gfy-card {
+    background: var(--gfy-white, #ffffff);
+    border: 1px solid var(--gfy-border, #e2e8f0);
+    border-radius: var(--gfy-radius-lg, 0.5rem);
+    box-shadow: var(--gfy-shadow-sm, 0 1px 2px rgba(0,0,0,0.05));
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    height: 100%;
+}
+
+.gfy-card-header {
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--gfy-border, #e2e8f0);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #fafafa;
+}
+
+.gfy-card-title {
+    font-weight: 600;
+    color: var(--gfy-text-main, #0f172a);
+    font-size: 0.95rem;
+}
+
+/* Table Styles */
+.gfy-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.gfy-table th {
+    text-align: left;
+    padding: 10px 20px;
+    font-size: 0.75rem;
+    color: var(--gfy-text-secondary, #64748b);
+    font-weight: 600;
+    border-bottom: 1px solid var(--gfy-border, #e2e8f0);
+    background: #fafafa;
+    text-transform: uppercase;
+}
+
+.gfy-table td {
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--gfy-border, #e2e8f0);
+    font-size: 0.9rem;
+    color: var(--gfy-text-main, #0f172a);
+}
+
+.gfy-table tr:last-child td {
+    border-bottom: none;
+}
+
+.gfy-table__name {
+    font-weight: 500;
+}
+
+.gfy-link-cell {
+    font-family: 'Monaco', 'Consolas', monospace;
+    color: var(--gfy-action-500, #3b82f6);
+    font-size: 0.8rem;
+    background: var(--gfy-bg-subtle, #f1f5f9);
+    padding: 2px 6px;
+    border-radius: 4px;
+}
+
+.gfy-table__revenue {
+    color: var(--gfy-success, #10b981);
+    font-weight: 600;
+}
+
+/* Quick Actions Card */
+.gfy-action-card {
+    background: white;
+    border: 1px solid var(--gfy-border, #e2e8f0);
+    border-radius: var(--gfy-radius-lg, 0.5rem);
+    padding: 24px;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+}
+
+.gfy-action-title {
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: var(--gfy-text-main, #0f172a);
+    margin-bottom: 8px;
+}
+
+.gfy-action-text {
+    color: var(--gfy-text-secondary, #64748b);
+    font-size: 0.9rem;
+    margin-bottom: 20px;
+}
+
+/* ============================================
+   BUTTONS
+   ============================================ */
+
+.gfy-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: var(--gfy-radius-md, 0.375rem);
+    font-weight: 600;
+    font-size: 0.9rem;
+    cursor: pointer;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+    text-decoration: none;
+}
+
+.gfy-btn-primary {
+    background: var(--gfy-action-500, #3b82f6);
+    color: white;
+}
+
+.gfy-btn-primary:hover {
+    background: var(--gfy-action-600, #2563eb);
+}
+
+.gfy-btn-outline {
+    background: white;
+    border-color: var(--gfy-border, #e2e8f0);
+    color: var(--gfy-text-main, #0f172a);
+}
+
+.gfy-btn-outline:hover {
+    background: var(--gfy-bg-subtle, #f1f5f9);
+}
+
+.gfy-btn-sm {
+    padding: 6px 12px;
+    font-size: 0.8rem;
+}
+
+/* ============================================
+   EMPTY STATE
+   ============================================ */
+
+.gfy-empty-state {
+    text-align: center;
+    padding: 40px 20px;
+    color: var(--gfy-text-secondary, #64748b);
+}
+
+.gfy-empty-state__icon {
+    font-size: 2rem;
+    margin-bottom: 12px;
+    opacity: 0.5;
+}
+
+.gfy-empty-state__title {
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+/* ============================================
+   RESPONSIVE STYLES
+   ============================================ */
+
+@media (max-width: 1024px) {
+    .gfy-pipeline-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 16px;
+    }
+
+    .gfy-pipe-card {
+        height: auto;
+    }
+
+    .gfy-rate-badge {
+        display: none;
+    }
+
+    .gfy-outcomes-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .gfy-split-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .gfy-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+
+    .gfy-controls {
+        width: 100%;
+        justify-content: space-between;
+        flex-wrap: wrap;
+    }
+
+    .gfy-journey-bar {
+        flex-direction: column;
+        gap: 12px;
+        text-align: center;
+    }
+
+    .gfy-journey-steps {
+        margin-left: 0;
+    }
+
+    .gfy-journey-cta {
+        margin-left: 0;
+        margin-right: 0;
+    }
+}
+
+@media (max-width: 640px) {
+    .gfy-main {
+        padding: 16px;
+    }
+
+    .gfy-pipeline-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .gfy-goal-toggle {
+        width: 100%;
+    }
+
+    .gfy-goal-btn {
+        flex: 1;
+        text-align: center;
+        padding: 8px 10px;
+        font-size: 0.8rem;
+    }
+
+    .gfy-insight-banner {
+        flex-direction: column;
+        gap: 16px;
+        text-align: center;
+    }
+
+    .gfy-insight-left {
+        flex-direction: column;
+    }
+}
+
+/* ============================================
+   REDUCED MOTION
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+    }
+}

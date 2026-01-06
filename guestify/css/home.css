@@ -1,0 +1,687 @@
+/**
+ * Guestify Home Page Styles
+ *
+ * Dynamic dashboard home page for the Guestify app.
+ * Uses design tokens from guestify-tokens.css
+ *
+ * @package Guestify
+ * @version 1.0.0
+ */
+
+/* ============================================
+   HOME PAGE LAYOUT
+   ============================================ */
+
+.gfy-home {
+    max-width: 1200px;
+    margin: 0 auto;
+    width: 100%;
+    padding: var(--gfy-space-12, 3rem) var(--gfy-space-6, 1.5rem);
+    flex: 1;
+}
+
+/* ============================================
+   WELCOME SECTION
+   ============================================ */
+
+.gfy-home__welcome {
+    text-align: center;
+    margin-bottom: var(--gfy-space-10, 2.5rem);
+}
+
+.gfy-home__greeting {
+    font-size: var(--gfy-text-4xl, 2.25rem);
+    font-weight: var(--gfy-font-extrabold, 800);
+    color: var(--gfy-gray-900, #0f172a);
+    margin-bottom: var(--gfy-space-2, 0.5rem);
+    letter-spacing: -0.025em;
+}
+
+.gfy-home__date {
+    color: var(--gfy-gray-500, #64748b);
+    font-size: var(--gfy-text-base, 1rem);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--gfy-space-2, 0.5rem);
+}
+
+.gfy-home__date i {
+    color: var(--gfy-gray-400, #94a3b8);
+}
+
+.gfy-home__tasks-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gfy-space-1, 0.25rem);
+    padding: var(--gfy-space-1, 0.25rem) var(--gfy-space-3, 0.75rem);
+    background: var(--gfy-warning-50, #fffbeb);
+    color: var(--gfy-warning, #f59e0b);
+    border-radius: var(--gfy-radius-full, 9999px);
+    font-size: var(--gfy-text-xs, 0.75rem);
+    font-weight: var(--gfy-font-semibold, 600);
+    margin-left: var(--gfy-space-2, 0.5rem);
+}
+
+/* ============================================
+   GOAL SELECTOR
+   ============================================ */
+
+.gfy-home__goal-wrapper {
+    display: flex;
+    justify-content: center;
+    margin-top: var(--gfy-space-6, 1.5rem);
+}
+
+.gfy-home__goal-toggle {
+    display: flex;
+    background: var(--gfy-white, #ffffff);
+    border: 1px solid var(--gfy-gray-200, #e2e8f0);
+    border-radius: var(--gfy-radius-lg, 0.5rem);
+    padding: var(--gfy-space-1, 0.25rem);
+    box-shadow: var(--gfy-shadow-sm, 0 1px 2px rgba(0, 0, 0, 0.05));
+}
+
+.gfy-home__goal-btn {
+    padding: var(--gfy-space-2, 0.5rem) var(--gfy-space-5, 1.25rem);
+    border-radius: var(--gfy-radius-md, 0.375rem);
+    font-weight: var(--gfy-font-semibold, 600);
+    font-size: var(--gfy-text-sm, 0.875rem);
+    border: none;
+    background: transparent;
+    color: var(--gfy-gray-500, #64748b);
+    cursor: pointer;
+    transition: all var(--gfy-transition-base, 200ms);
+    display: flex;
+    align-items: center;
+    gap: var(--gfy-space-2, 0.5rem);
+}
+
+.gfy-home__goal-btn:hover {
+    color: var(--gfy-gray-700, #334155);
+}
+
+.gfy-home__goal-btn.active {
+    background: var(--gfy-info-500, #3b82f6);
+    color: var(--gfy-white, #ffffff);
+    box-shadow: var(--gfy-shadow-sm, 0 1px 2px rgba(0, 0, 0, 0.05));
+}
+
+.gfy-home__goal-btn i {
+    font-size: var(--gfy-text-xs, 0.75rem);
+}
+
+/* ============================================
+   QUICK STATS BAR
+   ============================================ */
+
+.gfy-home__stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--gfy-space-4, 1rem);
+    margin-bottom: var(--gfy-space-8, 2rem);
+    padding: var(--gfy-space-4, 1rem) var(--gfy-space-5, 1.25rem);
+    background: var(--gfy-white, #ffffff);
+    border: 1px solid var(--gfy-gray-200, #e2e8f0);
+    border-radius: var(--gfy-radius-lg, 0.5rem);
+    box-shadow: var(--gfy-shadow-sm, 0 1px 2px rgba(0, 0, 0, 0.05));
+}
+
+.gfy-home__stat {
+    display: flex;
+    align-items: center;
+    gap: var(--gfy-space-3, 0.75rem);
+}
+
+.gfy-home__stat-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--gfy-radius-md, 0.375rem);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--gfy-text-sm, 0.875rem);
+}
+
+.gfy-home__stat-icon--info {
+    background: var(--gfy-info-50, #eff6ff);
+    color: var(--gfy-info-500, #3b82f6);
+}
+
+.gfy-home__stat-icon--success {
+    background: var(--gfy-success-50, #ecfdf5);
+    color: var(--gfy-success, #10b981);
+}
+
+.gfy-home__stat-icon--purple {
+    background: var(--gfy-purple-50, #faf5ff);
+    color: var(--gfy-purple-500, #805AD5);
+}
+
+.gfy-home__stat-content {
+    flex: 1;
+}
+
+.gfy-home__stat-value {
+    font-size: var(--gfy-text-lg, 1.125rem);
+    font-weight: var(--gfy-font-bold, 700);
+    color: var(--gfy-gray-900, #0f172a);
+    line-height: 1;
+}
+
+.gfy-home__stat-label {
+    font-size: var(--gfy-text-xs, 0.75rem);
+    color: var(--gfy-gray-500, #64748b);
+    margin-top: var(--gfy-space-1, 0.25rem);
+}
+
+/* Loading skeleton for stats */
+.gfy-home__stat-value.gfy-skeleton {
+    height: 1.125rem;
+    width: 50px;
+    background: linear-gradient(
+        90deg,
+        var(--gfy-gray-100, #f1f5f9) 25%,
+        var(--gfy-gray-200, #e2e8f0) 50%,
+        var(--gfy-gray-100, #f1f5f9) 75%
+    );
+    background-size: 200% 100%;
+    animation: gfyShimmer 1.5s infinite;
+    border-radius: var(--gfy-radius-sm, 0.125rem);
+}
+
+@keyframes gfyShimmer {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+/* ============================================
+   WORKSPACE GRID (4 Pillars)
+   ============================================ */
+
+.gfy-home__pillars {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--gfy-space-5, 1.25rem);
+    margin-bottom: var(--gfy-space-12, 3rem);
+}
+
+.gfy-home__pillar {
+    flex: 0 0 calc(25% - var(--gfy-space-5, 1.25rem) * 3 / 4);
+    background: var(--gfy-white, #ffffff);
+    border: 1px solid var(--gfy-gray-200, #e2e8f0);
+    border-radius: var(--gfy-radius-xl, 0.75rem);
+    padding: var(--gfy-space-6, 1.5rem);
+    box-shadow: var(--gfy-shadow-sm, 0 1px 2px rgba(0, 0, 0, 0.05));
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    transition: all var(--gfy-transition-base, 200ms);
+    cursor: pointer;
+    min-height: 200px;
+    position: relative;
+    overflow: hidden;
+    text-decoration: none;
+}
+
+.gfy-home__pillar:hover {
+    transform: translateY(-4px);
+    box-shadow: var(--gfy-shadow-md, 0 4px 6px -1px rgba(0, 0, 0, 0.1));
+    border-color: var(--gfy-info-500, #3b82f6);
+}
+
+.gfy-home__pillar-icon {
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: var(--gfy-space-4, 1rem);
+    font-size: 1.5rem;
+}
+
+/* Pillar color variants */
+.gfy-home__pillar--identity .gfy-home__pillar-icon {
+    background: var(--gfy-purple-50, #faf5ff);
+    color: var(--gfy-purple-500, #805AD5);
+}
+
+.gfy-home__pillar--discovery .gfy-home__pillar-icon {
+    background: var(--gfy-info-50, #eff6ff);
+    color: var(--gfy-info-500, #3b82f6);
+}
+
+.gfy-home__pillar--intel .gfy-home__pillar-icon {
+    background: var(--gfy-success-50, #ecfdf5);
+    color: var(--gfy-success, #10b981);
+}
+
+.gfy-home__pillar--action .gfy-home__pillar-icon {
+    background: var(--gfy-warning-50, #fffbeb);
+    color: var(--gfy-warning, #f59e0b);
+}
+
+.gfy-home__pillar-title {
+    font-size: var(--gfy-text-lg, 1.125rem);
+    font-weight: var(--gfy-font-bold, 700);
+    color: var(--gfy-gray-900, #0f172a);
+    margin-bottom: var(--gfy-space-1, 0.25rem);
+}
+
+.gfy-home__pillar-desc {
+    font-size: var(--gfy-text-sm, 0.875rem);
+    color: var(--gfy-gray-500, #64748b);
+    line-height: 1.5;
+    margin-bottom: var(--gfy-space-4, 1rem);
+    flex: 1;
+}
+
+.gfy-home__pillar-status {
+    font-size: var(--gfy-text-xs, 0.75rem);
+    font-weight: var(--gfy-font-semibold, 600);
+    padding: var(--gfy-space-1, 0.25rem) var(--gfy-space-3, 0.75rem);
+    border-radius: var(--gfy-radius-sm, 0.125rem);
+    background: var(--gfy-gray-100, #f1f5f9);
+    color: var(--gfy-gray-700, #334155);
+    display: flex;
+    align-items: center;
+    gap: var(--gfy-space-1, 0.25rem);
+}
+
+.gfy-home__pillar-status .status-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: var(--gfy-radius-full, 9999px);
+    background: var(--gfy-success, #10b981);
+}
+
+.gfy-home__pillar-status--alert {
+    background: var(--gfy-warning-50, #fffbeb);
+    color: var(--gfy-warning, #f59e0b);
+}
+
+/* Priority pillar styling */
+.gfy-home__pillar--priority {
+    border-color: var(--gfy-info-200, #bfdbfe);
+    background: linear-gradient(180deg, var(--gfy-info-50, #eff6ff) 0%, var(--gfy-white, #fff) 100%);
+}
+
+.gfy-home__pillar--priority:hover {
+    border-color: var(--gfy-info-400, #60a5fa);
+}
+
+.gfy-home__pillar-badge {
+    position: absolute;
+    top: var(--gfy-space-3, 0.75rem);
+    right: var(--gfy-space-3, 0.75rem);
+    font-size: var(--gfy-text-2xs, 0.625rem);
+    font-weight: var(--gfy-font-semibold, 600);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    padding: var(--gfy-space-1, 0.25rem) var(--gfy-space-2, 0.5rem);
+    background: var(--gfy-info-500, #3b82f6);
+    color: var(--gfy-white, #ffffff);
+    border-radius: var(--gfy-radius-sm, 0.125rem);
+}
+
+.gfy-home__pillar-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gfy-space-1, 0.25rem);
+    font-size: var(--gfy-text-sm, 0.875rem);
+    font-weight: var(--gfy-font-semibold, 600);
+    color: var(--gfy-info-500, #3b82f6);
+    margin-top: var(--gfy-space-3, 0.75rem);
+    transition: gap var(--gfy-transition-fast, 150ms);
+}
+
+.gfy-home__pillar-cta i {
+    font-size: var(--gfy-text-xs, 0.75rem);
+    transition: transform var(--gfy-transition-fast, 150ms);
+}
+
+.gfy-home__pillar:hover .gfy-home__pillar-cta i {
+    transform: translateX(3px);
+}
+
+/* Goal-based hover colors for priority pillar */
+.gfy-home__pillar--priority.gfy-home__pillar--identity:hover {
+    border-color: var(--gfy-purple-400, #a78bfa);
+}
+
+.gfy-home__pillar--priority.gfy-home__pillar--discovery:hover {
+    border-color: var(--gfy-info-400, #60a5fa);
+}
+
+.gfy-home__pillar--priority.gfy-home__pillar--intel:hover {
+    border-color: var(--gfy-success-400, #34d399);
+}
+
+.gfy-home__pillar--priority.gfy-home__pillar--action:hover {
+    border-color: var(--gfy-warning-400, #fbbf24);
+}
+
+/* Pillar reordering animation */
+.gfy-home__pillars--reordering .gfy-home__pillar {
+    transition: order var(--gfy-transition-base, 200ms) ease-out,
+                transform var(--gfy-transition-base, 200ms) ease-out,
+                opacity var(--gfy-transition-base, 200ms) ease-out;
+}
+
+/* ============================================
+   CONTENT SPLIT (Recent Activity + Support)
+   ============================================ */
+
+.gfy-home__split {
+    display: grid;
+    grid-template-columns: 2fr 1fr;
+    gap: var(--gfy-space-12, 3rem);
+}
+
+.gfy-home__section-title {
+    font-size: var(--gfy-text-base, 1rem);
+    font-weight: var(--gfy-font-bold, 700);
+    color: var(--gfy-gray-900, #0f172a);
+    margin-bottom: var(--gfy-space-4, 1rem);
+    display: flex;
+    align-items: center;
+    gap: var(--gfy-space-2, 0.5rem);
+}
+
+.gfy-home__section-title i {
+    color: var(--gfy-gray-400, #94a3b8);
+}
+
+/* ============================================
+   RECENT ACTIVITY LIST
+   ============================================ */
+
+.gfy-home__recent-list {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gfy-space-3, 0.75rem);
+}
+
+.gfy-home__recent-item {
+    background: var(--gfy-white, #ffffff);
+    border: 1px solid var(--gfy-gray-200, #e2e8f0);
+    border-radius: var(--gfy-radius-lg, 0.5rem);
+    padding: var(--gfy-space-4, 1rem);
+    display: flex;
+    gap: var(--gfy-space-4, 1rem);
+    align-items: center;
+    cursor: pointer;
+    transition: all var(--gfy-transition-base, 200ms);
+    text-decoration: none;
+}
+
+.gfy-home__recent-item:hover {
+    border-color: var(--gfy-info-500, #3b82f6);
+    box-shadow: var(--gfy-shadow-sm, 0 1px 2px rgba(0, 0, 0, 0.05));
+}
+
+.gfy-home__recent-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--gfy-radius-lg, 0.5rem);
+    background: var(--gfy-gray-100, #f1f5f9);
+    color: var(--gfy-gray-500, #64748b);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.gfy-home__recent-icon--draft {
+    background: var(--gfy-warning-50, #fffbeb);
+    color: var(--gfy-warning, #f59e0b);
+}
+
+.gfy-home__recent-icon--search {
+    background: var(--gfy-info-50, #eff6ff);
+    color: var(--gfy-info-500, #3b82f6);
+}
+
+.gfy-home__recent-icon--calendar {
+    background: var(--gfy-success-50, #ecfdf5);
+    color: var(--gfy-success, #10b981);
+}
+
+.gfy-home__recent-icon--message {
+    background: var(--gfy-purple-50, #faf5ff);
+    color: var(--gfy-purple-500, #805AD5);
+}
+
+.gfy-home__recent-info {
+    flex: 1;
+    min-width: 0;
+}
+
+.gfy-home__recent-info h4 {
+    font-size: var(--gfy-text-sm, 0.875rem);
+    font-weight: var(--gfy-font-semibold, 600);
+    color: var(--gfy-gray-900, #0f172a);
+    margin: 0 0 var(--gfy-space-1, 0.25rem) 0;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.gfy-home__recent-info p {
+    font-size: var(--gfy-text-xs, 0.75rem);
+    color: var(--gfy-gray-500, #64748b);
+    margin: 0;
+}
+
+.gfy-home__recent-arrow {
+    color: var(--gfy-gray-300, #cbd5e1);
+    font-size: var(--gfy-text-sm, 0.875rem);
+}
+
+.gfy-home__recent-item:hover .gfy-home__recent-arrow {
+    color: var(--gfy-info-500, #3b82f6);
+}
+
+/* Empty state for recent activity */
+.gfy-home__recent-empty {
+    text-align: center;
+    padding: var(--gfy-space-8, 2rem) var(--gfy-space-4, 1rem);
+    color: var(--gfy-gray-500, #64748b);
+}
+
+.gfy-home__recent-empty i {
+    font-size: 2rem;
+    color: var(--gfy-gray-300, #cbd5e1);
+    margin-bottom: var(--gfy-space-3, 0.75rem);
+    display: block;
+}
+
+/* ============================================
+   SUPPORT CARDS
+   ============================================ */
+
+.gfy-home__support-card {
+    background: var(--gfy-white, #ffffff);
+    border: 1px solid var(--gfy-gray-200, #e2e8f0);
+    border-radius: var(--gfy-radius-lg, 0.5rem);
+    padding: var(--gfy-space-5, 1.25rem);
+    margin-bottom: var(--gfy-space-4, 1rem);
+    display: flex;
+    flex-direction: column;
+    gap: var(--gfy-space-3, 0.75rem);
+    border-left: 4px solid var(--gfy-gray-200, #e2e8f0);
+}
+
+.gfy-home__support-card--workshop {
+    border-left-color: var(--gfy-purple-500, #805AD5);
+}
+
+.gfy-home__support-card--help {
+    border-left-color: var(--gfy-info-500, #3b82f6);
+}
+
+.gfy-home__support-header {
+    display: flex;
+    align-items: center;
+    gap: var(--gfy-space-3, 0.75rem);
+}
+
+.gfy-home__support-icon {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--gfy-radius-lg, 0.5rem);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1rem;
+}
+
+.gfy-home__support-card--workshop .gfy-home__support-icon {
+    background: var(--gfy-purple-50, #faf5ff);
+    color: var(--gfy-purple-500, #805AD5);
+}
+
+.gfy-home__support-card--help .gfy-home__support-icon {
+    background: var(--gfy-info-50, #eff6ff);
+    color: var(--gfy-info-500, #3b82f6);
+}
+
+.gfy-home__support-title {
+    font-weight: var(--gfy-font-semibold, 600);
+    font-size: var(--gfy-text-base, 1rem);
+    color: var(--gfy-gray-900, #0f172a);
+}
+
+.gfy-home__support-text {
+    font-size: var(--gfy-text-sm, 0.875rem);
+    color: var(--gfy-gray-500, #64748b);
+    line-height: 1.5;
+}
+
+.gfy-home__text-link {
+    font-size: var(--gfy-text-sm, 0.875rem);
+    font-weight: var(--gfy-font-semibold, 600);
+    color: var(--gfy-info-500, #3b82f6);
+    display: inline-flex;
+    align-items: center;
+    gap: var(--gfy-space-1, 0.25rem);
+    text-decoration: none;
+    transition: color var(--gfy-transition-fast, 150ms);
+}
+
+.gfy-home__text-link:hover {
+    color: var(--gfy-info-600, #2563eb);
+}
+
+/* ============================================
+   RESPONSIVE DESIGN
+   ============================================ */
+
+@media (max-width: 1024px) {
+    .gfy-home__pillar {
+        flex: 0 0 calc(50% - var(--gfy-space-5, 1.25rem) / 2);
+    }
+
+    .gfy-home__split {
+        grid-template-columns: 1fr;
+        gap: var(--gfy-space-8, 2rem);
+    }
+
+    .gfy-home__stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    .gfy-home {
+        padding: var(--gfy-space-6, 1.5rem) var(--gfy-space-4, 1rem);
+    }
+
+    .gfy-home__pillar {
+        flex: 0 0 100%;
+    }
+
+    .gfy-home__greeting {
+        font-size: var(--gfy-text-2xl, 1.5rem);
+    }
+
+    .gfy-home__goal-toggle {
+        flex-direction: column;
+        width: 100%;
+    }
+
+    .gfy-home__goal-btn {
+        justify-content: center;
+    }
+
+    .gfy-home__stats {
+        grid-template-columns: 1fr 1fr;
+        gap: var(--gfy-space-3, 0.75rem);
+    }
+
+    .gfy-home__stat {
+        flex-direction: column;
+        text-align: center;
+        gap: var(--gfy-space-2, 0.5rem);
+    }
+}
+
+/* ============================================
+   ACCESSIBILITY ENHANCEMENTS
+   ============================================ */
+
+/* Focus styles for keyboard navigation */
+.gfy-home__pillar:focus-visible,
+.gfy-home__goal-btn:focus-visible,
+.gfy-home__recent-item:focus-visible,
+.gfy-home__text-link:focus-visible {
+    outline: 2px solid var(--gfy-info-500, #3b82f6);
+    outline-offset: 2px;
+}
+
+/* Reduce motion for users who prefer it */
+@media (prefers-reduced-motion: reduce) {
+    .gfy-home__pillar,
+    .gfy-home__recent-item,
+    .gfy-home__pillar-cta i,
+    .gfy-home__text-link,
+    .gfy-home__stat-value.gfy-skeleton {
+        transition: none;
+        animation: none;
+    }
+
+    .gfy-home__pillars--reordering .gfy-home__pillar {
+        transition: none;
+    }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .gfy-home__pillar {
+        border-width: 2px;
+    }
+
+    .gfy-home__pillar-badge {
+        border: 1px solid currentColor;
+    }
+
+    .gfy-home__pillar-status {
+        border: 1px solid currentColor;
+    }
+}
+
+/* Print styles */
+@media print {
+    .gfy-home__goal-wrapper,
+    .gfy-home__pillar-cta {
+        display: none;
+    }
+
+    .gfy-home__pillar {
+        break-inside: avoid;
+        box-shadow: none;
+        border: 1px solid #000;
+    }
+}
