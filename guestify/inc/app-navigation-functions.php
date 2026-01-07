@@ -68,32 +68,52 @@ function is_app_page($section = '') {
     if (is_admin() || wp_doing_ajax()) {
         return false;
     }
-    
+
     // Exclude specific page ID
     global $post;
     if ($post && $post->ID == 46159) {
         return false;
     }
-    
+
     // Check URL path - most reliable method for all page types
     $current_url = $_SERVER['REQUEST_URI'];
     $url_path = parse_url($current_url, PHP_URL_PATH);
     $url_path = rtrim($url_path, '/');
-    
-    // Define all paths that should show app navigation
-    $app_navigation_paths = ['/app', '/account', '/courses', '/tools', '/onboarding'];
-    
-    // Check if URL matches any app navigation path
-    foreach ($app_navigation_paths as $app_path) {
+
+    // Define paths that require login to show app navigation
+    $login_required_paths = ['/app', '/account', '/courses', '/onboarding'];
+
+    // Define paths that show app navigation for everyone (logged in users only get app nav)
+    $public_tool_paths = ['/tools'];
+
+    // Check login-required paths first
+    foreach ($login_required_paths as $app_path) {
         if ($url_path === $app_path || strpos($url_path, $app_path . '/') === 0) {
+            // These paths require login for app navigation
+            if (!is_user_logged_in()) {
+                return false;
+            }
             if (empty($section)) {
                 return true;
             }
-            // Check for specific section
             return strpos($url_path, $app_path . '/' . $section) === 0;
         }
     }
-    
+
+    // Check public tool paths - only show app nav if logged in
+    foreach ($public_tool_paths as $app_path) {
+        if ($url_path === $app_path || strpos($url_path, $app_path . '/') === 0) {
+            // Only show app navigation for logged-in users
+            if (!is_user_logged_in()) {
+                return false;
+            }
+            if (empty($section)) {
+                return true;
+            }
+            return strpos($url_path, $app_path . '/' . $section) === 0;
+        }
+    }
+
     return false;
 }
 
@@ -246,6 +266,14 @@ function enqueue_app_navigation_assets() {
         filemtime(get_template_directory() . '/css/app-navigation.css')
     );
 
+    // Enqueue Command Palette CSS
+    wp_enqueue_style(
+        'guestify-command-palette',
+        get_template_directory_uri() . '/css/command-palette.css',
+        ['guestify-app-nav'],
+        filemtime(get_template_directory() . '/css/command-palette.css')
+    );
+
     // Enqueue JavaScript
     wp_enqueue_script(
         'guestify-app-nav',
@@ -254,6 +282,21 @@ function enqueue_app_navigation_assets() {
         filemtime(get_template_directory() . '/js/app-navigation.js'),
         true
     );
+
+    // Enqueue Command Palette JS
+    wp_enqueue_script(
+        'guestify-command-palette',
+        get_template_directory_uri() . '/js/command-palette.js',
+        [],
+        filemtime(get_template_directory() . '/js/command-palette.js'),
+        true
+    );
+
+    // Pass nonce to JS for API calls
+    wp_localize_script('guestify-command-palette', 'guestifyCommandPalette', array(
+        'nonce' => wp_create_nonce('wp_rest'),
+        'apiUrl' => rest_url('guestify/v1/'),
+    ));
 }
 add_action('wp_enqueue_scripts', 'enqueue_app_navigation_assets');
 

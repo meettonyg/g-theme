@@ -191,6 +191,13 @@ foreach ($menu_items as $item) {
 
         <!-- User Section -->
         <div class="app-nav__user">
+            <!-- Command Palette Search Button -->
+            <button class="app-nav__search-btn" id="commandPaletteToggle" aria-label="Search">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <span class="app-nav__search-text">Search</span>
+                <kbd class="app-nav__search-kbd">Ctrl+K</kbd>
+            </button>
+
             <!-- Notifications -->
             <div class="app-nav__notifications-wrapper">
                 <button class="app-nav__notifications" aria-label="Notifications" onclick="toggleNotificationsPanel()">
@@ -320,3 +327,120 @@ foreach ($menu_items as $item) {
         </ul>
     </div>
 </nav>
+
+<!-- Command Palette Modal -->
+<div class="command-palette" id="commandPalette" role="dialog" aria-modal="true" aria-labelledby="commandPaletteLabel">
+    <div class="command-palette__backdrop" id="commandPaletteBackdrop"></div>
+    <div class="command-palette__container">
+        <div class="command-palette__header">
+            <div class="command-palette__search-wrapper">
+                <i class="fa-solid fa-magnifying-glass command-palette__search-icon"></i>
+                <input
+                    type="text"
+                    class="command-palette__input"
+                    id="commandPaletteInput"
+                    placeholder="Search podcasts, guests, campaigns, or type a command..."
+                    autocomplete="off"
+                    spellcheck="false"
+                >
+                <kbd class="command-palette__esc">ESC</kbd>
+            </div>
+        </div>
+
+        <div class="command-palette__body" id="commandPaletteBody">
+            <!-- Recent Section (shown by default) -->
+            <div class="command-palette__section" id="cpSectionRecent">
+                <div class="command-palette__section-header">
+                    <i class="fa-solid fa-clock"></i>
+                    Recent
+                </div>
+                <div class="command-palette__results" id="cpResultsRecent"></div>
+            </div>
+
+            <!-- Quick Actions Section -->
+            <div class="command-palette__section" id="cpSectionActions">
+                <div class="command-palette__section-header">
+                    <i class="fa-solid fa-bolt"></i>
+                    Quick Actions
+                </div>
+                <div class="command-palette__results" id="cpResultsActions">
+                    <a href="/app/prospector/search/" class="command-palette__item" data-action="navigate">
+                        <i class="fa-solid fa-magnifying-glass command-palette__item-icon"></i>
+                        <span class="command-palette__item-text">Search for podcasts</span>
+                        <span class="command-palette__item-hint">Prospector</span>
+                    </a>
+                    <a href="/app/pipeline/" class="command-palette__item" data-action="navigate">
+                        <i class="fa-solid fa-plus command-palette__item-icon"></i>
+                        <span class="command-palette__item-text">Add podcast to pipeline</span>
+                        <span class="command-palette__item-hint">Pipeline</span>
+                    </a>
+                    <a href="/app/outreach/campaigns/" class="command-palette__item" data-action="navigate">
+                        <i class="fa-solid fa-paper-plane command-palette__item-icon"></i>
+                        <span class="command-palette__item-text">Create outreach campaign</span>
+                        <span class="command-palette__item-hint">Outreach</span>
+                    </a>
+                    <a href="/app/media-kit/profile/" class="command-palette__item" data-action="navigate">
+                        <i class="fa-solid fa-user-pen command-palette__item-icon"></i>
+                        <span class="command-palette__item-text">Edit my profile</span>
+                        <span class="command-palette__item-hint">Media Kit</span>
+                    </a>
+                </div>
+            </div>
+
+            <!-- Navigation Section -->
+            <div class="command-palette__section" id="cpSectionNav">
+                <div class="command-palette__section-header">
+                    <i class="fa-solid fa-compass"></i>
+                    Navigation
+                </div>
+                <div class="command-palette__results" id="cpResultsNav"></div>
+            </div>
+
+            <!-- Search Results (hidden by default, shown when typing) -->
+            <div class="command-palette__section command-palette__section--hidden" id="cpSectionPodcasts">
+                <div class="command-palette__section-header">
+                    <i class="fa-solid fa-podcast"></i>
+                    Podcasts
+                </div>
+                <div class="command-palette__results" id="cpResultsPodcasts"></div>
+            </div>
+
+            <div class="command-palette__section command-palette__section--hidden" id="cpSectionGuests">
+                <div class="command-palette__section-header">
+                    <i class="fa-solid fa-users"></i>
+                    Guests
+                </div>
+                <div class="command-palette__results" id="cpResultsGuests"></div>
+            </div>
+
+            <div class="command-palette__section command-palette__section--hidden" id="cpSectionCampaigns">
+                <div class="command-palette__section-header">
+                    <i class="fa-solid fa-bullhorn"></i>
+                    Campaigns
+                </div>
+                <div class="command-palette__results" id="cpResultsCampaigns"></div>
+            </div>
+
+            <!-- Empty State -->
+            <div class="command-palette__empty" id="cpEmpty" style="display: none;">
+                <i class="fa-solid fa-search"></i>
+                <p>No results found</p>
+                <span>Try a different search term</span>
+            </div>
+
+            <!-- Loading State -->
+            <div class="command-palette__loading" id="cpLoading" style="display: none;">
+                <i class="fa-solid fa-spinner fa-spin"></i>
+                <span>Searching...</span>
+            </div>
+        </div>
+
+        <div class="command-palette__footer">
+            <div class="command-palette__shortcuts">
+                <span><kbd>↑</kbd><kbd>↓</kbd> Navigate</span>
+                <span><kbd>↵</kbd> Select</span>
+                <span><kbd>ESC</kbd> Close</span>
+            </div>
+        </div>
+    </div>
+</div>

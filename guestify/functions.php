@@ -2606,3 +2606,87 @@ function guestify_get_user_journey_stage( $user_id = 0 ) {
  * Load Dashboard API
  */
 require_once get_template_directory() . '/inc/class-dashboard-api.php';
+
+/**
+ * Load Command Palette API
+ */
+require_once get_template_directory() . '/inc/class-command-palette-api.php';
+
+/**
+ * Auth Modal for non-logged-in users
+ *
+ * Enqueues assets and outputs modal HTML on public tool pages.
+ */
+function guestify_auth_modal_setup() {
+    // Only for non-logged-in users
+    if (is_user_logged_in()) {
+        return;
+    }
+
+    // Only on /tools/ pages (or other public pages that need auth prompts)
+    $current_url = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
+    $url_path = parse_url($current_url, PHP_URL_PATH);
+
+    $auth_modal_paths = ['/tools'];
+
+    $should_show = false;
+    foreach ($auth_modal_paths as $path) {
+        if (strpos($url_path, $path) === 0) {
+            $should_show = true;
+            break;
+        }
+    }
+
+    if (!$should_show) {
+        return;
+    }
+
+    // Enqueue styles
+    wp_enqueue_style(
+        'guestify-auth-modal',
+        get_template_directory_uri() . '/css/auth-modal.css',
+        [],
+        filemtime(get_template_directory() . '/css/auth-modal.css')
+    );
+
+    // Enqueue scripts
+    wp_enqueue_script(
+        'guestify-auth-modal',
+        get_template_directory_uri() . '/js/auth-modal.js',
+        [],
+        filemtime(get_template_directory() . '/js/auth-modal.js'),
+        true
+    );
+}
+add_action('wp_enqueue_scripts', 'guestify_auth_modal_setup');
+
+/**
+ * Output auth modal HTML in footer for non-logged-in users
+ */
+function guestify_auth_modal_output() {
+    // Only for non-logged-in users
+    if (is_user_logged_in()) {
+        return;
+    }
+
+    // Only on /tools/ pages
+    $current_url = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
+    $url_path = parse_url($current_url, PHP_URL_PATH);
+
+    $auth_modal_paths = ['/tools'];
+
+    $should_show = false;
+    foreach ($auth_modal_paths as $path) {
+        if (strpos($url_path, $path) === 0) {
+            $should_show = true;
+            break;
+        }
+    }
+
+    if (!$should_show) {
+        return;
+    }
+
+    get_template_part('template-parts/auth-modal');
+}
+add_action('wp_footer', 'guestify_auth_modal_output');

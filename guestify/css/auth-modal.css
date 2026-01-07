@@ -1,0 +1,369 @@
+/**
+ * Auth Modal Styles
+ * Login/Registration slide-in panel (Genspark-style)
+ */
+
+/* ==========================================================================
+   MODAL CONTAINER
+   ========================================================================== */
+
+.auth-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 100000;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.auth-modal--open {
+    display: block;
+}
+
+/* Backdrop - lighter, less obtrusive */
+.auth-modal__backdrop {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.3);
+}
+
+/* Container - slide-in panel on right */
+.auth-modal__container {
+    position: absolute;
+    top: 70px;
+    right: 20px;
+    width: 340px;
+    max-height: calc(100vh - 100px);
+    overflow-y: auto;
+    background: #fff;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow:
+        0 10px 40px rgba(0, 0, 0, 0.15),
+        0 0 0 1px rgba(0, 0, 0, 0.05);
+    animation: authModalSlideIn 0.25s ease-out;
+}
+
+@keyframes authModalSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Close button */
+.auth-modal__close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    width: 28px;
+    height: 28px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: transparent;
+    border: none;
+    border-radius: 6px;
+    color: #9ca3af;
+    font-size: 16px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.auth-modal__close:hover {
+    background: #f3f4f6;
+    color: #374151;
+}
+
+/* ==========================================================================
+   HEADER
+   ========================================================================== */
+
+.auth-modal__logo {
+    text-align: center;
+    margin-bottom: 12px;
+}
+
+.auth-modal__logo img {
+    width: 40px;
+    height: 40px;
+    border-radius: 10px;
+}
+
+.auth-modal__title {
+    margin: 0 0 6px;
+    font-size: 18px;
+    font-weight: 600;
+    color: #111827;
+    text-align: center;
+    line-height: 1.3;
+}
+
+.auth-modal__subtitle {
+    margin: 0 0 16px;
+    font-size: 13px;
+    color: #6b7280;
+    text-align: center;
+    line-height: 1.4;
+}
+
+/* ==========================================================================
+   SOCIAL LOGIN BUTTONS
+   ========================================================================== */
+
+.auth-modal__social {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 16px;
+}
+
+.auth-modal__social-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    padding: 10px 14px;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    text-decoration: none;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+/* Facebook */
+.auth-modal__social-btn--facebook {
+    background: #1877F2;
+    color: #fff;
+    border: none;
+}
+
+.auth-modal__social-btn--facebook:hover {
+    background: #166FE5;
+    color: #fff;
+}
+
+.auth-modal__social-btn--facebook i {
+    font-size: 18px;
+}
+
+/* Google */
+.auth-modal__social-btn--google {
+    background: #fff;
+    color: #374151;
+    border: 1px solid #e5e7eb;
+}
+
+.auth-modal__social-btn--google:hover {
+    background: #f9fafb;
+    border-color: #d1d5db;
+    color: #374151;
+}
+
+.auth-modal__social-btn--google svg {
+    flex-shrink: 0;
+}
+
+/* LinkedIn */
+.auth-modal__social-btn--linkedin {
+    background: #0A66C2;
+    color: #fff;
+    border: none;
+}
+
+.auth-modal__social-btn--linkedin:hover {
+    background: #004182;
+    color: #fff;
+}
+
+.auth-modal__social-btn--linkedin i {
+    font-size: 18px;
+}
+
+/* Nextend Social Login Override Styles */
+.auth-modal__social .nsl-container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.auth-modal__social .nsl-container-buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.auth-modal__social .nsl-button {
+    width: 100% !important;
+    border-radius: 8px !important;
+    padding: 12px 16px !important;
+    font-size: 14px !important;
+    font-weight: 600 !important;
+}
+
+/* ==========================================================================
+   DIVIDER
+   ========================================================================== */
+
+.auth-modal__divider {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.auth-modal__divider::before,
+.auth-modal__divider::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: #e5e7eb;
+}
+
+.auth-modal__divider span {
+    font-size: 11px;
+    color: #9ca3af;
+    white-space: nowrap;
+}
+
+/* ==========================================================================
+   EMAIL FORM
+   ========================================================================== */
+
+.auth-modal__form {
+    margin-bottom: 16px;
+}
+
+.auth-modal__input-wrapper {
+    margin-bottom: 10px;
+}
+
+.auth-modal__input {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 13px;
+    color: #111827;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 6px;
+    outline: none;
+    transition: all 0.15s ease;
+    box-sizing: border-box;
+}
+
+.auth-modal__input:focus {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+}
+
+.auth-modal__input::placeholder {
+    color: #9ca3af;
+}
+
+.auth-modal__submit {
+    width: 100%;
+    padding: 10px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #fff;
+    background: #3b82f6;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+}
+
+.auth-modal__submit:hover {
+    background: #2563eb;
+}
+
+.auth-modal__submit:active {
+    transform: scale(0.98);
+}
+
+/* ==========================================================================
+   BENEFITS
+   ========================================================================== */
+
+.auth-modal__benefits {
+    list-style: none;
+    margin: 0 0 14px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.auth-modal__benefits li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+    color: #374151;
+}
+
+.auth-modal__benefits i {
+    color: #22c55e;
+    font-size: 11px;
+}
+
+/* ==========================================================================
+   FOOTER
+   ========================================================================== */
+
+.auth-modal__footer {
+    margin: 0;
+    font-size: 12px;
+    color: #6b7280;
+    text-align: center;
+}
+
+.auth-modal__footer a {
+    color: #3b82f6;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.auth-modal__footer a:hover {
+    text-decoration: underline;
+}
+
+/* ==========================================================================
+   RESPONSIVE
+   ========================================================================== */
+
+@media (max-width: 480px) {
+    .auth-modal__container {
+        top: auto;
+        bottom: 0;
+        right: 0;
+        left: 0;
+        width: 100%;
+        max-height: 85vh;
+        border-radius: 16px 16px 0 0;
+        padding: 20px;
+        animation: authModalSlideUp 0.25s ease-out;
+    }
+
+    @keyframes authModalSlideUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+}
