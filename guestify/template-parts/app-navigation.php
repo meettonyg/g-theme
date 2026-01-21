@@ -126,7 +126,7 @@ foreach ($menu_items as $item) {
                         ],
                         'pipeline' => [
                             'breaks' => [
-                                ['after' => 'Calendar', 'divider' => true]
+                                ['after' => 'Portfolio', 'divider' => true]
                             ]
                         ],
                         'intelligence' => [
