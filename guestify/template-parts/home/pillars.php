@@ -50,7 +50,7 @@ $pillar_config = array(
         'title'       => 'Outreach',
         'description' => 'Send campaigns and manage your inbox.',
         'icon'        => 'fa-solid fa-paper-plane',
-        'url'         => home_url('/app/email-system/'),
+        'url'         => home_url('/app/outreach/'),
         'variant'     => 'action',
         'default_status' => 'No Messages',
     ),

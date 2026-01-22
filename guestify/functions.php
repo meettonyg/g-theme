@@ -1685,7 +1685,7 @@ function guestify_get_recent_activity( $user_id ) {
 				'icon'     => $msg->is_reply ? 'fa-solid fa-envelope-open' : 'fa-solid fa-pen-to-square',
 				'title'    => $msg->is_reply ? 'Reply: ' . $msg->subject : 'Draft: ' . $msg->subject,
 				'subtitle' => guestify_format_relative_time( $msg->created_at ),
-				'url'      => home_url( '/app/email-system/?message=' . $msg->id ),
+				'url'      => home_url( '/app/outreach/?message=' . $msg->id ),
 				'timestamp' => strtotime( $msg->created_at ),
 			);
 		}
