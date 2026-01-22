@@ -140,43 +140,72 @@ function is_app_page_active($url) {
 }
 
 /**
- * Get appropriate icon for menu items based on title
- * 
+ * Get appropriate Font Awesome icon for menu items based on title
+ *
  * @param string $title Menu item title
- * @return string SVG icon HTML
+ * @return string Font Awesome icon HTML
  */
 function get_menu_icon($title) {
     $title_lower = strtolower($title);
-    
-    // Map menu titles to icons
+
+    // Map menu titles to Font Awesome icons - order matters (more specific first)
     $icon_map = [
-        'podcast prospector' => 'search',
-        'interview tracker' => 'users',
-        'guest profiles' => 'user-circle',
-        'message builder' => 'mail',
-        'value builder' => 'star',
-        'dashboard' => 'dashboard',
-        'analytics' => 'chart',
-        'settings' => 'cog',
-        'account' => 'cog',
-        'training' => 'graduation-cap',
-        'courses' => 'graduation-cap',
-        'tools' => 'tools',
-        'profile' => 'user',
-        'help' => 'question-circle',
-        'logout' => 'logout'
+        // Prospector section
+        'prospector' => 'fa-magnifying-glass',
+        'episodes by person' => 'fa-user-check',
+        'podcasts by title' => 'fa-microphone',
+        'advanced podcasts' => 'fa-podcast',
+        'advanced episodes' => 'fa-circle-play',
+
+        // Pipeline section
+        'pipeline' => 'fa-layer-group',
+        'board' => 'fa-table-columns',
+        'list' => 'fa-list',
+        'my interviews' => 'fa-microphone-lines',
+        'portfolio' => 'fa-briefcase',
+        'calendar' => 'fa-calendar',
+        'notes' => 'fa-note-sticky',
+        'tasks' => 'fa-list-check',
+
+        // Outreach section
+        'outreach' => 'fa-paper-plane',
+        'campaigns' => 'fa-bullhorn',
+        'templates' => 'fa-file-lines',
+
+        // Media Kit section
+        'media kit' => 'fa-id-card',
+        'my profiles' => 'fa-user',
+        'ai content' => 'fa-wand-magic-sparkles',
+        'my media kits' => 'fa-folder-open',
+
+        // Insights section
+        'insights' => 'fa-chart-pie',
+        'performance' => 'fa-chart-line',
+        'reports' => 'fa-file-chart-column',
+
+        // General
+        'dashboard' => 'fa-gauge-high',
+        'analytics' => 'fa-chart-simple',
+        'settings' => 'fa-gear',
+        'account' => 'fa-gear',
+        'training' => 'fa-graduation-cap',
+        'courses' => 'fa-graduation-cap',
+        'tools' => 'fa-screwdriver-wrench',
+        'profile' => 'fa-user',
+        'help' => 'fa-circle-question',
+        'logout' => 'fa-right-from-bracket'
     ];
-    
+
     // Find matching icon
-    $icon_type = 'default';
+    $icon_class = 'fa-circle'; // default
     foreach ($icon_map as $key => $icon) {
         if (strpos($title_lower, $key) !== false) {
-            $icon_type = $icon;
+            $icon_class = $icon;
             break;
         }
     }
-    
-    return get_svg_icon($icon_type);
+
+    return '<i class="fa-solid ' . esc_attr($icon_class) . ' app-nav__icon"></i>';
 }
 
 /**
@@ -190,6 +219,60 @@ function get_svg_icon($type) {
         'search' => '<svg class="app-nav__icon" viewBox="0 0 20 20" fill="currentColor">
                         <path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"/>
                     </svg>',
+        'microphone' => '<svg class="app-nav__icon" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M7 4a3 3 0 016 0v4a3 3 0 11-6 0V4zm4 10.93A7.001 7.001 0 0017 8a1 1 0 10-2 0A5 5 0 015 8a1 1 0 00-2 0 7.001 7.001 0 006 6.93V17H6a1 1 0 100 2h8a1 1 0 100-2h-3v-2.07z" clip-rule="evenodd"/>
+                        </svg>',
+        'sliders' => '<svg class="app-nav__icon" viewBox="0 0 20 20" fill="currentColor">
+                         <path d="M5 4a1 1 0 00-2 0v7.268a2 2 0 000 3.464V16a1 1 0 102 0v-1.268a2 2 0 000-3.464V4zM11 4a1 1 0 10-2 0v1.268a2 2 0 000 3.464V16a1 1 0 102 0V8.732a2 2 0 000-3.464V4zM16 3a1 1 0 011 1v7.268a2 2 0 010 3.464V16a1 1 0 11-2 0v-1.268a2 2 0 010-3.464V4a1 1 0 011-1z"/>
+                     </svg>',
+        'microphone-sliders' => '<svg class="app-nav__icon" viewBox="0 0 20 20" fill="currentColor">
+                                    <path d="M7 4a2 2 0 014 0v3a2 2 0 11-4 0V4z"/>
+                                    <path d="M5.5 9.643a.75.75 0 00-1.5 0V10c0 2.306 1.674 4.22 3.875 4.6V16h-1.5a.75.75 0 000 1.5h4.25a.75.75 0 000-1.5h-1.5v-1.4A4.75 4.75 0 0014 10v-.357a.75.75 0 00-1.5 0V10a3.25 3.25 0 01-6.5 0v-.357z"/>
+                                    <path d="M16 11a1 1 0 011 1v4a1 1 0 11-2 0v-4a1 1 0 011-1z"/>
+                                    <circle cx="16" cy="18" r="1"/>
+                                </svg>',
+        'play-sliders' => '<svg class="app-nav__icon" viewBox="0 0 20 20" fill="currentColor">
+                              <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM9.555 7.168A1 1 0 008 8v4a1 1 0 001.555.832l3-2a1 1 0 000-1.664l-3-2z" clip-rule="evenodd"/>
+                              <path d="M17 11a1 1 0 011 1v4a1 1 0 11-2 0v-4a1 1 0 011-1z"/>
+                              <circle cx="17" cy="18" r="1"/>
+                          </svg>',
+        'kanban' => '<svg class="app-nav__icon" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M2 4.5A1.5 1.5 0 013.5 3h3A1.5 1.5 0 018 4.5v11A1.5 1.5 0 016.5 17h-3A1.5 1.5 0 012 15.5v-11zM12 4.5A1.5 1.5 0 0113.5 3h3A1.5 1.5 0 0118 4.5v7a1.5 1.5 0 01-1.5 1.5h-3a1.5 1.5 0 01-1.5-1.5v-7z"/>
+                    </svg>',
+        'list' => '<svg class="app-nav__icon" viewBox="0 0 20 20" fill="currentColor">
+                      <path fill-rule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clip-rule="evenodd"/>
+                  </svg>',
+        'briefcase' => '<svg class="app-nav__icon" viewBox="0 0 20 20" fill="currentColor">
+                           <path fill-rule="evenodd" d="M6 6V5a3 3 0 013-3h2a3 3 0 013 3v1h2a2 2 0 012 2v3.57A22.952 22.952 0 0110 13a22.95 22.95 0 01-8-1.43V8a2 2 0 012-2h2zm2-1a1 1 0 011-1h2a1 1 0 011 1v1H8V5zm1 5a1 1 0 011-1h.01a1 1 0 110 2H10a1 1 0 01-1-1z" clip-rule="evenodd"/>
+                           <path d="M2 13.692V16a2 2 0 002 2h12a2 2 0 002-2v-2.308A24.974 24.974 0 0110 15c-2.796 0-5.487-.46-8-1.308z"/>
+                       </svg>',
+        'calendar' => '<svg class="app-nav__icon" viewBox="0 0 20 20" fill="currentColor">
+                          <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
+                      </svg>',
+        'notes' => '<svg class="app-nav__icon" viewBox="0 0 20 20" fill="currentColor">
+                       <path d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z"/>
+                   </svg>',
+        'tasks' => '<svg class="app-nav__icon" viewBox="0 0 20 20" fill="currentColor">
+                       <path fill-rule="evenodd" d="M6 2a2 2 0 00-2 2v12a2 2 0 002 2h8a2 2 0 002-2V7.414A2 2 0 0015.414 6L12 2.586A2 2 0 0010.586 2H6zm5 6a1 1 0 10-2 0v2H7a1 1 0 100 2h2v2a1 1 0 102 0v-2h2a1 1 0 100-2h-2V8z" clip-rule="evenodd"/>
+                   </svg>',
+        'paper-plane' => '<svg class="app-nav__icon" viewBox="0 0 20 20" fill="currentColor">
+                             <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"/>
+                         </svg>',
+        'bullhorn' => '<svg class="app-nav__icon" viewBox="0 0 20 20" fill="currentColor">
+                          <path fill-rule="evenodd" d="M18 3a1 1 0 00-1.447-.894L8.763 6H5a3 3 0 000 6h.28l1.771 5.316A1 1 0 008 18h1a1 1 0 001-1v-4.382l6.553 3.276A1 1 0 0018 15V3z" clip-rule="evenodd"/>
+                      </svg>',
+        'file-lines' => '<svg class="app-nav__icon" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h4.586A2 2 0 0112 2.586L15.414 6A2 2 0 0116 7.414V16a2 2 0 01-2 2H6a2 2 0 01-2-2V4zm2 6a1 1 0 011-1h6a1 1 0 110 2H7a1 1 0 01-1-1zm1 3a1 1 0 100 2h6a1 1 0 100-2H7z" clip-rule="evenodd"/>
+                        </svg>',
+        'id-card' => '<svg class="app-nav__icon" viewBox="0 0 20 20" fill="currentColor">
+                         <path fill-rule="evenodd" d="M10 2a1 1 0 00-1 1v1a1 1 0 002 0V3a1 1 0 00-1-1zM4 4h3a3 3 0 006 0h3a2 2 0 012 2v9a2 2 0 01-2 2H4a2 2 0 01-2-2V6a2 2 0 012-2zm2.5 7a1.5 1.5 0 100-3 1.5 1.5 0 000 3zm2.45 4a2.5 2.5 0 10-4.9 0h4.9zM12 9a1 1 0 100 2h3a1 1 0 100-2h-3zm-1 4a1 1 0 011-1h2a1 1 0 110 2h-2a1 1 0 01-1-1z" clip-rule="evenodd"/>
+                     </svg>',
+        'folder' => '<svg class="app-nav__icon" viewBox="0 0 20 20" fill="currentColor">
+                        <path d="M2 6a2 2 0 012-2h5l2 2h5a2 2 0 012 2v6a2 2 0 01-2 2H4a2 2 0 01-2-2V6z"/>
+                    </svg>',
+        'chart-line' => '<svg class="app-nav__icon" viewBox="0 0 20 20" fill="currentColor">
+                            <path fill-rule="evenodd" d="M3 3a1 1 0 000 2v8a2 2 0 002 2h2.586l-1.293 1.293a1 1 0 101.414 1.414L10 15.414l2.293 2.293a1 1 0 001.414-1.414L12.414 15H15a2 2 0 002-2V5a1 1 0 100-2H3zm11.707 4.707a1 1 0 00-1.414-1.414L10 9.586 8.707 8.293a1 1 0 00-1.414 0l-2 2a1 1 0 101.414 1.414L8 10.414l1.293 1.293a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/>
+                        </svg>',
         'users' => '<svg class="app-nav__icon" viewBox="0 0 20 20" fill="currentColor">
                        <path d="M9 6a3 3 0 11-6 0 3 3 0 016 0zM17 6a3 3 0 11-6 0 3 3 0 016 0zM12.93 17c.046-.327.07-.66.07-1a6.97 6.97 0 00-1.5-4.33A5 5 0 0119 16v1h-6.07zM6 11a5 5 0 015 5v1H1v-1a5 5 0 015-5z"/>
                    </svg>',
@@ -233,7 +316,7 @@ function get_svg_icon($type) {
                          <path d="M15 7h1a2 2 0 012 2v5.5a1.5 1.5 0 01-3 0V7z"/>
                      </svg>'
     ];
-    
+
     return isset($icons[$type]) ? $icons[$type] : $icons['default'];
 }
 

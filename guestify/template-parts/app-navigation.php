@@ -129,11 +129,6 @@ foreach ($menu_items as $item) {
                                 ['after' => 'My Interviews', 'divider' => true]
                             ]
                         ],
-                        'intelligence' => [
-                            'breaks' => [
-                                ['after' => 'Social Metrics', 'divider' => true, 'label' => 'Tools']
-                            ]
-                        ],
                         'outreach' => [
                             'breaks' => [
                                 ['after' => 'Templates', 'divider' => true]
