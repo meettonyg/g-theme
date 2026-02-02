@@ -84,7 +84,7 @@ function is_app_page($section = '') {
     $login_required_paths = ['/app', '/account', '/courses', '/onboarding'];
 
     // Define paths that show app navigation for everyone (logged in users only get app nav)
-    $public_tool_paths = ['/tools'];
+    $public_tool_paths = ['/tools', '/templates'];
 
     // Check login-required paths first
     foreach ($login_required_paths as $app_path) {
