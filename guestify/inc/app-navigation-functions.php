@@ -132,7 +132,7 @@ function is_app_page_active($url) {
     }
     
     // Check if current URL starts with menu path (for sub-pages)
-    if (strlen($menu_path) > 1 && strpos($current_url, $menu_path . '/') === 0) {
+    if ($menu_path !== null && strlen($menu_path) > 1 && strpos($current_url, $menu_path . '/') === 0) {
         return true;
     }
     
