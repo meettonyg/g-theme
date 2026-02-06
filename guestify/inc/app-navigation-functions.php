@@ -26,6 +26,7 @@ function is_blank_canvas_page() {
     // Add paths here for pages that need complete control over layout
     $blank_canvas_paths = [
         '/tips',
+        '/login',
     ];
 
     // Check if URL matches any blank canvas path
