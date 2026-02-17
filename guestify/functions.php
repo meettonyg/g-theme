@@ -1868,9 +1868,10 @@ function guestify_enqueue_account_assets() {
 
 		// Pass data to JavaScript
 		wp_localize_script( 'guestify-account', 'gfyAccountData', array(
-			'nonce'   => wp_create_nonce( 'wp_rest' ),
-			'ajaxUrl' => admin_url( 'admin-ajax.php' ),
-			'apiBase' => rest_url( 'guestify/v1/account' ),
+			'nonce'         => wp_create_nonce( 'wp_rest' ),
+			'ajaxUrl'       => admin_url( 'admin-ajax.php' ),
+			'apiBase'       => rest_url( 'guestify/v1/account' ),
+			'creditApiBase' => rest_url( 'guestify/v1/' ),
 		) );
 	}
 }

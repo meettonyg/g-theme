@@ -25,7 +25,7 @@ $user_id = $current_user->ID;
 
 // Get current panel from URL (default to 'general')
 $current_panel = isset($_GET['panel']) ? sanitize_key($_GET['panel']) : 'general';
-$valid_panels = array('general', 'billing', 'team', 'integrations', 'notifications', 'support');
+$valid_panels = array('general', 'billing', 'credits', 'team', 'integrations', 'notifications', 'support');
 if (!in_array($current_panel, $valid_panels)) {
     $current_panel = 'general';
 }
@@ -63,6 +63,13 @@ get_header();
                    aria-selected="<?php echo $current_panel === 'billing' ? 'true' : 'false'; ?>">
                     <i class="fa-solid fa-credit-card"></i>
                     <span><?php esc_html_e('Billing & Plan', 'guestify'); ?></span>
+                </a>
+                <a href="<?php echo esc_url(add_query_arg('panel', 'credits', get_permalink())); ?>"
+                   class="gfy-settings-link<?php echo $current_panel === 'credits' ? ' active' : ''; ?>"
+                   role="tab"
+                   aria-selected="<?php echo $current_panel === 'credits' ? 'true' : 'false'; ?>">
+                    <i class="fa-solid fa-coins"></i>
+                    <span><?php esc_html_e('Credits & Usage', 'guestify'); ?></span>
                 </a>
                 <a href="<?php echo esc_url(add_query_arg('panel', 'team', get_permalink())); ?>"
                    class="gfy-settings-link<?php echo $current_panel === 'team' ? ' active' : ''; ?>"

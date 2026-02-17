@@ -1123,6 +1123,364 @@
 }
 
 /* ============================================
+   CREDITS PANEL — GAUGE & BALANCE
+   ============================================ */
+
+.gfy-credit-gauge-layout {
+    display: flex;
+    align-items: center;
+    gap: var(--gfy-space-8, 2rem);
+    padding: var(--gfy-space-4, 1rem) 0;
+}
+
+.gfy-credit-gauge {
+    position: relative;
+    width: 160px;
+    height: 160px;
+    flex-shrink: 0;
+}
+
+.gfy-credit-gauge__svg {
+    display: block;
+}
+
+.gfy-credit-gauge__center {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+.gfy-credit-gauge__value {
+    font-size: var(--gfy-text-2xl, 1.5rem);
+    font-weight: var(--gfy-font-bold, 700);
+    color: var(--gfy-gray-900, #0f172a);
+    line-height: 1;
+}
+
+.gfy-credit-gauge__label {
+    font-size: var(--gfy-text-xs, 0.75rem);
+    color: var(--gfy-gray-500, #64748b);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-top: 2px;
+}
+
+/* Balance breakdown */
+.gfy-credit-breakdown {
+    flex: 1;
+    min-width: 0;
+}
+
+.gfy-credit-breakdown__row {
+    display: flex;
+    align-items: center;
+    gap: var(--gfy-space-2, 0.5rem);
+    padding: var(--gfy-space-2, 0.5rem) 0;
+}
+
+.gfy-credit-breakdown__row--total {
+    padding-top: 0;
+}
+
+.gfy-credit-breakdown__dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.gfy-credit-breakdown__dot--allowance {
+    background: var(--gfy-success, #10b981);
+}
+
+.gfy-credit-breakdown__dot--rollover {
+    background: var(--gfy-info-500, #3b82f6);
+}
+
+.gfy-credit-breakdown__dot--overage {
+    background: #805AD5;
+}
+
+.gfy-credit-breakdown__label {
+    flex: 1;
+    font-size: var(--gfy-text-sm, 0.875rem);
+    color: var(--gfy-gray-600, #475569);
+}
+
+.gfy-credit-breakdown__value {
+    font-size: var(--gfy-text-sm, 0.875rem);
+    font-weight: var(--gfy-font-semibold, 600);
+    color: var(--gfy-gray-900, #0f172a);
+}
+
+.gfy-credit-breakdown__cycle {
+    display: flex;
+    align-items: center;
+    gap: var(--gfy-space-2, 0.5rem);
+    margin-top: var(--gfy-space-3, 0.75rem);
+    font-size: var(--gfy-text-sm, 0.875rem);
+    color: var(--gfy-gray-500, #64748b);
+}
+
+.gfy-credit-breakdown__cycle i {
+    color: var(--gfy-gray-400, #94a3b8);
+}
+
+/* Tier badges */
+.gfy-badge--tier {
+    font-weight: var(--gfy-font-semibold, 600);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    font-size: var(--gfy-text-xs, 0.75rem);
+}
+
+.gfy-badge--tier-accelerator {
+    background: #DBEAFE;
+    color: #1D4ED8;
+}
+
+.gfy-badge--tier-velocity {
+    background: #EDE9FE;
+    color: #6D28D9;
+}
+
+.gfy-badge--tier-zenith {
+    background: linear-gradient(135deg, #FEF3C7, #FDE68A);
+    color: #92400E;
+}
+
+.gfy-badge--tier-free {
+    background: var(--gfy-gray-100, #f1f5f9);
+    color: var(--gfy-gray-600, #475569);
+}
+
+/* ============================================
+   CREDITS PANEL — UPGRADE PROMPT
+   ============================================ */
+
+.gfy-credit-upgrade {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--gfy-space-4, 1rem);
+    padding: var(--gfy-space-4, 1rem) var(--gfy-space-5, 1.25rem);
+    border-radius: var(--gfy-radius-md, 0.375rem);
+    margin-top: var(--gfy-space-4, 1rem);
+    background: #FFFBEB;
+    border: 1px solid #FDE68A;
+}
+
+.gfy-credit-upgrade[data-level="danger"] {
+    background: #FEF2F2;
+    border-color: #FECACA;
+}
+
+.gfy-credit-upgrade__content {
+    display: flex;
+    align-items: center;
+    gap: var(--gfy-space-3, 0.75rem);
+    flex: 1;
+}
+
+.gfy-credit-upgrade__content i {
+    font-size: var(--gfy-text-lg, 1.125rem);
+    color: #F59E0B;
+    flex-shrink: 0;
+}
+
+.gfy-credit-upgrade[data-level="danger"] .gfy-credit-upgrade__content i {
+    color: #EF4444;
+}
+
+.gfy-credit-upgrade__content p {
+    margin: 0;
+    font-size: var(--gfy-text-sm, 0.875rem);
+    color: var(--gfy-gray-700, #334155);
+}
+
+/* ============================================
+   CREDITS PANEL — USAGE STATS
+   ============================================ */
+
+.gfy-credit-usage-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--gfy-space-4, 1rem);
+}
+
+.gfy-credit-usage-stat {
+    display: flex;
+    align-items: center;
+    gap: var(--gfy-space-3, 0.75rem);
+    padding: var(--gfy-space-4, 1rem);
+    background: var(--gfy-gray-50, #f8fafc);
+    border-radius: var(--gfy-radius-lg, 0.5rem);
+}
+
+.gfy-credit-usage-stat__icon {
+    width: 44px;
+    height: 44px;
+    border-radius: var(--gfy-radius-md, 0.375rem);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--gfy-text-lg, 1.125rem);
+    flex-shrink: 0;
+}
+
+.gfy-credit-usage-stat__icon--spent {
+    background: linear-gradient(135deg, #F59E0B, #FBBF24);
+    color: white;
+}
+
+.gfy-credit-usage-stat__icon--actions {
+    background: linear-gradient(135deg, #805AD5, #9F7AEA);
+    color: white;
+}
+
+.gfy-credit-usage-stat__value {
+    font-size: var(--gfy-text-xl, 1.25rem);
+    font-weight: var(--gfy-font-bold, 700);
+    color: var(--gfy-gray-900, #0f172a);
+    display: block;
+}
+
+.gfy-credit-usage-stat__label {
+    font-size: var(--gfy-text-xs, 0.75rem);
+    color: var(--gfy-gray-500, #64748b);
+    display: block;
+}
+
+/* ============================================
+   CREDITS PANEL — ACTION COSTS TABLE
+   ============================================ */
+
+.gfy-credit-actions-list {
+    /* Table rendered inside by JS */
+}
+
+.gfy-credit-actions-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--gfy-space-2, 0.5rem);
+    padding: var(--gfy-space-6, 1.5rem);
+    color: var(--gfy-gray-400, #94a3b8);
+    font-size: var(--gfy-text-sm, 0.875rem);
+}
+
+/* ============================================
+   CREDITS PANEL — PURCHASE PACKS
+   ============================================ */
+
+.gfy-credit-packs {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: var(--gfy-space-4, 1rem);
+}
+
+.gfy-credit-pack {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--gfy-space-1, 0.25rem);
+    padding: var(--gfy-space-5, 1.25rem) var(--gfy-space-4, 1rem);
+    background: var(--gfy-white, #ffffff);
+    border: 2px solid var(--gfy-gray-200, #e2e8f0);
+    border-radius: var(--gfy-radius-lg, 0.5rem);
+    cursor: pointer;
+    transition: all var(--gfy-transition-fast, 150ms);
+    text-align: center;
+}
+
+.gfy-credit-pack:hover {
+    border-color: var(--gfy-info-400, #60a5fa);
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.15);
+    transform: translateY(-2px);
+}
+
+.gfy-credit-pack:active {
+    transform: translateY(0);
+}
+
+.gfy-credit-pack--loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.gfy-credit-pack__credits {
+    font-size: var(--gfy-text-2xl, 1.5rem);
+    font-weight: var(--gfy-font-bold, 700);
+    color: var(--gfy-gray-900, #0f172a);
+}
+
+.gfy-credit-pack__label {
+    font-size: var(--gfy-text-xs, 0.75rem);
+    color: var(--gfy-gray-500, #64748b);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.gfy-credit-pack__price {
+    font-size: var(--gfy-text-base, 1rem);
+    font-weight: var(--gfy-font-semibold, 600);
+    color: var(--gfy-info-600, #2563eb);
+    margin-top: var(--gfy-space-2, 0.5rem);
+}
+
+/* ============================================
+   CREDITS PANEL — TEXT HELPERS
+   ============================================ */
+
+.gfy-text--danger {
+    color: var(--gfy-error, #ef4444);
+}
+
+.gfy-text--success {
+    color: var(--gfy-success, #10b981);
+}
+
+/* ============================================
+   CREDITS PANEL — RESPONSIVE
+   ============================================ */
+
+@media (max-width: 768px) {
+    .gfy-credit-gauge-layout {
+        flex-direction: column;
+        align-items: center;
+        text-align: center;
+    }
+
+    .gfy-credit-breakdown__row {
+        justify-content: center;
+    }
+
+    .gfy-credit-breakdown__cycle {
+        justify-content: center;
+    }
+
+    .gfy-credit-usage-stats {
+        grid-template-columns: 1fr;
+    }
+
+    .gfy-credit-packs {
+        grid-template-columns: 1fr 1fr;
+    }
+
+    .gfy-credit-upgrade {
+        flex-direction: column;
+        text-align: center;
+    }
+
+    .gfy-credit-upgrade__content {
+        flex-direction: column;
+    }
+}
+
+/* ============================================
    REDUCED MOTION
    ============================================ */
 

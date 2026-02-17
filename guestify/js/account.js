@@ -436,10 +436,344 @@
         }
     }
 
+    /**
+     * CreditPanel Controller
+     *
+     * Handles the Credits & Usage panel — fetches live data from
+     * the Guestify REST API and renders balance, actions, transactions,
+     * and purchase packs using vanilla JS (no Vue dependency).
+     */
+    class CreditPanel {
+        constructor() {
+            // Only run on the credits panel
+            if (!document.getElementById('credits')) return;
+
+            this.apiBase = typeof gfyAccountData !== 'undefined' && gfyAccountData.creditApiBase
+                ? gfyAccountData.creditApiBase
+                : '/wp-json/guestify/v1/';
+            this.nonce = typeof gfyAccountData !== 'undefined' ? gfyAccountData.nonce : '';
+            this.circumference = 2 * Math.PI * 52; // r=52
+
+            this.init();
+        }
+
+        async init() {
+            try {
+                // Fetch all data in parallel
+                const [balanceRes, usageRes, actionsRes, transactionsRes, packsRes] = await Promise.allSettled([
+                    this.apiFetch('credits/balance'),
+                    this.apiFetch('credits/usage'),
+                    this.apiFetch('credits/actions'),
+                    this.apiFetch('credits/transactions?per_page=15'),
+                    this.apiFetch('credits/packs'),
+                ]);
+
+                if (balanceRes.status === 'fulfilled' && balanceRes.value.success) {
+                    this.updateGauge(balanceRes.value.data);
+                }
+
+                if (usageRes.status === 'fulfilled' && usageRes.value.success) {
+                    this.renderUsage(usageRes.value.data);
+                }
+
+                if (actionsRes.status === 'fulfilled' && actionsRes.value.success) {
+                    this.renderActions(actionsRes.value.data);
+                }
+
+                if (transactionsRes.status === 'fulfilled' && transactionsRes.value.success) {
+                    this.renderTransactions(transactionsRes.value.data);
+                }
+
+                if (packsRes.status === 'fulfilled' && packsRes.value.success) {
+                    this.renderPacks(packsRes.value.data);
+                }
+            } catch (err) {
+                console.error('CreditPanel init error:', err);
+            }
+        }
+
+        async apiFetch(endpoint) {
+            const resp = await fetch(this.apiBase + endpoint, {
+                headers: {
+                    'X-WP-Nonce': this.nonce,
+                    'Content-Type': 'application/json',
+                },
+            });
+            if (!resp.ok) throw new Error('API error: ' + resp.status);
+            return resp.json();
+        }
+
+        async apiPost(endpoint, body) {
+            const resp = await fetch(this.apiBase + endpoint, {
+                method: 'POST',
+                headers: {
+                    'X-WP-Nonce': this.nonce,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(body),
+            });
+            if (!resp.ok) {
+                const data = await resp.json().catch(() => ({}));
+                throw new Error(data.message || 'API error: ' + resp.status);
+            }
+            return resp.json();
+        }
+
+        /**
+         * Update the gauge ring and balance breakdown with live data
+         */
+        updateGauge(data) {
+            const allowance = data.allowance || 0;
+            const rollover = data.rollover || 0;
+            const overage = data.overage || 0;
+            const total = data.total || (allowance + rollover + overage);
+            const monthly = data.monthly_allowance || 0;
+
+            const used = monthly > 0 ? monthly - allowance : 0;
+            const pct = monthly > 0 ? Math.min(100, Math.round((used / monthly) * 100)) : 0;
+
+            // Update gauge arc
+            const arc = document.getElementById('gauge-arc');
+            if (arc) {
+                const offset = this.circumference - (this.circumference * Math.min(pct, 100) / 100);
+                arc.setAttribute('stroke-dashoffset', offset.toFixed(1));
+
+                let color = '#10b981';
+                if (pct >= 100) color = '#ef4444';
+                else if (pct >= 80) color = '#f59e0b';
+                arc.setAttribute('stroke', color);
+            }
+
+            // Update center value
+            const gaugeTotal = document.getElementById('gauge-total');
+            if (gaugeTotal) gaugeTotal.textContent = total.toLocaleString();
+
+            // Update breakdown
+            const elAllowance = document.getElementById('breakdown-allowance');
+            if (elAllowance) elAllowance.textContent = allowance.toLocaleString();
+
+            const elRollover = document.getElementById('breakdown-rollover');
+            const rowRollover = document.getElementById('row-rollover');
+            if (elRollover) elRollover.textContent = rollover.toLocaleString();
+            if (rowRollover) rowRollover.style.display = rollover > 0 ? '' : 'none';
+
+            const elOverage = document.getElementById('breakdown-overage');
+            const rowOverage = document.getElementById('row-overage');
+            if (elOverage) elOverage.textContent = overage.toLocaleString();
+            if (rowOverage) rowOverage.style.display = overage > 0 ? '' : 'none';
+
+            const elTotal = document.getElementById('breakdown-total');
+            if (elTotal) elTotal.innerHTML = '<strong>' + total.toLocaleString() + '</strong> / ' + monthly.toLocaleString();
+
+            // Upgrade prompt
+            const prompt = document.getElementById('credit-upgrade-prompt');
+            if (prompt) {
+                if (pct >= 80) {
+                    prompt.style.display = '';
+                    prompt.dataset.level = pct >= 100 ? 'danger' : 'warning';
+                    const icon = prompt.querySelector('i.fa-solid');
+                    if (icon) {
+                        icon.className = pct >= 100
+                            ? 'fa-solid fa-circle-exclamation'
+                            : 'fa-solid fa-triangle-exclamation';
+                    }
+                    const msg = document.getElementById('credit-upgrade-message');
+                    if (msg) {
+                        if (total <= 0 && data.hard_cap > 0) {
+                            msg.textContent = 'You have reached your credit limit for this billing cycle.';
+                        } else if (pct >= 100) {
+                            msg.textContent = 'Your monthly allowance is used up. Purchase additional credits or upgrade your plan.';
+                        } else {
+                            msg.textContent = "You're running low on credits. Consider upgrading your plan.";
+                        }
+                    }
+                } else {
+                    prompt.style.display = 'none';
+                }
+            }
+        }
+
+        /**
+         * Render cycle usage stats
+         */
+        renderUsage(data) {
+            const spent = document.getElementById('usage-spent');
+            const actions = document.getElementById('usage-actions');
+            if (spent) spent.textContent = (data.total_spent || 0).toLocaleString();
+            if (actions) actions.textContent = (data.total_actions || 0).toLocaleString();
+        }
+
+        /**
+         * Render action costs table
+         */
+        renderActions(data) {
+            const container = document.getElementById('credit-actions-list');
+            if (!container) return;
+
+            const actions = data.actions || [];
+            if (!actions.length) {
+                container.innerHTML = '<div class="gfy-empty-state" style="padding: var(--gfy-space-6, 1.5rem);"><p>No action costs configured yet.</p></div>';
+                return;
+            }
+
+            let html = '<table class="gfy-table"><thead><tr>' +
+                '<th class="gfy-table__th">Action</th>' +
+                '<th class="gfy-table__th" style="text-align:right;">Cost</th>' +
+                '<th class="gfy-table__th" style="text-align:right;">Remaining</th>' +
+                '</tr></thead><tbody>';
+
+            actions.forEach(action => {
+                const name = this.formatAction(action.action_type);
+                const cost = action.cost || action.credits_per_unit || 0;
+                const remaining = typeof action.remaining !== 'undefined' ? action.remaining : '--';
+                html += '<tr class="gfy-table__tr">' +
+                    '<td class="gfy-table__td"><i class="fa-solid fa-circle" style="font-size: 6px; color: var(--gfy-gray-400); vertical-align: middle; margin-right: 8px;"></i>' + this.escHtml(name) + '</td>' +
+                    '<td class="gfy-table__td" style="text-align:right;"><span class="gfy-badge gfy-badge--sm gfy-badge--info">' + cost + ' cr</span></td>' +
+                    '<td class="gfy-table__td" style="text-align:right; color: var(--gfy-gray-500);">' + (typeof remaining === 'number' ? remaining.toLocaleString() : remaining) + '</td>' +
+                    '</tr>';
+            });
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        /**
+         * Render transactions list
+         */
+        renderTransactions(data) {
+            const container = document.getElementById('credit-transactions-list');
+            if (!container) return;
+
+            const items = data.items || [];
+            if (!items.length) {
+                container.innerHTML = '<div class="gfy-empty-state" style="padding: var(--gfy-space-6, 1.5rem);">' +
+                    '<div class="gfy-empty-state__icon"><i class="fa-solid fa-clock-rotate-left"></i></div>' +
+                    '<h3 class="gfy-empty-state__title">No Activity Yet</h3>' +
+                    '<p class="gfy-empty-state__desc">Your credit transactions will appear here as you use Guestify features.</p>' +
+                    '</div>';
+                return;
+            }
+
+            let html = '<table class="gfy-table"><thead><tr>' +
+                '<th class="gfy-table__th">Action</th>' +
+                '<th class="gfy-table__th">Source</th>' +
+                '<th class="gfy-table__th" style="text-align:right;">Credits</th>' +
+                '<th class="gfy-table__th" style="text-align:right;">Balance</th>' +
+                '<th class="gfy-table__th" style="text-align:right;">Date</th>' +
+                '</tr></thead><tbody>';
+
+            items.forEach(txn => {
+                const isDebit = txn.credits_used > 0;
+                const amtClass = isDebit ? 'gfy-text--danger' : 'gfy-text--success';
+                const amtPrefix = isDebit ? '-' : '+';
+                const absAmt = Math.abs(txn.credits_used || 0);
+                const sourceIcon = this.sourceIcon(txn.source_type);
+                const sourceLabel = this.formatSource(txn.source_type);
+
+                html += '<tr class="gfy-table__tr">' +
+                    '<td class="gfy-table__td">' + this.escHtml(this.formatAction(txn.action_type)) + '</td>' +
+                    '<td class="gfy-table__td"><i class="fa-solid ' + sourceIcon + '" style="margin-right:4px; color: var(--gfy-gray-400);"></i>' + this.escHtml(sourceLabel) + '</td>' +
+                    '<td class="gfy-table__td ' + amtClass + '" style="text-align:right; font-weight: 600;">' + amtPrefix + absAmt + '</td>' +
+                    '<td class="gfy-table__td" style="text-align:right; color: var(--gfy-gray-500);">' + (txn.balance_after != null ? txn.balance_after.toLocaleString() : '--') + '</td>' +
+                    '<td class="gfy-table__td" style="text-align:right; color: var(--gfy-gray-500);">' + this.formatDate(txn.created_at) + '</td>' +
+                    '</tr>';
+            });
+
+            html += '</tbody></table>';
+            container.innerHTML = html;
+        }
+
+        /**
+         * Render purchase packs
+         */
+        renderPacks(data) {
+            const packs = Array.isArray(data) ? data : (data.packs || []);
+            if (!packs.length) return;
+
+            const card = document.getElementById('credit-packs-card');
+            const grid = document.getElementById('credit-packs-grid');
+            if (!card || !grid) return;
+
+            card.style.display = '';
+
+            let html = '';
+            packs.forEach(pack => {
+                html += '<button class="gfy-credit-pack" data-pack-key="' + this.escAttr(pack.key) + '">' +
+                    '<span class="gfy-credit-pack__credits">' + (pack.credits || 0).toLocaleString() + '</span>' +
+                    '<span class="gfy-credit-pack__label">credits</span>' +
+                    '<span class="gfy-credit-pack__price">' + this.escHtml(pack.price_display || '$' + (pack.price_cents / 100).toFixed(0)) + '</span>' +
+                    '</button>';
+            });
+
+            grid.innerHTML = html;
+
+            // Bind click events
+            grid.querySelectorAll('.gfy-credit-pack').forEach(btn => {
+                btn.addEventListener('click', async () => {
+                    const packKey = btn.dataset.packKey;
+                    btn.disabled = true;
+                    btn.classList.add('gfy-credit-pack--loading');
+                    try {
+                        const result = await this.apiPost('credits/purchase', { pack: packKey });
+                        if (result.success && result.data && result.data.checkout_url) {
+                            window.location.href = result.data.checkout_url;
+                        }
+                    } catch (err) {
+                        console.error('Purchase error:', err);
+                        if (typeof GuestifyAccount !== 'undefined') {
+                            // Reuse the toast from parent class
+                        }
+                        alert('Failed to start checkout: ' + err.message);
+                    } finally {
+                        btn.disabled = false;
+                        btn.classList.remove('gfy-credit-pack--loading');
+                    }
+                });
+            });
+        }
+
+        // Helpers
+        formatAction(actionType) {
+            return (actionType || '')
+                .replace(/_/g, ' ')
+                .replace(/\b\w/g, c => c.toUpperCase());
+        }
+
+        formatSource(sourceType) {
+            const map = { allowance: 'Allowance', rollover: 'Rollover', overage: 'Purchased', admin: 'Admin', refill: 'Refill', system: 'System' };
+            return map[sourceType] || (sourceType || 'Unknown');
+        }
+
+        sourceIcon(sourceType) {
+            const icons = { allowance: 'fa-circle-check', rollover: 'fa-rotate-right', overage: 'fa-credit-card', admin: 'fa-user-shield', refill: 'fa-arrows-rotate', system: 'fa-gear' };
+            return icons[sourceType] || 'fa-circle';
+        }
+
+        formatDate(dateStr) {
+            if (!dateStr) return '';
+            const d = new Date(dateStr);
+            return d.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        }
+
+        escHtml(str) {
+            const div = document.createElement('div');
+            div.textContent = str;
+            return div.innerHTML;
+        }
+
+        escAttr(str) {
+            return (str || '').replace(/"/g, '&quot;').replace(/'/g, '&#39;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+        }
+    }
+
     // Initialize when DOM is ready
     if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', () => new GuestifyAccount());
+        document.addEventListener('DOMContentLoaded', () => {
+            new GuestifyAccount();
+            new CreditPanel();
+        });
     } else {
         new GuestifyAccount();
+        new CreditPanel();
     }
 })();
