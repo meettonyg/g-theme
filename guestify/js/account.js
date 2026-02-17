@@ -470,18 +470,26 @@
 
                 if (balanceRes.status === 'fulfilled' && balanceRes.value.success) {
                     this.updateGauge(balanceRes.value.data);
+                } else {
+                    this.updateGauge({ allowance: 0, rollover: 0, overage: 0, total: 0, monthly_allowance: 0 });
                 }
 
                 if (usageRes.status === 'fulfilled' && usageRes.value.success) {
                     this.renderUsage(usageRes.value.data);
+                } else {
+                    this.renderUsage({ total_spent: 0, total_actions: 0 });
                 }
 
                 if (actionsRes.status === 'fulfilled' && actionsRes.value.success) {
                     this.renderActions(actionsRes.value.data);
+                } else {
+                    this.renderActions({ actions: [] });
                 }
 
                 if (transactionsRes.status === 'fulfilled' && transactionsRes.value.success) {
                     this.renderTransactions(transactionsRes.value.data);
+                } else {
+                    this.renderTransactions({ items: [] });
                 }
 
                 if (packsRes.status === 'fulfilled' && packsRes.value.success) {
