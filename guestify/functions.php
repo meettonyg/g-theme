@@ -258,6 +258,13 @@ if ( defined( 'JETPACK__VERSION' ) ) {
 require get_template_directory() . '/inc/app-navigation-functions.php';
 
 /**
+ * Load Centralized Access Gate.
+ * Redirects non-logged-in users to /login/ for protected paths (/app/, /account/, etc.)
+ * and enforces WP Fusion tier-based gating on virtual pages.
+ */
+require get_template_directory() . '/inc/class-access-gate.php';
+
+/**
  * Enqueue login CSS only for login page
  */
 function guestify_enqueue_login_css() {
@@ -330,9 +337,18 @@ function guestify_generic_login_form_shortcode( $atts ) {
 		return '<div class="wpc-logged-in-msg">You are logged in as ' . esc_html( $current_user->display_name ) . '. <a href="' . esc_url( wp_logout_url( get_permalink() ) ) . '">Log out?</a></div>';
 	}
 
-	// Set defaults
+	// Determine redirect destination – honour redirect_to query param from access gate
+	$default_redirect = home_url( '/app/' );
+	if ( isset( $_GET['redirect_to'] ) ) {
+		$redirect_to = esc_url_raw( urldecode( $_GET['redirect_to'] ) );
+		$validated   = wp_validate_redirect( $redirect_to, $default_redirect );
+		if ( $validated ) {
+			$default_redirect = $validated;
+		}
+	}
+
 	$atts = shortcode_atts( array(
-		'redirect' => home_url( '/app/' ),
+		'redirect' => $default_redirect,
 	), $atts );
 
 	$output = '';
