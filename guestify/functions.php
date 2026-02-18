@@ -265,6 +265,20 @@ require get_template_directory() . '/inc/app-navigation-functions.php';
 require get_template_directory() . '/inc/class-access-gate.php';
 
 /**
+ * Access Gate REST API — admin endpoints for managing access rules.
+ */
+require get_template_directory() . '/inc/class-access-gate-api.php';
+GFY_Access_Gate_API::init();
+
+/**
+ * Access Gate Admin Page — Vue-powered UI under Guestify menu.
+ */
+if ( is_admin() ) {
+	require get_template_directory() . '/inc/class-access-gate-admin.php';
+	GFY_Access_Gate_Admin::init();
+}
+
+/**
  * Enqueue login CSS only for login page
  */
 function guestify_enqueue_login_css() {

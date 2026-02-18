@@ -13,12 +13,16 @@
  *   - /app/, /account/, /courses/, /onboarding/  → login required
  *   - /tools/, /templates/                        → public
  *
+ * Custom rules are stored in wp_options key `gfy_access_gate_rules`
+ * and managed via the Access Gate admin page (Guestify → Access Gate).
+ *
  * Plugins register additional rules via the `gfy_register_access_rules` action:
  *
  *     add_action('gfy_register_access_rules', function (GFY_Access_Gate $gate) {
  *         $gate->register_path_rule('/app/outreach/', [
  *             'auth_required' => true,
- *             'capability'    => 'edit_posts',
+ *             'required_tier' => 'velocity',
+ *             'redirect_to'   => '/features/outreach/',
  *         ]);
  *     });
  *
@@ -31,6 +35,9 @@ if (!defined('ABSPATH')) {
 }
 
 class GFY_Access_Gate {
+
+    /** wp_options key for custom rules */
+    const OPTION_KEY = 'gfy_access_gate_rules';
 
     /** @var GFY_Access_Gate|null */
     private static ?GFY_Access_Gate $instance = null;
@@ -52,6 +59,13 @@ class GFY_Access_Gate {
     private array $rules = [];
 
     /**
+     * Tracks the origin of each rule: 'default', 'custom', or 'plugin'.
+     *
+     * @var array<string, string>
+     */
+    private array $rule_sources = [];
+
+    /**
      * Whether plugin rules have been collected.
      *
      * @var bool
@@ -71,6 +85,7 @@ class GFY_Access_Gate {
 
     private function __construct() {
         $this->register_default_rules();
+        $this->load_custom_rules();
         add_action('template_redirect', [$this, 'check_access'], 5);
     }
 
@@ -78,32 +93,57 @@ class GFY_Access_Gate {
      * Default rules
      * ----------------------------------------------------------------*/
 
-    private function register_default_rules(): void {
-        // Auth-required paths (prefix match – covers all sub-paths)
-        $this->rules['/app/']        = ['auth_required' => true, 'match_type' => 'prefix'];
-        $this->rules['/account/']    = ['auth_required' => true, 'match_type' => 'prefix'];
-        $this->rules['/courses/']    = ['auth_required' => true, 'match_type' => 'prefix'];
-        $this->rules['/onboarding/'] = ['auth_required' => true, 'match_type' => 'prefix'];
+    /**
+     * Get the hardcoded default rules (without custom/plugin overrides).
+     *
+     * @return array<string, array>
+     */
+    public static function get_default_rules(): array {
+        return [
+            '/app/'        => ['auth_required' => true, 'public' => false, 'match_type' => 'prefix'],
+            '/account/'    => ['auth_required' => true, 'public' => false, 'match_type' => 'prefix'],
+            '/courses/'    => ['auth_required' => true, 'public' => false, 'match_type' => 'prefix'],
+            '/onboarding/' => ['auth_required' => true, 'public' => false, 'match_type' => 'prefix'],
+            '/tools/'      => ['auth_required' => false, 'public' => true, 'match_type' => 'prefix'],
+            '/templates/'  => ['auth_required' => false, 'public' => true, 'match_type' => 'prefix'],
+        ];
+    }
 
-        // Explicitly public paths (override any parent auth rule)
-        $this->rules['/tools/']      = ['public' => true, 'match_type' => 'prefix'];
-        $this->rules['/templates/']  = ['public' => true, 'match_type' => 'prefix'];
+    private function register_default_rules(): void {
+        foreach (self::get_default_rules() as $path => $config) {
+            $this->rules[$path]        = $config;
+            $this->rule_sources[$path] = 'default';
+        }
     }
 
     /* ------------------------------------------------------------------
-     * Public API – rule registration
+     * Custom rules (from wp_options)
      * ----------------------------------------------------------------*/
 
     /**
-     * Register a path rule.
-     *
-     * @param string $path   URL path, e.g. '/app/outreach/'
-     * @param array  $config Rule configuration.
+     * Load custom rules from wp_options.
+     * Custom rules override defaults at the same path.
      */
-    public function register_path_rule(string $path, array $config): void {
-        $path = '/' . trim($path, '/') . '/';
+    private function load_custom_rules(): void {
+        $custom = get_option(self::OPTION_KEY, []);
+        if (!is_array($custom)) {
+            return;
+        }
 
-        $defaults = [
+        foreach ($custom as $path => $config) {
+            $path = '/' . trim($path, '/') . '/';
+            $this->rules[$path]        = array_merge(self::rule_defaults(), $config);
+            $this->rule_sources[$path] = 'custom';
+        }
+    }
+
+    /**
+     * Default values for a rule config.
+     *
+     * @return array
+     */
+    private static function rule_defaults(): array {
+        return [
             'auth_required' => true,
             'public'        => false,
             'required_tier' => '',
@@ -112,8 +152,98 @@ class GFY_Access_Gate {
             'redirect_to'   => '',
             'match_type'    => 'prefix',
         ];
+    }
 
-        $this->rules[$path] = array_merge($defaults, $config);
+    /* ------------------------------------------------------------------
+     * Public API – rule registration (for plugins)
+     * ----------------------------------------------------------------*/
+
+    /**
+     * Register a path rule (typically called by plugins via gfy_register_access_rules).
+     *
+     * @param string $path   URL path, e.g. '/app/outreach/'
+     * @param array  $config Rule configuration.
+     */
+    public function register_path_rule(string $path, array $config): void {
+        $path = '/' . trim($path, '/') . '/';
+        $this->rules[$path] = array_merge(self::rule_defaults(), $config);
+
+        // Only tag as plugin if not already sourced (custom/default take precedence)
+        if (!isset($this->rule_sources[$path])) {
+            $this->rule_sources[$path] = 'plugin';
+        }
+    }
+
+    /* ------------------------------------------------------------------
+     * Public API – for admin UI / REST
+     * ----------------------------------------------------------------*/
+
+    /**
+     * Get all rules with source metadata (for admin UI).
+     * Forces plugin rule collection so the result is complete.
+     *
+     * @return array List of rules, each with 'path' and 'source' keys added.
+     */
+    public function get_all_rules(): array {
+        $this->maybe_collect_plugin_rules();
+
+        $result = [];
+        foreach ($this->rules as $path => $config) {
+            $result[] = array_merge(self::rule_defaults(), $config, [
+                'path'   => $path,
+                'source' => $this->rule_sources[$path] ?? 'unknown',
+            ]);
+        }
+
+        // Sort by path length descending (most specific first)
+        usort($result, function ($a, $b) {
+            return strlen($b['path']) - strlen($a['path']);
+        });
+
+        return $result;
+    }
+
+    /**
+     * Test which rule matches a given path (for admin preview).
+     *
+     * @param string $test_path URL path to test, e.g. '/app/outreach/campaigns/'
+     * @return array|null The matched rule with 'path' and 'source', or null.
+     */
+    public function test_match(string $test_path): ?array {
+        $this->maybe_collect_plugin_rules();
+
+        // Normalise the test path
+        $test_path = '/' . trim($test_path, '/');
+        if ($test_path !== '/') {
+            $test_path .= '/';
+        }
+
+        // Sort rules by specificity
+        $sorted = $this->rules;
+        uksort($sorted, function (string $a, string $b): int {
+            return strlen($b) - strlen($a);
+        });
+
+        foreach ($sorted as $rule_path => $rule) {
+            $match_type = $rule['match_type'] ?? 'prefix';
+            $matched    = false;
+
+            if ($match_type === 'exact') {
+                $matched = ($test_path === $rule_path);
+            } else {
+                $matched = (strpos($test_path, $rule_path) === 0)
+                           || ($test_path === rtrim($rule_path, '/'));
+            }
+
+            if ($matched) {
+                return array_merge(self::rule_defaults(), $rule, [
+                    'path'   => $rule_path,
+                    'source' => $this->rule_sources[$rule_path] ?? 'unknown',
+                ]);
+            }
+        }
+
+        return null;
     }
 
     /* ------------------------------------------------------------------
@@ -182,12 +312,22 @@ class GFY_Access_Gate {
         }
         $this->rules_collected = true;
 
+        $before_paths = array_keys($this->rules);
+
         /**
          * Fires so plugins can register their own access rules.
          *
          * @param GFY_Access_Gate $gate The access gate instance.
          */
         do_action('gfy_register_access_rules', $this);
+
+        // Tag any newly added paths as plugin-sourced
+        $new_paths = array_diff(array_keys($this->rules), $before_paths);
+        foreach ($new_paths as $path) {
+            if (!isset($this->rule_sources[$path])) {
+                $this->rule_sources[$path] = 'plugin';
+            }
+        }
     }
 
     /* ------------------------------------------------------------------

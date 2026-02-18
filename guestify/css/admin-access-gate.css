@@ -1,0 +1,478 @@
+/**
+ * Guestify Access Gate - Admin Styles
+ * Uses --pit-* / --gfy-* design tokens where available,
+ * falls back to sensible defaults.
+ */
+
+/* ========================================================================
+   TOAST NOTIFICATION
+   ======================================================================== */
+.gfy-toast {
+    position: fixed;
+    top: 40px;
+    right: 20px;
+    z-index: 99999;
+    padding: 12px 20px;
+    border-radius: var(--pit-radius, 6px);
+    font-size: 14px;
+    font-weight: 500;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    animation: gfy-toast-in 0.3s ease-out;
+    max-width: 400px;
+    transition: opacity 0.3s ease;
+}
+
+.gfy-toast-success {
+    background: var(--pit-success-light, #ecfdf5);
+    color: var(--pit-success-dark, #065f46);
+    border: 1px solid var(--pit-success, #10b981);
+}
+
+.gfy-toast-error {
+    background: var(--pit-danger-light, #fef2f2);
+    color: var(--pit-danger-dark, #991b1b);
+    border: 1px solid var(--pit-danger, #ef4444);
+}
+
+@keyframes gfy-toast-in {
+    from { opacity: 0; transform: translateY(-10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ========================================================================
+   RULES TABLE
+   ======================================================================== */
+.gfy-ag-table-wrap {
+    overflow-x: auto;
+    margin-top: 16px;
+}
+
+.gfy-ag-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+    background: var(--pit-bg, #fff);
+    border: 1px solid var(--pit-border, #ddd);
+}
+
+.gfy-ag-table th {
+    background: var(--pit-bg-tertiary, #f6f7f7);
+    padding: 10px 12px;
+    text-align: left;
+    font-weight: 600;
+    color: var(--pit-text, #1e1e1e);
+    border-bottom: 2px solid var(--pit-border, #ddd);
+    white-space: nowrap;
+}
+
+.gfy-ag-table td {
+    padding: 8px 12px;
+    border-bottom: 1px solid var(--pit-border-light, #eee);
+    color: var(--pit-text, #1e1e1e);
+    vertical-align: middle;
+}
+
+.gfy-ag-table tr:hover td {
+    background: var(--pit-bg-secondary, #f9f9f9);
+}
+
+.gfy-ag-table .col-actions {
+    white-space: nowrap;
+    text-align: right;
+}
+
+.gfy-ag-table .col-path {
+    font-family: monospace;
+    font-size: 13px;
+}
+
+/* ========================================================================
+   SOURCE BADGES
+   ======================================================================== */
+.gfy-ag-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 10px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.gfy-ag-badge-default {
+    background: #e5e7eb;
+    color: #374151;
+}
+
+.gfy-ag-badge-custom {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.gfy-ag-badge-plugin {
+    background: #ede9fe;
+    color: #5b21b6;
+}
+
+/* Access type badges */
+.gfy-ag-badge-public {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.gfy-ag-badge-auth {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.gfy-ag-badge-tier {
+    background: #e0e7ff;
+    color: #3730a3;
+}
+
+/* Match type badges */
+.gfy-ag-badge-prefix {
+    background: #f3f4f6;
+    color: #4b5563;
+}
+
+.gfy-ag-badge-exact {
+    background: #fce7f3;
+    color: #9d174d;
+}
+
+/* ========================================================================
+   SECTION HEADERS
+   ======================================================================== */
+.gfy-ag-section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 24px 0 8px;
+    padding-bottom: 6px;
+    border-bottom: 1px solid var(--pit-border-light, #eee);
+}
+
+.gfy-ag-section-header:first-child {
+    margin-top: 0;
+}
+
+.gfy-ag-section-header h3 {
+    margin: 0;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--pit-text, #1e1e1e);
+}
+
+.gfy-ag-section-count {
+    background: var(--pit-bg-tertiary, #f6f7f7);
+    color: var(--pit-text-secondary, #757575);
+    font-size: 11px;
+    padding: 1px 8px;
+    border-radius: 10px;
+}
+
+/* ========================================================================
+   TOOLBAR
+   ======================================================================== */
+.gfy-ag-toolbar {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+.gfy-ag-toolbar .button {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+}
+
+/* ========================================================================
+   MODAL / OVERLAY
+   ======================================================================== */
+.gfy-ag-modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 100000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    animation: gfy-fade-in 0.2s ease;
+}
+
+@keyframes gfy-fade-in {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+}
+
+.gfy-ag-modal {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+    width: 560px;
+    max-width: 90vw;
+    max-height: 85vh;
+    overflow-y: auto;
+    animation: gfy-slide-up 0.2s ease;
+}
+
+@keyframes gfy-slide-up {
+    from { transform: translateY(20px); opacity: 0; }
+    to   { transform: translateY(0); opacity: 1; }
+}
+
+.gfy-ag-modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 20px;
+    border-bottom: 1px solid var(--pit-border, #ddd);
+}
+
+.gfy-ag-modal-header h2 {
+    margin: 0;
+    font-size: 16px;
+}
+
+.gfy-ag-modal-close {
+    background: none;
+    border: none;
+    font-size: 20px;
+    cursor: pointer;
+    color: var(--pit-text-secondary, #757575);
+    padding: 4px;
+    line-height: 1;
+}
+
+.gfy-ag-modal-close:hover {
+    color: var(--pit-danger, #ef4444);
+}
+
+.gfy-ag-modal-body {
+    padding: 20px;
+}
+
+.gfy-ag-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    padding: 16px 20px;
+    border-top: 1px solid var(--pit-border, #ddd);
+    background: var(--pit-bg-tertiary, #f6f7f7);
+    border-radius: 0 0 8px 8px;
+}
+
+/* ========================================================================
+   FORM FIELDS INSIDE MODAL
+   ======================================================================== */
+.gfy-ag-field {
+    margin-bottom: 16px;
+}
+
+.gfy-ag-field label {
+    display: block;
+    font-weight: 600;
+    font-size: 13px;
+    margin-bottom: 4px;
+    color: var(--pit-text, #1e1e1e);
+}
+
+.gfy-ag-field .description {
+    font-size: 12px;
+    color: var(--pit-text-secondary, #757575);
+    margin-top: 2px;
+}
+
+.gfy-ag-field input[type="text"],
+.gfy-ag-field select {
+    width: 100%;
+    max-width: 100%;
+}
+
+.gfy-ag-field-inline {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+}
+
+.gfy-ag-field-inline .gfy-ag-field {
+    flex: 1;
+}
+
+/* Radio group */
+.gfy-ag-radio-group {
+    display: flex;
+    gap: 16px;
+    margin-top: 4px;
+}
+
+.gfy-ag-radio-group label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: normal;
+    cursor: pointer;
+}
+
+/* Conditional fields (shown when auth_required) */
+.gfy-ag-conditional {
+    margin-top: 12px;
+    padding: 12px;
+    background: var(--pit-bg-secondary, #f9f9f9);
+    border: 1px solid var(--pit-border-light, #eee);
+    border-radius: 6px;
+}
+
+.gfy-ag-conditional .gfy-ag-field:last-child {
+    margin-bottom: 0;
+}
+
+/* ========================================================================
+   TEST URL TAB
+   ======================================================================== */
+.gfy-ag-test-wrap {
+    max-width: 640px;
+}
+
+.gfy-ag-test-input-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 16px;
+}
+
+.gfy-ag-test-input-row input[type="text"] {
+    flex: 1;
+    font-family: monospace;
+}
+
+.gfy-ag-test-result {
+    padding: 16px;
+    border-radius: 6px;
+    border: 1px solid var(--pit-border, #ddd);
+    background: var(--pit-bg, #fff);
+}
+
+.gfy-ag-test-result h4 {
+    margin: 0 0 12px;
+    font-size: 14px;
+}
+
+.gfy-ag-test-result-row {
+    display: flex;
+    gap: 8px;
+    padding: 4px 0;
+    font-size: 13px;
+}
+
+.gfy-ag-test-result-label {
+    font-weight: 600;
+    color: var(--pit-text-secondary, #757575);
+    min-width: 120px;
+    flex-shrink: 0;
+}
+
+.gfy-ag-test-result-value {
+    font-family: monospace;
+    color: var(--pit-text, #1e1e1e);
+}
+
+/* Outcome badges */
+.gfy-ag-outcome {
+    display: inline-block;
+    padding: 3px 10px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.gfy-ag-outcome-allow {
+    background: #d1fae5;
+    color: #065f46;
+}
+
+.gfy-ag-outcome-login_required {
+    background: #fef3c7;
+    color: #92400e;
+}
+
+.gfy-ag-outcome-tier_or_capability_required {
+    background: #e0e7ff;
+    color: #3730a3;
+}
+
+.gfy-ag-outcome-no_rule {
+    background: #f3f4f6;
+    color: #6b7280;
+}
+
+/* ========================================================================
+   EMPTY STATE
+   ======================================================================== */
+.gfy-ag-empty {
+    text-align: center;
+    padding: 32px 16px;
+    color: var(--pit-text-secondary, #757575);
+    font-style: italic;
+}
+
+/* ========================================================================
+   LOADING SPINNER
+   ======================================================================== */
+.gfy-ag-loading {
+    text-align: center;
+    padding: 24px;
+    color: var(--pit-text-secondary, #757575);
+}
+
+.gfy-ag-spinner {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border: 2px solid var(--pit-border, #ddd);
+    border-top-color: var(--pit-primary, #2271b1);
+    border-radius: 50%;
+    animation: gfy-spin 0.6s linear infinite;
+    margin-right: 8px;
+    vertical-align: middle;
+}
+
+@keyframes gfy-spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ========================================================================
+   CONFIRM DIALOG (inline delete confirm)
+   ======================================================================== */
+.gfy-ag-confirm {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+}
+
+.gfy-ag-confirm .button-link-delete {
+    color: var(--pit-danger, #b32d2e);
+    font-weight: 600;
+}
+
+/* ========================================================================
+   RESPONSIVE
+   ======================================================================== */
+@media (max-width: 782px) {
+    .gfy-ag-field-inline {
+        flex-direction: column;
+        gap: 0;
+    }
+
+    .gfy-ag-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .gfy-ag-modal {
+        width: 95vw;
+    }
+}
