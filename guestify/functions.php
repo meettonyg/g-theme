@@ -279,6 +279,66 @@ if ( is_admin() ) {
 }
 
 /**
+ * Platform Constants.
+ */
+require get_template_directory() . '/inc/class-gfy-constants.php';
+
+/**
+ * Credit & Tier System — platform-level, always active.
+ * These classes are loaded from the theme so they work regardless of
+ * which plugins (ShowAuthority, Email, Agency-Core) are active.
+ */
+require get_template_directory() . '/inc/class-gfy-rest-base.php';
+require get_template_directory() . '/inc/class-gfy-vue-scripts.php';
+require get_template_directory() . '/inc/class-gfy-tier-resolver.php';
+require get_template_directory() . '/inc/class-gfy-credits-schema.php';
+require get_template_directory() . '/inc/class-gfy-credit-repository.php';
+require get_template_directory() . '/inc/class-gfy-credit-gate.php';
+require get_template_directory() . '/inc/class-gfy-stripe-overage.php';
+require get_template_directory() . '/inc/class-gfy-wpfusion-credit-sync.php';
+require get_template_directory() . '/inc/class-gfy-rest-tier-config.php';
+require get_template_directory() . '/inc/class-gfy-rest-credits.php';
+require get_template_directory() . '/inc/class-gfy-rest-credit-admin.php';
+require get_template_directory() . '/inc/class-gfy-credit-meter-shortcode.php';
+
+// Initialize credit/tier REST routes
+add_action('rest_api_init', function () {
+    GFY_REST_Tier_Config::register_routes();
+    GFY_REST_Credits::register_routes();
+    GFY_REST_Credit_Admin::register_routes();
+    GFY_WPFusion_Credit_Sync::register_routes();
+
+    // Stripe overage routes (conditional — only if Stripe is configured)
+    $stripe = get_option('guestify_stripe_config', []);
+    if (!empty($stripe['secret_key'])) {
+        GFY_Stripe_Overage::register_routes();
+    }
+});
+
+// Initialize WP Fusion credit sync + shortcode + lazy table creation
+add_action('init', function () {
+    GFY_WPFusion_Credit_Sync::init();
+    GFY_Credit_Meter_Shortcode::init();
+
+    // Lazy-create tables on first access after theme activation
+    if (!GFY_Credits_Schema::tables_exist()) {
+        GFY_Credits_Schema::create_tables();
+    }
+});
+
+// Daily credit refill cron
+add_action('gfy_credit_refill', ['GFY_Credit_Repository', 'process_all_refills']);
+if (!wp_next_scheduled('gfy_credit_refill')) {
+    wp_schedule_event(time(), 'daily', 'gfy_credit_refill');
+}
+
+// Credit admin page (admin only)
+if (is_admin()) {
+    require get_template_directory() . '/inc/class-gfy-credit-admin.php';
+    GFY_Credit_Admin::init();
+}
+
+/**
  * Enqueue login CSS only for login page
  */
 function guestify_enqueue_login_css() {

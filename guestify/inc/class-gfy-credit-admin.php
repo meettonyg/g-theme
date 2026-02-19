@@ -1,23 +1,23 @@
 <?php
 /**
- * Access Gate Admin Page
+ * Credit Admin Page
  *
  * Registers the admin page under the Guestify menu (falls back to Settings
  * if ShowAuthority / Podcast Influence Tracker is not active).
- * Renders two tabs via nav-tab-wrapper and mounts a Vue 3 + Pinia app.
+ * Renders five tabs via nav-tab-wrapper and mounts a Vue 3 + Pinia app.
  *
  * @package Guestify
- * @since   1.2.0
+ * @since   2.0.0
  */
 
 if (!defined('ABSPATH')) {
     exit;
 }
 
-class GFY_Access_Gate_Admin {
+class GFY_Credit_Admin {
 
     /** Admin page slug */
-    const PAGE_SLUG = 'gfy-access-gate';
+    const PAGE_SLUG = 'gfy-credits';
 
     /**
      * Initialize: hook into admin_menu and admin asset enqueuing.
@@ -31,7 +31,7 @@ class GFY_Access_Gate_Admin {
      * Register the admin submenu page.
      *
      * Tries to sit under the main Guestify menu ('podcast-influence').
-     * Falls back to Settings → Access Gate if the parent menu doesn't exist.
+     * Falls back to Settings → Credits if the parent menu doesn't exist.
      */
     public static function add_menu_page(): void {
         global $submenu;
@@ -40,14 +40,13 @@ class GFY_Access_Gate_Admin {
 
         // Check if the Guestify parent menu exists
         if (!isset($submenu[$parent]) && !menu_page_url($parent, false)) {
-            // ShowAuthority plugin inactive — fall back to Settings
             $parent = 'options-general.php';
         }
 
         add_submenu_page(
             $parent,
-            __('Access Gate', 'guestify'),
-            __('Access Gate', 'guestify'),
+            __('Credits', 'guestify'),
+            __('Credits', 'guestify'),
             'manage_options',
             self::PAGE_SLUG,
             [__CLASS__, 'render_page']
@@ -55,7 +54,7 @@ class GFY_Access_Gate_Admin {
     }
 
     /**
-     * Enqueue Vue 3, Pinia, and the Access Gate admin app on our page only.
+     * Enqueue Vue 3, Pinia, and the Credit Admin app on our page only.
      *
      * @param string $hook_suffix The current admin page hook suffix.
      */
@@ -92,27 +91,29 @@ class GFY_Access_Gate_Admin {
             wp_enqueue_script('pinia');
         }
 
-        // --- Access Gate CSS ---
+        $version = self::get_version();
+
+        // --- Credit Admin CSS ---
         wp_enqueue_style(
-            'gfy-access-gate-admin',
-            get_template_directory_uri() . '/css/admin-access-gate.css',
+            'gfy-credit-admin',
+            get_template_directory_uri() . '/css/admin-credits.css',
             [],
-            filemtime(get_template_directory() . '/css/admin-access-gate.css')
+            $version
         );
 
-        // --- Access Gate JS (Vue app) ---
+        // --- Credit Admin JS (Vue app) ---
         wp_enqueue_script(
-            'gfy-access-gate-admin',
-            get_template_directory_uri() . '/js/admin-access-gate.js',
+            'gfy-credit-admin',
+            get_template_directory_uri() . '/js/admin-credits.js',
             ['vue', 'pinia'],
-            filemtime(get_template_directory() . '/js/admin-access-gate.js'),
+            $version,
             true
         );
 
-        // Pass config data to JS
-        wp_localize_script('gfy-access-gate-admin', 'gfyAccessGateData', [
-            'apiUrl' => rest_url('guestify/v1'),
-            'nonce'  => wp_create_nonce('wp_rest'),
+        // Pass config data to JS (same shape as pitData used by the Vue app)
+        wp_localize_script('gfy-credit-admin', 'pitData', [
+            'guestifyApiUrl' => rest_url('guestify/v1'),
+            'nonce'          => wp_create_nonce('wp_rest'),
         ]);
     }
 
@@ -120,31 +121,52 @@ class GFY_Access_Gate_Admin {
      * Render the admin page with nav-tab-wrapper and Vue mount point.
      */
     public static function render_page(): void {
-        $active_tab = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : 'rules';
-        $valid_tabs = ['rules', 'test'];
+        $active_tab = isset($_GET['tab']) ? sanitize_text_field($_GET['tab']) : 'users';
+        $valid_tabs = ['users', 'tiers', 'mapping', 'costs', 'packs'];
         if (!in_array($active_tab, $valid_tabs, true)) {
-            $active_tab = 'rules';
+            $active_tab = 'users';
         }
         ?>
         <div class="wrap">
-            <h1><?php _e('Access Gate', 'guestify'); ?></h1>
-            <p class="description"><?php _e('Manage page-level access rules for virtual pages. Control which URL paths require authentication, which membership tier, and where denied users are redirected.', 'guestify'); ?></p>
+            <h1><?php _e('Credit Management', 'guestify'); ?></h1>
 
             <nav class="nav-tab-wrapper">
-                <a href="?page=<?php echo esc_attr(self::PAGE_SLUG); ?>&tab=rules"
-                   class="nav-tab <?php echo $active_tab === 'rules' ? 'nav-tab-active' : ''; ?>">
-                    <?php _e('Rules', 'guestify'); ?>
+                <a href="?page=<?php echo esc_attr(self::PAGE_SLUG); ?>&tab=users"
+                   class="nav-tab <?php echo $active_tab === 'users' ? 'nav-tab-active' : ''; ?>">
+                    <?php _e('User Credits', 'guestify'); ?>
                 </a>
-                <a href="?page=<?php echo esc_attr(self::PAGE_SLUG); ?>&tab=test"
-                   class="nav-tab <?php echo $active_tab === 'test' ? 'nav-tab-active' : ''; ?>">
-                    <?php _e('Test URL', 'guestify'); ?>
+                <a href="?page=<?php echo esc_attr(self::PAGE_SLUG); ?>&tab=tiers"
+                   class="nav-tab <?php echo $active_tab === 'tiers' ? 'nav-tab-active' : ''; ?>">
+                    <?php _e('Tier Configuration', 'guestify'); ?>
+                </a>
+                <a href="?page=<?php echo esc_attr(self::PAGE_SLUG); ?>&tab=mapping"
+                   class="nav-tab <?php echo $active_tab === 'mapping' ? 'nav-tab-active' : ''; ?>">
+                    <?php _e('Plan-Tier Mapping', 'guestify'); ?>
+                </a>
+                <a href="?page=<?php echo esc_attr(self::PAGE_SLUG); ?>&tab=costs"
+                   class="nav-tab <?php echo $active_tab === 'costs' ? 'nav-tab-active' : ''; ?>">
+                    <?php _e('Action Costs', 'guestify'); ?>
+                </a>
+                <a href="?page=<?php echo esc_attr(self::PAGE_SLUG); ?>&tab=packs"
+                   class="nav-tab <?php echo $active_tab === 'packs' ? 'nav-tab-active' : ''; ?>">
+                    <?php _e('Credit Packs', 'guestify'); ?>
                 </a>
             </nav>
 
-            <div id="gfy-app-access-gate" data-tab="<?php echo esc_attr($active_tab); ?>" style="margin-top: 20px;">
+            <div id="pit-app-credits" data-tab="<?php echo esc_attr($active_tab); ?>" style="margin-top: 20px;">
                 <p><?php _e('Loading...', 'guestify'); ?></p>
             </div>
         </div>
         <?php
+    }
+
+    /**
+     * Get version for cache busting
+     */
+    private static function get_version(): string {
+        if (defined('PIT_VERSION')) {
+            return PIT_VERSION;
+        }
+        return wp_get_theme()->get('Version') ?: '2.0.0';
     }
 }

@@ -270,12 +270,12 @@ class GFY_Access_Gate_API {
      * ----------------------------------------------------------------*/
 
     /**
-     * Get available tiers from PIT_Guestify_Tier_Resolver (if loaded).
+     * Get available tiers from GFY_Tier_Resolver (if loaded).
      *
      * @return array Tiers keyed by slug with name + priority.
      */
     private static function get_available_tiers(): array {
-        if (!class_exists('PIT_Guestify_Tier_Resolver')) {
+        if (!class_exists('GFY_Tier_Resolver')) {
             // Fallback: return the standard tiers
             return [
                 'free'        => ['name' => 'Free',        'priority' => 0],
@@ -286,7 +286,7 @@ class GFY_Access_Gate_API {
             ];
         }
 
-        $tiers  = PIT_Guestify_Tier_Resolver::get_tiers();
+        $tiers  = GFY_Tier_Resolver::get_tiers();
         $result = [];
         foreach ($tiers as $key => $tier) {
             $result[$key] = [

@@ -48,7 +48,7 @@ class GFY_Access_Gate {
      * Each value is an array with the shape:
      *   auth_required  bool   – require a logged-in user
      *   public         bool   – explicitly allow anyone (overrides parent auth rules)
-     *   required_tier  string – minimum tier slug (compared via PIT_Guestify_Tier_Resolver)
+     *   required_tier  string – minimum tier slug (compared via GFY_Tier_Resolver)
      *   required_tags  array  – WP Fusion tag labels; ANY match grants access
      *   capability     string – WordPress capability the user must possess
      *   redirect_to    string – custom denied-access redirect path
@@ -393,7 +393,7 @@ class GFY_Access_Gate {
             }
         }
 
-        // Tier-based check (uses PIT_Guestify_Tier_Resolver if available)
+        // Tier-based check (uses GFY_Tier_Resolver if available)
         if (!empty($rule['required_tier'])) {
             if (!$this->user_meets_tier($user_id, $rule['required_tier'])) {
                 return false;
@@ -413,7 +413,7 @@ class GFY_Access_Gate {
     /**
      * Check whether the user's tier meets the minimum required tier.
      *
-     * Falls back to allowing access if PIT_Guestify_Tier_Resolver is
+     * Falls back to allowing access if GFY_Tier_Resolver is
      * not available (graceful degradation).
      *
      * @param int    $user_id       WordPress user ID.
@@ -421,13 +421,13 @@ class GFY_Access_Gate {
      * @return bool
      */
     private function user_meets_tier(int $user_id, string $required_tier): bool {
-        if (!class_exists('PIT_Guestify_Tier_Resolver')) {
+        if (!class_exists('GFY_Tier_Resolver')) {
             // Tier resolver not loaded – allow access (fail open)
             return true;
         }
 
-        $user_tier    = PIT_Guestify_Tier_Resolver::get_user_tier($user_id);
-        $required     = PIT_Guestify_Tier_Resolver::get_tier($required_tier);
+        $user_tier    = GFY_Tier_Resolver::get_user_tier($user_id);
+        $required     = GFY_Tier_Resolver::get_tier($required_tier);
 
         if ($required === null) {
             // Unknown tier requirement – allow access
@@ -443,7 +443,7 @@ class GFY_Access_Gate {
     /**
      * Check whether the user has ANY of the specified WP Fusion tags.
      *
-     * Falls back to allowing access if PIT_Guestify_Tier_Resolver is
+     * Falls back to allowing access if GFY_Tier_Resolver is
      * not available.
      *
      * @param int   $user_id WordPress user ID.
@@ -451,11 +451,11 @@ class GFY_Access_Gate {
      * @return bool
      */
     private function user_has_any_tag(int $user_id, array $tags): bool {
-        if (!class_exists('PIT_Guestify_Tier_Resolver')) {
+        if (!class_exists('GFY_Tier_Resolver')) {
             return true;
         }
 
-        $user_tags = PIT_Guestify_Tier_Resolver::get_user_tags($user_id);
+        $user_tags = GFY_Tier_Resolver::get_user_tags($user_id);
         return !empty(array_intersect($user_tags, $tags));
     }
 
