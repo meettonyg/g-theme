@@ -327,51 +327,57 @@ $post_id = get_the_ID();
 while (have_posts()) :
     the_post();
     
-    // Get all data from native WordPress post_meta
-    $first_name = get_post_meta($post_id, 'first_name', true);
-    $last_name = get_post_meta($post_id, 'last_name', true);
-    $full_name = get_post_meta($post_id, 'full_name', true);
-    $guest_title = get_post_meta($post_id, 'guest_title', true);
-    $company = get_post_meta($post_id, 'company', true);
-    
+    // Batch-load ALL post_meta in a single query (saves ~30 individual DB queries)
+    $meta = get_post_meta($post_id);
+    $m = function($key) use ($meta) {
+        return isset($meta[$key][0]) ? $meta[$key][0] : '';
+    };
+
+    // Core fields
+    $first_name = $m('first_name');
+    $last_name = $m('last_name');
+    $full_name = $m('full_name');
+    $guest_title = $m('guest_title');
+    $company = $m('company');
+
     // Determine guest name to display
     $guest_name = $full_name ?: trim($first_name . ' ' . $last_name) ?: get_the_title();
-    
+
     // Messaging fields
-    $introduction = get_post_meta($post_id, 'introduction', true) ?: get_the_content();
-    $biography = get_post_meta($post_id, 'biography', true) ?: get_post_meta($post_id, 'biography_long', true);
-    
+    $introduction = $m('introduction') ?: get_the_content();
+    $biography = $m('biography') ?: $m('biography_long');
+
     // Images - get attachment IDs and convert to URLs
-    $guest_headshot_id = get_post_meta($post_id, 'guest_headshot', true);
-    $vertical_image_id = get_post_meta($post_id, 'vertical_image', true);
-    $horizontal_image_id = get_post_meta($post_id, 'horizontal_image', true);
-    
+    $guest_headshot_id = $m('guest_headshot');
+    $vertical_image_id = $m('vertical_image');
+    $horizontal_image_id = $m('horizontal_image');
+
     $guest_headshot = $guest_headshot_id ? wp_get_attachment_url($guest_headshot_id) : '';
     $vertical_image = $vertical_image_id ? wp_get_attachment_url($vertical_image_id) : '';
     $horizontal_image = $horizontal_image_id ? wp_get_attachment_url($horizontal_image_id) : '';
-    
+
     // Social media fields
-    $facebook = get_post_meta($post_id, '1_facebook', true);
-    $instagram = get_post_meta($post_id, '1_instagram', true);
-    $linkedin = get_post_meta($post_id, '1_linkedin', true);
-    $pinterest = get_post_meta($post_id, '1_pinterest', true);
-    $tiktok = get_post_meta($post_id, '1_tiktok', true);
-    $twitter = get_post_meta($post_id, '1_twitter', true);
-    $youtube = get_post_meta($post_id, 'guest_youtube', true);
-    $website1 = get_post_meta($post_id, '1_website', true);
-    $website2 = get_post_meta($post_id, '2_website', true);
-    
+    $facebook = $m('1_facebook');
+    $instagram = $m('1_instagram');
+    $linkedin = $m('1_linkedin');
+    $pinterest = $m('1_pinterest');
+    $tiktok = $m('1_tiktok');
+    $twitter = $m('1_twitter');
+    $youtube = $m('guest_youtube');
+    $website1 = $m('1_website');
+    $website2 = $m('2_website');
+
     // Topics (1-5)
     $topics = array();
     for ($i = 1; $i <= 5; $i++) {
-        $topic = get_post_meta($post_id, "topic_{$i}", true);
+        $topic = $m("topic_{$i}");
         if ($topic) $topics[] = $topic;
     }
-    
+
     // Questions (1-25)
     $questions = array();
     for ($i = 1; $i <= 25; $i++) {
-        $question = get_post_meta($post_id, "question_{$i}", true);
+        $question = $m("question_{$i}");
         if ($question) $questions[] = $question;
     }
     ?>

@@ -88,24 +88,34 @@ class Guestify_Dashboard_API {
     }
 
     /**
-     * Get full dashboard data
+     * Get full dashboard data (cached 15 min per user+period+goal)
      */
     public static function get_dashboard_data(WP_REST_Request $request) {
         $user_id = get_current_user_id();
         $period = $request->get_param('period');
         $goal = $request->get_param('goal');
 
+        $cache_key = sprintf('gfy_dashboard_%d_%s_%s', $user_id, $period, $goal);
+        $cached = get_transient($cache_key);
+        if ($cached !== false) {
+            return new WP_REST_Response($cached, 200);
+        }
+
         $pipeline = guestify_get_pipeline_data($user_id, $period);
         $outcomes = guestify_get_outcomes_data($user_id, $period);
         $attribution = guestify_get_attribution_data($user_id, $period);
 
-        return new WP_REST_Response(array(
+        $data = array(
             'success'     => true,
             'pipeline'    => $pipeline,
             'outcomes'    => $outcomes,
             'attribution' => $attribution,
             'insight'     => $pipeline['insight'] ?? '',
-        ), 200);
+        );
+
+        set_transient($cache_key, $data, 15 * MINUTE_IN_SECONDS);
+
+        return new WP_REST_Response($data, 200);
     }
 
     /**
@@ -123,10 +133,25 @@ class Guestify_Dashboard_API {
 
         update_user_meta($user_id, 'guestify_current_goal', $goal);
 
+        // Clear dashboard caches for this user
+        self::clear_user_cache($user_id);
+
         return new WP_REST_Response(array(
             'success' => true,
             'goal'    => $goal,
         ), 200);
+    }
+
+    /**
+     * Clear all dashboard caches for a user
+     */
+    public static function clear_user_cache($user_id) {
+        global $wpdb;
+        $wpdb->query($wpdb->prepare(
+            "DELETE FROM {$wpdb->options} WHERE option_name LIKE %s OR option_name LIKE %s",
+            '_transient_gfy_dashboard_' . $user_id . '_%',
+            '_transient_timeout_gfy_dashboard_' . $user_id . '_%'
+        ));
     }
 
     /**
@@ -136,10 +161,19 @@ class Guestify_Dashboard_API {
         $user_id = get_current_user_id();
         $period = $request->get_param('period') ?: '30days';
 
-        return new WP_REST_Response(array(
+        $cache_key = sprintf('gfy_dashboard_%d_%s_pipeline', $user_id, $period);
+        $cached = get_transient($cache_key);
+        if ($cached !== false) {
+            return new WP_REST_Response($cached, 200);
+        }
+
+        $data = array(
             'success'  => true,
             'pipeline' => guestify_get_pipeline_data($user_id, $period),
-        ), 200);
+        );
+        set_transient($cache_key, $data, 15 * MINUTE_IN_SECONDS);
+
+        return new WP_REST_Response($data, 200);
     }
 
     /**
@@ -149,10 +183,19 @@ class Guestify_Dashboard_API {
         $user_id = get_current_user_id();
         $period = $request->get_param('period') ?: '30days';
 
-        return new WP_REST_Response(array(
+        $cache_key = sprintf('gfy_dashboard_%d_%s_outcomes', $user_id, $period);
+        $cached = get_transient($cache_key);
+        if ($cached !== false) {
+            return new WP_REST_Response($cached, 200);
+        }
+
+        $data = array(
             'success'  => true,
             'outcomes' => guestify_get_outcomes_data($user_id, $period),
-        ), 200);
+        );
+        set_transient($cache_key, $data, 15 * MINUTE_IN_SECONDS);
+
+        return new WP_REST_Response($data, 200);
     }
 
     /**
@@ -162,10 +205,19 @@ class Guestify_Dashboard_API {
         $user_id = get_current_user_id();
         $period = $request->get_param('period') ?: '30days';
 
-        return new WP_REST_Response(array(
+        $cache_key = sprintf('gfy_dashboard_%d_%s_attribution', $user_id, $period);
+        $cached = get_transient($cache_key);
+        if ($cached !== false) {
+            return new WP_REST_Response($cached, 200);
+        }
+
+        $data = array(
             'success'     => true,
             'attribution' => guestify_get_attribution_data($user_id, $period),
-        ), 200);
+        );
+        set_transient($cache_key, $data, 15 * MINUTE_IN_SECONDS);
+
+        return new WP_REST_Response($data, 200);
     }
 }
 

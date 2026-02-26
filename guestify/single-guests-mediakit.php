@@ -45,11 +45,23 @@ $global_settings = $media_kit_state['globalSettings'] ?? array();
 // Get sections if Phase 3 is active
 $sections = $media_kit_state['sections'] ?? array();
 
-get_header(); ?>
+get_header();
+
+// Fragment cache: use post_modified as version to auto-bust on edit
+$post_obj = get_post($post_id);
+$cache_version = $post_obj ? strtotime($post_obj->post_modified) : 0;
+$fragment_key = sprintf('gmkb_render_%d_%d', $post_id, $cache_version);
+$cached_fragment = get_transient($fragment_key);
+
+if ($cached_fragment !== false) {
+    echo $cached_fragment;
+} else {
+    ob_start();
+?>
 
 <div class="gmkb-frontend-wrapper" data-post-id="<?php echo esc_attr($post_id); ?>">
     <div class="gmkb-media-kit-container">
-        
+
         <?php if (!empty($sections) && is_array($sections)): ?>
             <!-- PHASE 3: Section-based rendering -->
             <div class="gmkb-sections-wrapper">
@@ -71,11 +83,16 @@ get_header(); ?>
                 <p>This media kit is currently being built. Please check back soon.</p>
             </div>
         <?php endif; ?>
-        
+
     </div>
 </div>
 
-<?php get_footer(); ?>
+<?php
+    $fragment_html = ob_get_flush();
+    set_transient($fragment_key, $fragment_html, 5 * MINUTE_IN_SECONDS);
+}
+
+get_footer(); ?>
 
 <?php
 /**
