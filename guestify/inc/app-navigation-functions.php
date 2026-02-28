@@ -82,7 +82,7 @@ function is_app_page($section = '') {
     $url_path = rtrim($url_path, '/');
 
     // Define paths that require login to show app navigation
-    $login_required_paths = ['/app', '/account', '/courses', '/onboarding'];
+    $login_required_paths = ['/app', '/account', '/courses', '/onboarding', '/guests', '/podcasts'];
 
     // Define paths that show app navigation for everyone (logged in users only get app nav)
     $public_tool_paths = ['/tools', '/templates'];
