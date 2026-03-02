@@ -2,12 +2,15 @@
 /**
  * Template Part: Dashboard Attribution Table
  *
- * Displays the revenue attribution table.
+ * Displays revenue summary, revenue-by-show breakdown, and link tracking table.
  *
  * @package Guestify
- * @version 1.0.0
+ * @version 2.0.0
  *
- * @param array $args['data'] Attribution data array
+ * @param array $args['data'] Attribution data array with keys:
+ *   - 'links'           => Link tracking rows (legacy)
+ *   - 'revenue_summary' => Revenue totals from PIT_Revenue_Attribution
+ *   - 'revenue_by_show' => Per-podcast revenue breakdown
  */
 
 // Prevent direct access
@@ -16,8 +19,74 @@ if (!defined('ABSPATH')) {
 }
 
 $data = isset($args['data']) ? $args['data'] : array();
+
+// Separate link tracking (legacy) from revenue intelligence data
+$links = isset($data['links']) ? $data['links'] : $data;
+$revenue_summary = isset($data['revenue_summary']) ? $data['revenue_summary'] : array();
+$revenue_by_show = isset($data['revenue_by_show']) ? $data['revenue_by_show'] : array();
 ?>
 
+<?php if (!empty($revenue_summary)): ?>
+<!-- REVENUE SUMMARY CARDS -->
+<div class="gfy-card" style="margin-bottom: 1.5rem;">
+    <div class="gfy-card-header">
+        <div class="gfy-card-title"><?php esc_html_e('Revenue Overview', 'guestify'); ?></div>
+    </div>
+    <div class="gfy-attribution__summary">
+        <div class="gfy-attribution__metric">
+            <span class="gfy-attribution__metric-value">$<?php echo esc_html(number_format($revenue_summary['total_actual'] ?? 0)); ?></span>
+            <span class="gfy-attribution__metric-label"><?php esc_html_e('Actual Revenue', 'guestify'); ?></span>
+        </div>
+        <div class="gfy-attribution__metric">
+            <span class="gfy-attribution__metric-value">$<?php echo esc_html(number_format($revenue_summary['total_pipeline'] ?? 0)); ?></span>
+            <span class="gfy-attribution__metric-label"><?php esc_html_e('Pipeline Value', 'guestify'); ?></span>
+        </div>
+        <div class="gfy-attribution__metric">
+            <span class="gfy-attribution__metric-value">$<?php echo esc_html(number_format($revenue_summary['total_commission'] ?? 0)); ?></span>
+            <span class="gfy-attribution__metric-label"><?php esc_html_e('Commission', 'guestify'); ?></span>
+        </div>
+        <?php if (!empty($revenue_summary['roi_percentage'])): ?>
+        <div class="gfy-attribution__metric">
+            <span class="gfy-attribution__metric-value"><?php echo esc_html(round($revenue_summary['roi_percentage'])); ?>%</span>
+            <span class="gfy-attribution__metric-label"><?php esc_html_e('ROI', 'guestify'); ?></span>
+        </div>
+        <?php endif; ?>
+    </div>
+</div>
+
+<!-- REVENUE BY SHOW -->
+<?php if (!empty($revenue_by_show)): ?>
+<div class="gfy-card" style="margin-bottom: 1.5rem;">
+    <div class="gfy-card-header">
+        <div class="gfy-card-title"><?php esc_html_e('Revenue by Show', 'guestify'); ?></div>
+    </div>
+    <table class="gfy-table">
+        <thead>
+            <tr>
+                <th><?php esc_html_e('Podcast', 'guestify'); ?></th>
+                <th><?php esc_html_e('Appearances', 'guestify'); ?></th>
+                <th><?php esc_html_e('Estimated', 'guestify'); ?></th>
+                <th><?php esc_html_e('Actual', 'guestify'); ?></th>
+            </tr>
+        </thead>
+        <tbody>
+            <?php foreach ($revenue_by_show as $show): ?>
+            <tr>
+                <td>
+                    <div class="gfy-table__name"><?php echo esc_html($show['podcast_title'] ?? 'Unknown'); ?></div>
+                </td>
+                <td><?php echo esc_html($show['appearance_count'] ?? 0); ?></td>
+                <td>$<?php echo esc_html(number_format($show['total_estimated'] ?? 0)); ?></td>
+                <td class="gfy-table__revenue">$<?php echo esc_html(number_format($show['total_actual'] ?? 0)); ?></td>
+            </tr>
+            <?php endforeach; ?>
+        </tbody>
+    </table>
+</div>
+<?php endif; ?>
+<?php endif; ?>
+
+<!-- LINK TRACKING TABLE -->
 <div class="gfy-card">
     <div class="gfy-card-header">
         <div class="gfy-card-title"><?php esc_html_e('Revenue Attribution', 'guestify'); ?></div>
@@ -26,7 +95,7 @@ $data = isset($args['data']) ? $args['data'] : array();
         </a>
     </div>
 
-    <?php if (!empty($data)): ?>
+    <?php if (!empty($links) && is_array($links)): ?>
     <table class="gfy-table">
         <thead>
             <tr>
@@ -37,7 +106,8 @@ $data = isset($args['data']) ? $args['data'] : array();
             </tr>
         </thead>
         <tbody>
-            <?php foreach ($data as $row): ?>
+            <?php foreach ($links as $row): ?>
+            <?php if (!is_array($row)) continue; ?>
             <tr>
                 <td>
                     <div class="gfy-table__name"><?php echo esc_html($row['name']); ?></div>

@@ -89,6 +89,9 @@ $dashboard_data['current_goal'] = $current_goal;
     <!-- MAIN WORKSPACE SHORTCUTS (The 4 Pillars) -->
     <?php get_template_part('template-parts/home/pillars', null, array('data' => $dashboard_data)); ?>
 
+    <!-- AUTHORITY SCORE WIDGET -->
+    <?php get_template_part('template-parts/home/authority-score', null, array('data' => $dashboard_data)); ?>
+
     <!-- SPLIT: RECENT ACTIVITY & SUPPORT -->
     <section class="gfy-home__split">
 

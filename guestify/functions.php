@@ -1436,6 +1436,17 @@ function guestify_get_home_dashboard_data( $user_id = 0 ) {
 	// Get recent activity
 	$data['recent_activity'] = guestify_get_recent_activity( $user_id );
 
+	// Get authority score data from ShowAuthority if available
+	if ( class_exists( 'PIT_Authority_Score' ) ) {
+		$score_data = PIT_Authority_Score::calculate_authority_score( $user_id );
+		$breakdown  = PIT_Authority_Score::get_authority_breakdown( $user_id );
+		$data['authority'] = array(
+			'overall_score' => $score_data['overall_score'] ?? 0,
+			'trend'         => $score_data['trend'] ?? 'stable',
+			'breakdown'     => $breakdown,
+		);
+	}
+
 	return $data;
 }
 
@@ -2641,7 +2652,18 @@ function guestify_get_attribution_data( $user_id = 0, $period = '30days' ) {
 		}
 	}
 
-	return $data;
+	// Wrap link tracking data and merge revenue intelligence from ShowAuthority
+	$result = array(
+		'links' => $data,
+	);
+
+	// Add revenue intelligence data from PIT_Revenue_Attribution if available
+	if ( class_exists( 'PIT_Revenue_Attribution' ) ) {
+		$result['revenue_summary'] = PIT_Revenue_Attribution::get_revenue_summary( $user_id, $period );
+		$result['revenue_by_show'] = PIT_Revenue_Attribution::get_attribution_by_show( $user_id, $period );
+	}
+
+	return $result;
 }
 
 /**
