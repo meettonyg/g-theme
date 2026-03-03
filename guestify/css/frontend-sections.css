@@ -1,0 +1,859 @@
+/**
+ * Frontend Section Styles
+ * =======================
+ * Reusable page section patterns for frontend/marketing pages.
+ * Includes hero tabs, feature grids, authority stack, steps,
+ * testimonials, FAQ, comparison table, and stats.
+ *
+ * Depends on: guestify-tokens.css, frontend-global.css
+ * Naming: BEM with gfy- prefix
+ * Tokens: All values reference --gfy-* custom properties with fallbacks.
+ *
+ * @package Guestify
+ * @version 1.0.0
+ */
+
+
+/* ==========================================================================
+   1. SECTION BASE
+   ========================================================================== */
+
+.gfy-section {
+    padding: var(--gfy-space-20, 5rem) var(--gfy-space-6, 1.5rem);
+}
+
+@media (max-width: 768px) {
+    .gfy-section {
+        padding: var(--gfy-space-12, 3rem) var(--gfy-space-4, 1rem);
+    }
+}
+
+/* ---------------------------------------------------------------------------
+   Section Theme Variants
+   --------------------------------------------------------------------------- */
+
+.gfy-section--dark {
+    background-color: var(--gfy-gray-900, #0f172a);
+    color: var(--gfy-white, #ffffff);
+}
+
+.gfy-section--dark h1,
+.gfy-section--dark h2,
+.gfy-section--dark h3,
+.gfy-section--dark h4,
+.gfy-section--dark h5,
+.gfy-section--dark h6 {
+    color: var(--gfy-white, #ffffff);
+}
+
+.gfy-section--dark p {
+    color: var(--gfy-gray-300, #cbd5e1);
+}
+
+.gfy-section--light {
+    background-color: var(--gfy-gray-50, #f8fafc);
+}
+
+.gfy-section--accent {
+    background-color: var(--gfy-primary-800, #1B365D);
+    color: var(--gfy-white, #ffffff);
+}
+
+.gfy-section--accent h1,
+.gfy-section--accent h2,
+.gfy-section--accent h3,
+.gfy-section--accent h4,
+.gfy-section--accent h5,
+.gfy-section--accent h6 {
+    color: var(--gfy-white, #ffffff);
+}
+
+.gfy-section--accent p {
+    color: var(--gfy-primary-100, #d9e2ec);
+}
+
+/* ---------------------------------------------------------------------------
+   Section Container & Header
+   --------------------------------------------------------------------------- */
+
+.gfy-section__container {
+    max-width: 1280px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.gfy-section__header {
+    text-align: center;
+    max-width: 768px;
+    margin: 0 auto var(--gfy-space-12, 3rem);
+}
+
+.gfy-section__eyebrow {
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--gfy-accent-500, #ED8936);
+    font-size: var(--gfy-text-sm, 0.875rem);
+    font-weight: var(--gfy-font-semibold, 600);
+    margin-bottom: var(--gfy-space-3, 0.75rem);
+}
+
+.gfy-section__title {
+    font-size: var(--gfy-text-4xl, 2.25rem);
+    font-weight: var(--gfy-font-bold, 700);
+    margin-bottom: var(--gfy-space-4, 1rem);
+}
+
+.gfy-section__subtitle {
+    color: var(--gfy-gray-500, #64748b);
+    font-size: var(--gfy-text-lg, 1.125rem);
+    max-width: 640px;
+    margin-left: auto;
+    margin-right: auto;
+    line-height: var(--gfy-leading-relaxed, 1.625);
+}
+
+/* Dark/accent section subtitle override */
+.gfy-section--dark .gfy-section__subtitle {
+    color: var(--gfy-gray-300, #cbd5e1);
+}
+
+.gfy-section--accent .gfy-section__subtitle {
+    color: var(--gfy-primary-200, #bcccdc);
+}
+
+
+/* ==========================================================================
+   2. HERO TAB SYSTEM (CSS-Only Persona Switcher)
+   ========================================================================== */
+
+.gfy-hero-tabs {
+    position: relative;
+    overflow: hidden;
+}
+
+/* Hidden radio inputs that power the CSS-only tabs */
+.gfy-hero-tabs__radio {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* ---------------------------------------------------------------------------
+   Tab Button Bar
+   --------------------------------------------------------------------------- */
+
+.gfy-hero-tabs__buttons {
+    display: flex;
+    justify-content: center;
+    gap: var(--gfy-space-1, 0.25rem);
+    background-color: var(--gfy-gray-100, #f1f5f9);
+    border-radius: var(--gfy-radius-lg, 0.5rem);
+    padding: var(--gfy-space-1, 0.25rem);
+    margin-bottom: var(--gfy-space-12, 3rem);
+    max-width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.gfy-hero-tabs__btn {
+    padding: var(--gfy-space-2-5, 0.625rem) var(--gfy-space-5, 1.25rem);
+    border-radius: var(--gfy-radius-md, 0.375rem);
+    cursor: pointer;
+    font-weight: var(--gfy-font-medium, 500);
+    font-size: var(--gfy-text-sm, 0.875rem);
+    color: var(--gfy-gray-600, #475569);
+    transition: all var(--gfy-transition-base, 200ms);
+    white-space: nowrap;
+    user-select: none;
+    border: none;
+    background: none;
+}
+
+.gfy-hero-tabs__btn:hover {
+    color: var(--gfy-gray-800, #1e293b);
+}
+
+/* ---------------------------------------------------------------------------
+   Active Tab Button Styling (driven by checked radio inputs)
+   --------------------------------------------------------------------------- */
+
+#tab-authority:checked ~ .gfy-hero-tabs__buttons label[for="tab-authority"],
+#tab-revenue:checked ~ .gfy-hero-tabs__buttons label[for="tab-revenue"],
+#tab-launch:checked ~ .gfy-hero-tabs__buttons label[for="tab-launch"] {
+    background-color: var(--gfy-primary-800, #1B365D);
+    color: var(--gfy-white, #ffffff);
+    font-weight: var(--gfy-font-semibold, 600);
+}
+
+/* ---------------------------------------------------------------------------
+   Tab Panels
+   --------------------------------------------------------------------------- */
+
+.gfy-hero-tabs__panel {
+    display: none;
+}
+
+/* Show panel when corresponding radio is checked */
+#tab-authority:checked ~ .gfy-hero-tabs__panels #panel-authority,
+#tab-revenue:checked ~ .gfy-hero-tabs__panels #panel-revenue,
+#tab-launch:checked ~ .gfy-hero-tabs__panels #panel-launch {
+    display: block;
+}
+
+/* ---------------------------------------------------------------------------
+   Hero Tab Grid (copy left, visual right)
+   --------------------------------------------------------------------------- */
+
+.gfy-hero-tabs__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--gfy-space-12, 3rem);
+    align-items: center;
+}
+
+@media (max-width: 768px) {
+    .gfy-hero-tabs__grid {
+        grid-template-columns: 1fr;
+        gap: var(--gfy-space-8, 2rem);
+    }
+}
+
+/* Hero Copy Area */
+
+.gfy-hero-tabs__copy h1 {
+    font-size: var(--gfy-text-5xl, 3rem);
+    font-weight: var(--gfy-font-extrabold, 800);
+    line-height: 1.15;
+    color: var(--gfy-primary-800, #1B365D);
+    margin-bottom: var(--gfy-space-4, 1rem);
+}
+
+@media (max-width: 768px) {
+    .gfy-hero-tabs__copy h1 {
+        font-size: var(--gfy-text-4xl, 2.25rem);
+    }
+}
+
+.gfy-hero-tabs__copy p {
+    color: var(--gfy-gray-600, #475569);
+    font-size: var(--gfy-text-lg, 1.125rem);
+    line-height: var(--gfy-leading-relaxed, 1.625);
+}
+
+/* Hero Visual Area */
+
+.gfy-hero-tabs__visual img {
+    width: 100%;
+    height: auto;
+    border-radius: var(--gfy-radius-xl, 0.75rem);
+    box-shadow: var(--gfy-shadow-xl, 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1));
+}
+
+/* Hero CTA Group */
+
+.gfy-hero-tabs__cta {
+    display: flex;
+    gap: var(--gfy-space-4, 1rem);
+    margin-top: var(--gfy-space-8, 2rem);
+}
+
+@media (max-width: 480px) {
+    .gfy-hero-tabs__cta {
+        flex-direction: column;
+    }
+}
+
+/* Hero Reassurance Line */
+
+.gfy-hero-tabs__reassurance {
+    font-size: var(--gfy-text-sm, 0.875rem);
+    color: var(--gfy-gray-400, #94a3b8);
+    margin-top: var(--gfy-space-4, 1rem);
+}
+
+
+/* ==========================================================================
+   3. CONTENT GRID (Two-column split, text + image)
+   ========================================================================== */
+
+.gfy-content-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--gfy-space-16, 4rem);
+    align-items: center;
+}
+
+.gfy-content-grid--reversed {
+    direction: rtl;
+}
+
+.gfy-content-grid--reversed > * {
+    direction: ltr;
+}
+
+@media (max-width: 768px) {
+    .gfy-content-grid {
+        grid-template-columns: 1fr;
+        gap: var(--gfy-space-8, 2rem);
+    }
+
+    .gfy-content-grid--reversed {
+        direction: ltr;
+    }
+}
+
+
+/* ==========================================================================
+   4. FEATURE GRID & CARDS
+   ========================================================================== */
+
+.gfy-feature-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: var(--gfy-space-8, 2rem);
+}
+
+@media (max-width: 768px) {
+    .gfy-feature-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 480px) {
+    .gfy-feature-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ---------------------------------------------------------------------------
+   Feature Card
+   --------------------------------------------------------------------------- */
+
+.gfy-feature-card {
+    padding: var(--gfy-space-8, 2rem);
+    background-color: var(--gfy-white, #ffffff);
+    border-radius: var(--gfy-radius-xl, 0.75rem);
+    border: var(--gfy-border-1, 1px) solid var(--gfy-gray-200, #e2e8f0);
+    transition: box-shadow var(--gfy-transition-base, 200ms),
+                border-color var(--gfy-transition-base, 200ms);
+}
+
+.gfy-feature-card:hover {
+    box-shadow: var(--gfy-shadow-lg, 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1));
+    border-color: var(--gfy-gray-300, #cbd5e1);
+}
+
+.gfy-feature-card__icon {
+    width: 48px;
+    height: 48px;
+    background-color: var(--gfy-primary-50, #f0f4f8);
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: var(--gfy-space-4, 1rem);
+    color: var(--gfy-primary-800, #1B365D);
+    font-size: var(--gfy-text-xl, 1.25rem);
+}
+
+.gfy-feature-card__title {
+    font-weight: var(--gfy-font-semibold, 600);
+    font-size: var(--gfy-text-lg, 1.125rem);
+    margin-bottom: var(--gfy-space-2, 0.5rem);
+    color: var(--gfy-gray-900, #0f172a);
+}
+
+.gfy-feature-card__description {
+    font-size: var(--gfy-text-sm, 0.875rem);
+    color: var(--gfy-gray-500, #64748b);
+    line-height: var(--gfy-leading-relaxed, 1.625);
+}
+
+/* Feature card in dark sections */
+.gfy-section--dark .gfy-feature-card {
+    background-color: var(--gfy-gray-800, #1e293b);
+    border-color: var(--gfy-gray-700, #334155);
+}
+
+.gfy-section--dark .gfy-feature-card:hover {
+    border-color: var(--gfy-gray-600, #475569);
+}
+
+.gfy-section--dark .gfy-feature-card__title {
+    color: var(--gfy-white, #ffffff);
+}
+
+.gfy-section--dark .gfy-feature-card__description {
+    color: var(--gfy-gray-400, #94a3b8);
+}
+
+
+/* ==========================================================================
+   5. AUTHORITY STACK VISUAL
+   ========================================================================== */
+
+.gfy-authority-stack {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gfy-space-6, 1.5rem);
+}
+
+.gfy-authority-stack__layer {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: var(--gfy-space-6, 1.5rem);
+    padding: var(--gfy-space-6, 1.5rem);
+    border-radius: var(--gfy-radius-xl, 0.75rem);
+    border-left: var(--gfy-border-4, 4px) solid var(--gfy-gray-300, #cbd5e1);
+    background-color: var(--gfy-white, #ffffff);
+}
+
+/* Layer Color Variants */
+.gfy-authority-stack__layer--borrowed {
+    border-left-color: var(--gfy-primary-500, #627d98);
+}
+
+.gfy-authority-stack__layer--articulated {
+    border-left-color: var(--gfy-purple-500, #805AD5);
+}
+
+.gfy-authority-stack__layer--earned {
+    border-left-color: var(--gfy-secondary-500, #2B7A4C);
+}
+
+.gfy-authority-stack__layer--demonstrated {
+    border-left-color: var(--gfy-accent-500, #ED8936);
+}
+
+.gfy-authority-stack__number {
+    font-size: var(--gfy-text-3xl, 1.875rem);
+    font-weight: var(--gfy-font-extrabold, 800);
+    opacity: 0.3;
+    line-height: 1;
+    align-self: start;
+}
+
+.gfy-authority-stack__content {
+    display: flex;
+    flex-direction: column;
+}
+
+.gfy-authority-stack__title {
+    font-weight: var(--gfy-font-bold, 700);
+    font-size: var(--gfy-text-xl, 1.25rem);
+    color: var(--gfy-gray-900, #0f172a);
+}
+
+.gfy-authority-stack__description {
+    font-size: var(--gfy-text-sm, 0.875rem);
+    color: var(--gfy-gray-600, #475569);
+    margin-top: var(--gfy-space-2, 0.5rem);
+    line-height: var(--gfy-leading-relaxed, 1.625);
+}
+
+@media (max-width: 480px) {
+    .gfy-authority-stack__layer {
+        grid-template-columns: 1fr;
+        gap: var(--gfy-space-2, 0.5rem);
+    }
+}
+
+
+/* ==========================================================================
+   6. STEPS / HOW-IT-WORKS
+   ========================================================================== */
+
+.gfy-steps {
+    display: grid;
+    grid-template-columns: repeat(5, 1fr);
+    gap: var(--gfy-space-6, 1.5rem);
+}
+
+.gfy-step {
+    text-align: center;
+    padding: var(--gfy-space-6, 1.5rem);
+    position: relative;
+}
+
+.gfy-step__number {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--gfy-radius-full, 9999px);
+    background-color: var(--gfy-primary-800, #1B365D);
+    color: var(--gfy-white, #ffffff);
+    font-weight: var(--gfy-font-bold, 700);
+    font-size: var(--gfy-text-sm, 0.875rem);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 0 auto var(--gfy-space-4, 1rem);
+    position: relative;
+    z-index: 1;
+}
+
+.gfy-step__title {
+    font-weight: var(--gfy-font-semibold, 600);
+    font-size: var(--gfy-text-base, 1rem);
+    margin-bottom: var(--gfy-space-2, 0.5rem);
+    color: var(--gfy-gray-900, #0f172a);
+}
+
+.gfy-step__description {
+    font-size: var(--gfy-text-sm, 0.875rem);
+    color: var(--gfy-gray-500, #64748b);
+    line-height: var(--gfy-leading-relaxed, 1.625);
+}
+
+/* Connector line between steps (desktop only) */
+.gfy-step:not(:last-child)::after {
+    content: '';
+    position: absolute;
+    top: calc(var(--gfy-space-6, 1.5rem) + 20px);
+    left: calc(50% + 28px);
+    width: calc(100% - 56px);
+    height: 2px;
+    background-color: var(--gfy-gray-200, #e2e8f0);
+    z-index: 0;
+}
+
+/* Steps Responsive */
+
+@media (max-width: 768px) {
+    .gfy-steps {
+        grid-template-columns: repeat(3, 1fr);
+    }
+
+    .gfy-step:not(:last-child)::after {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .gfy-steps {
+        grid-template-columns: 1fr;
+        gap: var(--gfy-space-4, 1rem);
+    }
+}
+
+/* Dark section override */
+.gfy-section--dark .gfy-step__title {
+    color: var(--gfy-white, #ffffff);
+}
+
+.gfy-section--dark .gfy-step__description {
+    color: var(--gfy-gray-400, #94a3b8);
+}
+
+.gfy-section--dark .gfy-step:not(:last-child)::after {
+    background-color: var(--gfy-gray-700, #334155);
+}
+
+
+/* ==========================================================================
+   7. TESTIMONIAL
+   ========================================================================== */
+
+.gfy-testimonial {
+    padding: var(--gfy-space-8, 2rem);
+    background-color: var(--gfy-white, #ffffff);
+    border-radius: var(--gfy-radius-xl, 0.75rem);
+    border: var(--gfy-border-1, 1px) solid var(--gfy-gray-200, #e2e8f0);
+}
+
+.gfy-testimonial__quote {
+    font-size: var(--gfy-text-lg, 1.125rem);
+    color: var(--gfy-gray-700, #334155);
+    font-style: italic;
+    line-height: var(--gfy-leading-relaxed, 1.625);
+    position: relative;
+    padding-left: var(--gfy-space-6, 1.5rem);
+}
+
+/* Large decorative opening quote mark */
+.gfy-testimonial__quote::before {
+    content: '\201C';
+    position: absolute;
+    left: 0;
+    top: -0.25em;
+    font-size: var(--gfy-text-5xl, 3rem);
+    color: var(--gfy-accent-500, #ED8936);
+    font-style: normal;
+    line-height: 1;
+    font-family: Georgia, serif;
+}
+
+.gfy-testimonial__author {
+    display: flex;
+    align-items: center;
+    gap: var(--gfy-space-4, 1rem);
+    margin-top: var(--gfy-space-6, 1.5rem);
+}
+
+.gfy-testimonial__avatar {
+    width: 48px;
+    height: 48px;
+    border-radius: var(--gfy-radius-full, 9999px);
+    object-fit: cover;
+}
+
+.gfy-testimonial__info {
+    display: flex;
+    flex-direction: column;
+}
+
+.gfy-testimonial__name {
+    font-weight: var(--gfy-font-semibold, 600);
+    color: var(--gfy-gray-900, #0f172a);
+    font-size: var(--gfy-text-base, 1rem);
+}
+
+.gfy-testimonial__title {
+    font-size: var(--gfy-text-sm, 0.875rem);
+    color: var(--gfy-gray-500, #64748b);
+}
+
+/* Testimonial in dark section */
+.gfy-section--dark .gfy-testimonial {
+    background-color: var(--gfy-gray-800, #1e293b);
+    border-color: var(--gfy-gray-700, #334155);
+}
+
+.gfy-section--dark .gfy-testimonial__quote {
+    color: var(--gfy-gray-300, #cbd5e1);
+}
+
+.gfy-section--dark .gfy-testimonial__name {
+    color: var(--gfy-white, #ffffff);
+}
+
+.gfy-section--dark .gfy-testimonial__title {
+    color: var(--gfy-gray-400, #94a3b8);
+}
+
+
+/* ==========================================================================
+   8. FAQ ACCORDION (CSS-only using <details>/<summary>)
+   ========================================================================== */
+
+.gfy-faq {
+    max-width: 768px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.gfy-faq__item {
+    border-bottom: var(--gfy-border-1, 1px) solid var(--gfy-gray-200, #e2e8f0);
+}
+
+.gfy-faq__item:last-child {
+    border-bottom: none;
+}
+
+/* Question (using <summary> element) */
+.gfy-faq__question {
+    width: 100%;
+    text-align: left;
+    padding: var(--gfy-space-5, 1.25rem) 0;
+    font-weight: var(--gfy-font-semibold, 600);
+    font-size: var(--gfy-text-lg, 1.125rem);
+    color: var(--gfy-gray-800, #1e293b);
+    background: none;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    list-style: none;
+    line-height: var(--gfy-leading-snug, 1.375);
+}
+
+/* Remove default marker from <summary> */
+.gfy-faq__question::-webkit-details-marker {
+    display: none;
+}
+
+.gfy-faq__question::marker {
+    content: '';
+}
+
+.gfy-faq__icon {
+    flex-shrink: 0;
+    transition: transform var(--gfy-transition-base, 200ms);
+    color: var(--gfy-gray-400, #94a3b8);
+    margin-left: var(--gfy-space-4, 1rem);
+}
+
+/* Rotate icon when details is open */
+.gfy-faq__item[open] .gfy-faq__icon {
+    transform: rotate(180deg);
+}
+
+/* Answer area */
+.gfy-faq__answer {
+    padding-bottom: var(--gfy-space-5, 1.25rem);
+    font-size: var(--gfy-text-base, 1rem);
+    color: var(--gfy-gray-600, #475569);
+    line-height: var(--gfy-leading-relaxed, 1.625);
+}
+
+.gfy-faq__answer p {
+    margin-bottom: var(--gfy-space-4, 1rem);
+}
+
+.gfy-faq__answer p:last-child {
+    margin-bottom: 0;
+}
+
+/* FAQ in dark section */
+.gfy-section--dark .gfy-faq__item {
+    border-color: var(--gfy-gray-700, #334155);
+}
+
+.gfy-section--dark .gfy-faq__question {
+    color: var(--gfy-white, #ffffff);
+}
+
+.gfy-section--dark .gfy-faq__answer {
+    color: var(--gfy-gray-300, #cbd5e1);
+}
+
+
+/* ==========================================================================
+   9. COMPARISON TABLE
+   ========================================================================== */
+
+.gfy-comparison {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: var(--gfy-text-sm, 0.875rem);
+}
+
+.gfy-comparison th {
+    background-color: var(--gfy-primary-800, #1B365D);
+    color: var(--gfy-white, #ffffff);
+    padding: var(--gfy-space-4, 1rem);
+    font-weight: var(--gfy-font-semibold, 600);
+    text-align: left;
+    white-space: nowrap;
+}
+
+/* Rounded corners for the header row */
+.gfy-comparison th:first-child {
+    border-top-left-radius: var(--gfy-radius-lg, 0.5rem);
+}
+
+.gfy-comparison th:last-child {
+    border-top-right-radius: var(--gfy-radius-lg, 0.5rem);
+}
+
+.gfy-comparison td {
+    padding: var(--gfy-space-4, 1rem);
+    border-bottom: var(--gfy-border-1, 1px) solid var(--gfy-gray-200, #e2e8f0);
+    color: var(--gfy-gray-700, #334155);
+}
+
+.gfy-comparison tbody tr:hover {
+    background-color: var(--gfy-gray-50, #f8fafc);
+}
+
+/* Feature name column */
+.gfy-comparison td:first-child {
+    font-weight: var(--gfy-font-medium, 500);
+    color: var(--gfy-gray-900, #0f172a);
+}
+
+/* Check and X marks */
+.gfy-comparison__check {
+    color: var(--gfy-secondary-500, #2B7A4C);
+    font-weight: var(--gfy-font-bold, 700);
+}
+
+.gfy-comparison__x {
+    color: var(--gfy-gray-300, #cbd5e1);
+}
+
+/* Responsive: horizontal scroll on small screens */
+.gfy-comparison-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    border-radius: var(--gfy-radius-lg, 0.5rem);
+    border: var(--gfy-border-1, 1px) solid var(--gfy-gray-200, #e2e8f0);
+}
+
+
+/* ==========================================================================
+   10. STATS BAR
+   ========================================================================== */
+
+.gfy-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: var(--gfy-space-8, 2rem);
+    text-align: center;
+}
+
+@media (max-width: 768px) {
+    .gfy-stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: var(--gfy-space-6, 1.5rem);
+    }
+}
+
+.gfy-stats__item {
+    padding: var(--gfy-space-4, 1rem);
+}
+
+.gfy-stats__number {
+    font-size: var(--gfy-text-4xl, 2.25rem);
+    font-weight: var(--gfy-font-extrabold, 800);
+    color: var(--gfy-primary-800, #1B365D);
+    line-height: var(--gfy-leading-tight, 1.25);
+}
+
+.gfy-stats__label {
+    font-size: var(--gfy-text-sm, 0.875rem);
+    color: var(--gfy-gray-500, #64748b);
+    margin-top: var(--gfy-space-2, 0.5rem);
+}
+
+/* Stats in dark / accent sections */
+.gfy-section--dark .gfy-stats__number,
+.gfy-section--accent .gfy-stats__number {
+    color: var(--gfy-white, #ffffff);
+}
+
+.gfy-section--dark .gfy-stats__label {
+    color: var(--gfy-gray-400, #94a3b8);
+}
+
+.gfy-section--accent .gfy-stats__label {
+    color: var(--gfy-primary-200, #bcccdc);
+}
+
+
+/* ==========================================================================
+   ACCESSIBILITY
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+    .gfy-feature-card,
+    .gfy-faq__icon,
+    .gfy-hero-tabs__btn {
+        transition: none;
+    }
+}
+
+@media (prefers-contrast: high) {
+    .gfy-feature-card {
+        border-width: 2px;
+    }
+
+    .gfy-testimonial {
+        border-width: 2px;
+    }
+
+    .gfy-authority-stack__layer {
+        border-left-width: 6px;
+    }
+}

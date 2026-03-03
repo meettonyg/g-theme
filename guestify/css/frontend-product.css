@@ -1,0 +1,198 @@
+/**
+ * Guestify Frontend — Product Page Styles
+ *
+ * Styles specific to /product/* pages.
+ * Loaded only on template-product.php via frontend-enqueue.php.
+ * Depends on: frontend-global.css, frontend-sections.css
+ *
+ * @package Guestify
+ * @version 1.0.0
+ */
+
+/* ============================================
+   PRODUCT PAGE LAYOUT
+   ============================================ */
+
+.gfy-product-page {
+    overflow-x: hidden;
+}
+
+/* ============================================
+   PRODUCT HERO
+   ============================================ */
+
+.gfy-product-hero {
+    padding-top: var(--gfy-space-16, 4rem);
+    padding-bottom: var(--gfy-space-12, 3rem);
+    background: linear-gradient(
+        180deg,
+        var(--gfy-primary-50, #f0f4f8) 0%,
+        var(--gfy-white, #ffffff) 100%
+    );
+}
+
+.gfy-product-hero .gfy-pre-headline {
+    color: var(--gfy-primary-600, #486581);
+}
+
+.gfy-product-hero h1 {
+    font-size: var(--gfy-text-4xl, 2.25rem);
+    max-width: 540px;
+}
+
+@media (max-width: 768px) {
+    .gfy-product-hero {
+        padding-top: var(--gfy-space-10, 2.5rem);
+    }
+
+    .gfy-product-hero h1 {
+        font-size: var(--gfy-text-3xl, 1.875rem);
+    }
+}
+
+/* ============================================
+   PRODUCT SCREENSHOT
+   ============================================ */
+
+.gfy-product-screenshot {
+    border-radius: var(--gfy-radius-xl, 0.75rem);
+    box-shadow: var(--gfy-shadow-2xl, 0 25px 50px -12px rgba(0,0,0,.25));
+    border: 1px solid var(--gfy-gray-200, #e2e8f0);
+}
+
+/* ============================================
+   PROBLEM / SOLUTION SPLIT
+   ============================================ */
+
+.gfy-problem-solution {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--gfy-space-8, 2rem);
+    max-width: 960px;
+    margin: 0 auto;
+}
+
+.gfy-problem-solution__card {
+    padding: var(--gfy-space-8, 2rem);
+    border-radius: var(--gfy-radius-xl, 0.75rem);
+}
+
+.gfy-problem-solution__card--negative {
+    background: #fef2f2;
+    border: 1px solid #fecaca;
+}
+
+.gfy-problem-solution__card--positive {
+    background: var(--gfy-secondary-50, #e6f4ea);
+    border: 1px solid var(--gfy-secondary-200, #a3d4b4);
+}
+
+.gfy-problem-solution__title {
+    font-size: var(--gfy-text-lg, 1.125rem);
+    font-weight: var(--gfy-font-bold, 700);
+    margin-bottom: var(--gfy-space-4, 1rem);
+}
+
+.gfy-problem-solution__card--negative .gfy-problem-solution__title {
+    color: var(--gfy-error, #ef4444);
+}
+
+.gfy-problem-solution__card--positive .gfy-problem-solution__title {
+    color: var(--gfy-secondary-600, #256b42);
+}
+
+.gfy-problem-solution__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gfy-space-3, 0.75rem);
+}
+
+.gfy-problem-solution__list li {
+    font-size: var(--gfy-text-sm, 0.875rem);
+    color: var(--gfy-gray-700, #334155);
+    padding-left: var(--gfy-space-6, 1.5rem);
+    position: relative;
+    line-height: var(--gfy-leading-relaxed, 1.75);
+}
+
+.gfy-problem-solution__card--negative .gfy-problem-solution__list li::before {
+    content: "\2717";
+    position: absolute;
+    left: 0;
+    color: var(--gfy-error, #ef4444);
+    font-weight: var(--gfy-font-bold, 700);
+}
+
+.gfy-problem-solution__card--positive .gfy-problem-solution__list li::before {
+    content: "\2713";
+    position: absolute;
+    left: 0;
+    color: var(--gfy-secondary-500, #2B7A4C);
+    font-weight: var(--gfy-font-bold, 700);
+}
+
+@media (max-width: 768px) {
+    .gfy-problem-solution {
+        grid-template-columns: 1fr;
+    }
+}
+
+/* ============================================
+   FEATURE ROWS — ALTERNATING LAYOUT
+   ============================================ */
+
+.gfy-product-page .gfy-content-grid {
+    margin-bottom: var(--gfy-space-16, 4rem);
+}
+
+.gfy-product-page .gfy-content-grid:last-child {
+    margin-bottom: 0;
+}
+
+.gfy-product-page .gfy-content-grid img {
+    border-radius: var(--gfy-radius-lg, 0.5rem);
+    box-shadow: var(--gfy-shadow-lg, 0 10px 15px -3px rgba(0,0,0,.1));
+    border: 1px solid var(--gfy-gray-200, #e2e8f0);
+}
+
+.gfy-product-page .gfy-content-grid h3 {
+    font-size: var(--gfy-text-2xl, 1.5rem);
+    margin-bottom: var(--gfy-space-3, 0.75rem);
+}
+
+/* ============================================
+   NOT-FOR SECTION
+   ============================================ */
+
+.gfy-not-for {
+    max-width: 640px;
+    margin: 0 auto;
+    text-align: center;
+}
+
+.gfy-not-for__list {
+    text-align: left;
+    max-width: 480px;
+    margin: var(--gfy-space-6, 1.5rem) auto;
+    list-style: none;
+    padding: 0;
+}
+
+.gfy-not-for__list li {
+    padding: var(--gfy-space-3, 0.75rem) 0;
+    padding-left: var(--gfy-space-8, 2rem);
+    position: relative;
+    color: var(--gfy-gray-600, #475569);
+    border-bottom: 1px solid var(--gfy-gray-100, #f1f5f9);
+}
+
+.gfy-not-for__list li::before {
+    content: "\2717";
+    position: absolute;
+    left: 0;
+    color: var(--gfy-gray-400, #94a3b8);
+    font-weight: var(--gfy-font-bold, 700);
+}

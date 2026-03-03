@@ -1,0 +1,152 @@
+/**
+ * Guestify Frontend — Persona Page Styles
+ *
+ * Styles specific to /for/* persona landing pages.
+ * Loaded only on template-persona.php via frontend-enqueue.php.
+ * Depends on: frontend-global.css, frontend-sections.css
+ *
+ * @package Guestify
+ * @version 1.0.0
+ */
+
+/* ============================================
+   PERSONA PAGE LAYOUT
+   ============================================ */
+
+.gfy-persona-page {
+    overflow-x: hidden;
+}
+
+/* ============================================
+   PERSONA HERO
+   ============================================ */
+
+.gfy-hero-persona {
+    padding-top: var(--gfy-space-16, 4rem);
+    padding-bottom: var(--gfy-space-16, 4rem);
+    background: linear-gradient(
+        180deg,
+        var(--gfy-gray-50, #f8fafc) 0%,
+        var(--gfy-white, #ffffff) 100%
+    );
+}
+
+.gfy-hero-persona .gfy-pre-headline {
+    max-width: 480px;
+    margin-bottom: var(--gfy-space-4, 1rem);
+}
+
+.gfy-hero-persona h1 {
+    font-size: var(--gfy-text-5xl, 3rem);
+    line-height: 1.1;
+    margin-bottom: var(--gfy-space-4, 1rem);
+}
+
+@media (max-width: 768px) {
+    .gfy-hero-persona {
+        padding-top: var(--gfy-space-10, 2.5rem);
+        padding-bottom: var(--gfy-space-10, 2.5rem);
+    }
+
+    .gfy-hero-persona h1 {
+        font-size: var(--gfy-text-4xl, 2.25rem);
+    }
+}
+
+/* ============================================
+   PERSONA PROBLEM SECTION
+   ============================================ */
+
+.gfy-persona-page .gfy-feature-card__icon {
+    color: var(--gfy-error, #ef4444);
+    background: #fef2f2;
+}
+
+/* ============================================
+   PARADIGM SHIFT — OLD/NEW WAY
+   ============================================ */
+
+.gfy-paradigm-card {
+    background: var(--gfy-white, #ffffff);
+    border-radius: var(--gfy-radius-xl, 0.75rem);
+    overflow: hidden;
+    border: 1px solid var(--gfy-gray-200, #e2e8f0);
+}
+
+.gfy-paradigm-card__section {
+    padding: var(--gfy-space-6, 1.5rem);
+}
+
+.gfy-paradigm-card__section--old {
+    background: var(--gfy-gray-50, #f8fafc);
+    border-bottom: 1px solid var(--gfy-gray-200, #e2e8f0);
+}
+
+.gfy-paradigm-card__section--new {
+    background: var(--gfy-white, #ffffff);
+}
+
+.gfy-paradigm-card__label {
+    font-size: var(--gfy-text-xs, 0.75rem);
+    font-weight: var(--gfy-font-bold, 700);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: var(--gfy-space-3, 0.75rem);
+}
+
+.gfy-paradigm-card__section--old .gfy-paradigm-card__label {
+    color: var(--gfy-gray-400, #94a3b8);
+}
+
+.gfy-paradigm-card__section--new .gfy-paradigm-card__label {
+    color: var(--gfy-secondary-500, #2B7A4C);
+}
+
+.gfy-paradigm-card__items {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gfy-space-2, 0.5rem);
+}
+
+.gfy-paradigm-card__items li {
+    font-size: var(--gfy-text-sm, 0.875rem);
+    color: var(--gfy-gray-600, #475569);
+    padding-left: var(--gfy-space-6, 1.5rem);
+    position: relative;
+}
+
+.gfy-paradigm-card__section--old .gfy-paradigm-card__items li::before {
+    content: "\2717";
+    position: absolute;
+    left: 0;
+    color: var(--gfy-gray-400, #94a3b8);
+}
+
+.gfy-paradigm-card__section--new .gfy-paradigm-card__items li::before {
+    content: "\2713";
+    position: absolute;
+    left: 0;
+    color: var(--gfy-secondary-500, #2B7A4C);
+}
+
+/* ============================================
+   PERSONA-SPECIFIC COLOR ACCENTS
+   ============================================ */
+
+/* Authority Builder — Intelligence Blue */
+.gfy-persona-page--authority-builder .gfy-hero-persona {
+    border-bottom: 3px solid var(--gfy-primary-800, #1B365D);
+}
+
+/* Revenue Generator — Connection Green */
+.gfy-persona-page--revenue-generator .gfy-hero-persona {
+    border-bottom: 3px solid var(--gfy-secondary-500, #2B7A4C);
+}
+
+/* Launch Promoter — Transformation Orange */
+.gfy-persona-page--launch-promoter .gfy-hero-persona {
+    border-bottom: 3px solid var(--gfy-accent-500, #ED8936);
+}

@@ -339,6 +339,34 @@ if (is_admin()) {
 }
 
 /**
+ * Guestify Connect — OAuth server + plugin API.
+ *
+ * Enables the Guestify Starter WordPress plugin to connect via OAuth,
+ * consume AI/transcription credits, sync appearance data, and display
+ * authority scores. All routes under gfy-connect/v1 namespace.
+ *
+ * @since 2.1.0
+ */
+require get_template_directory() . '/inc/class-gfy-oauth-server.php';
+require get_template_directory() . '/inc/class-gfy-token-auth.php';
+require get_template_directory() . '/inc/class-gfy-connect-api.php';
+require get_template_directory() . '/inc/class-gfy-connect-setup.php';
+
+// Initialize token authentication middleware (hooks determine_current_user).
+add_action('init', function () {
+    GFY_Token_Auth::init();
+    GFY_Connect_Setup::maybe_setup();
+});
+
+// Register Connect API REST routes.
+add_action('rest_api_init', function () {
+    GFY_Connect_API::register_routes();
+});
+
+// Daily OAuth token cleanup cron.
+add_action('gfy_oauth_cleanup', ['GFY_OAuth_Server', 'cleanup_expired']);
+
+/**
  * Enqueue login CSS only for login page
  */
 function guestify_enqueue_login_css() {
@@ -2394,11 +2422,11 @@ function guestify_get_pipeline_data( $user_id = 0, $period = '30days' ) {
 		'insight'            => '',
 	);
 
-	// Get shows found from Prospector
-	$podcasts_table = $wpdb->prefix . 'pit_podcasts';
-	if ( $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $podcasts_table ) ) === $podcasts_table ) {
+	// Get shows found from Prospector (user-podcast junction table)
+	$user_podcasts_table = $wpdb->prefix . 'pit_user_podcasts';
+	if ( $wpdb->get_var( $wpdb->prepare( "SHOW TABLES LIKE %s", $user_podcasts_table ) ) === $user_podcasts_table ) {
 		$data['shows_found'] = (int) $wpdb->get_var( $wpdb->prepare(
-			"SELECT COUNT(*) FROM {$podcasts_table} WHERE user_id = %d AND created_at >= %s AND created_at <= %s",
+			"SELECT COUNT(*) FROM {$user_podcasts_table} WHERE user_id = %d AND created_at >= %s AND created_at <= %s",
 			$user_id,
 			$start,
 			$end
@@ -2803,3 +2831,56 @@ function guestify_auth_modal_output() {
     get_template_part('template-parts/auth-modal');
 }
 add_action('wp_footer', 'guestify_auth_modal_output');
+
+/**
+ * =====================================================================
+ * FRONTEND WEBSITE INFRASTRUCTURE
+ * Block patterns, custom post types, and conditional asset loading
+ * for the public-facing marketing website.
+ * =====================================================================
+ */
+
+/**
+ * Load Block Patterns registration.
+ * Auto-loads patterns from /patterns/ directory.
+ */
+require get_template_directory() . '/inc/block-patterns.php';
+
+/**
+ * Load Custom Post Types (Case Studies, Resources) and taxonomies.
+ */
+require get_template_directory() . '/inc/custom-post-types.php';
+
+/**
+ * Load Frontend conditional CSS/JS enqueue.
+ * Only loads marketing-page assets on frontend pages, dequeues app assets.
+ */
+require get_template_directory() . '/inc/frontend-enqueue.php';
+
+/**
+ * Load Frontend JSON-LD Schema (Organization, WebApplication, BreadcrumbList, Article, Review).
+ * Auto-outputs structured data in wp_head on frontend pages only.
+ */
+require get_template_directory() . '/inc/frontend-schema.php';
+
+/**
+ * Register additional frontend navigation menus.
+ */
+function guestify_register_frontend_menus() {
+	register_nav_menus(
+		array(
+			'frontend-footer'  => esc_html__( 'Frontend Footer Navigation', 'guestify' ),
+			'frontend-legal'   => esc_html__( 'Frontend Legal Links', 'guestify' ),
+		)
+	);
+}
+add_action( 'after_setup_theme', 'guestify_register_frontend_menus' );
+
+/**
+ * Load Site Setup utility (programmatic page creation + single-page helper).
+ * Admin UI: Appearance → Site Setup.
+ * WP-CLI: wp eval 'GFY_Site_Setup::run();'
+ * Single page: wp eval 'GFY_Site_Setup::create_single("page-slug", "Page Title", "<!-- wp:group -->...<!-- /wp:group -->");'
+ */
+require get_template_directory() . '/inc/class-gfy-site-setup.php';
+GFY_Site_Setup::init_admin();

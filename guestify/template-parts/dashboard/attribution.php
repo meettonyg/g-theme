@@ -73,11 +73,11 @@ $revenue_by_show = isset($data['revenue_by_show']) ? $data['revenue_by_show'] : 
             <?php foreach ($revenue_by_show as $show): ?>
             <tr>
                 <td>
-                    <div class="gfy-table__name"><?php echo esc_html($show['podcast_title'] ?? 'Unknown'); ?></div>
+                    <div class="gfy-table__name"><?php echo esc_html($show->podcast_title ?? 'Unknown'); ?></div>
                 </td>
-                <td><?php echo esc_html($show['appearance_count'] ?? 0); ?></td>
-                <td>$<?php echo esc_html(number_format($show['total_estimated'] ?? 0)); ?></td>
-                <td class="gfy-table__revenue">$<?php echo esc_html(number_format($show['total_actual'] ?? 0)); ?></td>
+                <td><?php echo esc_html($show->opportunity_count ?? 0); ?></td>
+                <td>$<?php echo esc_html(number_format($show->estimated_revenue ?? 0)); ?></td>
+                <td class="gfy-table__revenue">$<?php echo esc_html(number_format($show->actual_revenue ?? 0)); ?></td>
             </tr>
             <?php endforeach; ?>
         </tbody>

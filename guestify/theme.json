@@ -1,0 +1,231 @@
+{
+	"$schema": "https://schemas.wp.org/wp/6.7/theme.json",
+	"version": 3,
+	"settings": {
+		"appearanceTools": true,
+		"useRootPaddingAwareAlignments": true,
+		"layout": {
+			"contentSize": "768px",
+			"wideSize": "1280px"
+		},
+		"color": {
+			"defaultPalette": false,
+			"defaultGradients": false,
+			"palette": [
+				{
+					"slug": "primary-800",
+					"color": "#1B365D",
+					"name": "Intelligence Blue"
+				},
+				{
+					"slug": "secondary-500",
+					"color": "#2B7A4C",
+					"name": "Connection Green"
+				},
+				{
+					"slug": "accent-500",
+					"color": "#ED8936",
+					"name": "Transformation Orange"
+				},
+				{
+					"slug": "purple-500",
+					"color": "#805AD5",
+					"name": "Insight Purple"
+				},
+				{
+					"slug": "teal-400",
+					"color": "#38B2AC",
+					"name": "Success Teal"
+				},
+				{
+					"slug": "info-500",
+					"color": "#3b82f6",
+					"name": "Action Blue"
+				},
+				{
+					"slug": "gray-50",
+					"color": "#f8fafc",
+					"name": "Gray 50"
+				},
+				{
+					"slug": "gray-100",
+					"color": "#f1f5f9",
+					"name": "Gray 100"
+				},
+				{
+					"slug": "gray-200",
+					"color": "#e2e8f0",
+					"name": "Gray 200"
+				},
+				{
+					"slug": "gray-600",
+					"color": "#475569",
+					"name": "Authority Gray"
+				},
+				{
+					"slug": "gray-700",
+					"color": "#334155",
+					"name": "Gray 700"
+				},
+				{
+					"slug": "gray-800",
+					"color": "#1e293b",
+					"name": "Gray 800"
+				},
+				{
+					"slug": "gray-900",
+					"color": "#0f172a",
+					"name": "Gray 900"
+				},
+				{
+					"slug": "white",
+					"color": "#ffffff",
+					"name": "White"
+				}
+			]
+		},
+		"typography": {
+			"defaultFontSizes": false,
+			"fontFamilies": [
+				{
+					"fontFamily": "Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+					"slug": "primary",
+					"name": "Primary (Inter)"
+				},
+				{
+					"fontFamily": "Montserrat, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif",
+					"slug": "heading",
+					"name": "Heading (Montserrat)"
+				}
+			],
+			"fontSizes": [
+				{
+					"slug": "xs",
+					"size": "0.75rem",
+					"name": "Extra Small"
+				},
+				{
+					"slug": "sm",
+					"size": "0.875rem",
+					"name": "Small"
+				},
+				{
+					"slug": "base",
+					"size": "1rem",
+					"name": "Base"
+				},
+				{
+					"slug": "lg",
+					"size": "1.125rem",
+					"name": "Large"
+				},
+				{
+					"slug": "xl",
+					"size": "1.25rem",
+					"name": "Extra Large"
+				},
+				{
+					"slug": "2-xl",
+					"size": "1.5rem",
+					"name": "2XL"
+				},
+				{
+					"slug": "3-xl",
+					"size": "1.875rem",
+					"name": "3XL"
+				},
+				{
+					"slug": "4-xl",
+					"size": "2.25rem",
+					"name": "4XL"
+				},
+				{
+					"slug": "5-xl",
+					"size": "3rem",
+					"name": "5XL"
+				}
+			]
+		},
+		"spacing": {
+			"spacingSizes": [
+				{
+					"slug": "10",
+					"size": "0.25rem",
+					"name": "1 (0.25rem)"
+				},
+				{
+					"slug": "20",
+					"size": "0.5rem",
+					"name": "2 (0.5rem)"
+				},
+				{
+					"slug": "30",
+					"size": "0.75rem",
+					"name": "3 (0.75rem)"
+				},
+				{
+					"slug": "40",
+					"size": "1rem",
+					"name": "4 (1rem)"
+				},
+				{
+					"slug": "50",
+					"size": "1.5rem",
+					"name": "5 (1.5rem)"
+				},
+				{
+					"slug": "60",
+					"size": "2rem",
+					"name": "6 (2rem)"
+				},
+				{
+					"slug": "70",
+					"size": "3rem",
+					"name": "7 (3rem)"
+				},
+				{
+					"slug": "80",
+					"size": "4rem",
+					"name": "8 (4rem)"
+				},
+				{
+					"slug": "90",
+					"size": "6rem",
+					"name": "9 (6rem)"
+				}
+			]
+		}
+	},
+	"styles": {
+		"color": {
+			"background": "var(--gfy-white, #fff)",
+			"text": "var(--gfy-gray-700, #334155)"
+		},
+		"typography": {
+			"fontFamily": "var(--gfy-font-sans, Inter, ui-sans-serif, system-ui, sans-serif)",
+			"fontSize": "var(--gfy-text-base, 1rem)",
+			"lineHeight": "var(--gfy-leading-normal, 1.5)"
+		},
+		"elements": {
+			"heading": {
+				"typography": {
+					"fontFamily": "var(--gfy-font-heading, Montserrat, ui-sans-serif, system-ui, sans-serif)"
+				},
+				"color": {
+					"text": "var(--gfy-primary-800, #1B365D)"
+				}
+			},
+			"link": {
+				"color": {
+					"text": "var(--gfy-info-500, #3b82f6)"
+				}
+			},
+			"button": {
+				"color": {
+					"background": "var(--gfy-accent-500, #ED8936)",
+					"text": "#ffffff"
+				}
+			}
+		}
+	}
+}
