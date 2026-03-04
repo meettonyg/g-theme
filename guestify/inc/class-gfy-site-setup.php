@@ -1127,6 +1127,8 @@ class GFY_Site_Setup {
 	public static function init_admin() {
 		add_action( 'admin_menu', [ __CLASS__, 'add_admin_page' ] );
 		add_action( 'admin_init', [ __CLASS__, 'handle_admin_action' ] );
+		add_action( 'admin_init', [ __CLASS__, 'handle_page_builder_action' ] );
+		add_action( 'admin_init', [ __CLASS__, 'handle_import_pages_action' ] );
 	}
 
 	/**
@@ -1168,53 +1170,942 @@ class GFY_Site_Setup {
 	}
 
 	/**
-	 * Render the admin page.
+	 * Handle the Page Builder form submission (create or update a single page).
+	 */
+	public static function handle_page_builder_action() {
+		if ( ! isset( $_POST['gfy_page_builder'] ) ) {
+			return;
+		}
+
+		if ( ! wp_verify_nonce( $_POST['_wpnonce'], 'gfy_page_builder' ) ) {
+			wp_die( 'Security check failed.' );
+		}
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( 'Insufficient permissions.' );
+		}
+
+		$slug     = sanitize_title( $_POST['gfy_pb_slug'] );
+		$title    = sanitize_text_field( $_POST['gfy_pb_title'] );
+		$content  = wp_unslash( $_POST['gfy_pb_content'] ); // Preserve block markup exactly
+		$template = sanitize_text_field( $_POST['gfy_pb_template'] );
+		$parent   = sanitize_text_field( $_POST['gfy_pb_parent'] );
+		$mode     = sanitize_text_field( $_POST['gfy_pb_mode'] );
+
+		if ( empty( $slug ) || empty( $title ) || empty( $content ) ) {
+			set_transient( 'gfy_pb_result', [
+				'status'  => 'error',
+				'message' => 'Slug, title, and content are all required.',
+			], 60 );
+			wp_redirect( admin_url( 'themes.php?page=gfy-site-setup&tab=page-builder' ) );
+			exit;
+		}
+
+		if ( $mode === 'update' ) {
+			// Update existing page content
+			$result = self::update_page_content( $slug, $content );
+
+			// Also update template if provided
+			if ( $result['status'] === 'updated' && ! empty( $template ) ) {
+				update_post_meta( $result['id'], '_wp_page_template', $template );
+			}
+		} else {
+			// Create new page
+			$extra = [];
+			if ( ! empty( $template ) ) {
+				$extra['template'] = $template;
+			}
+			if ( ! empty( $parent ) ) {
+				$extra['parent_slug'] = $parent;
+			}
+			$result = self::create_single( $slug, $title, $content, $extra );
+		}
+
+		set_transient( 'gfy_pb_result', $result, 60 );
+
+		wp_redirect( admin_url( 'themes.php?page=gfy-site-setup&tab=page-builder' ) );
+		exit;
+	}
+
+	/* ===========================================================
+	   IMPORT FROM /pages/ DIRECTORY — Dynamic Scanner
+	   ===========================================================
+	   Scans the theme's /pages/ folder automatically. Any .html
+	   file you drop in appears in the admin. Convention-based:
+
+	   PAGES (flat files in /pages/):
+	     about.html                         → /about          (default template)
+	     product-podcast-discovery.html      → /product/podcast-discovery  (product template)
+	     resource-authority-assessment.html   → /resources/authority-assessment (resource template)
+	     experts-consultants.html            → /for/experts-consultants (persona template)
+
+	   BLOG POSTS (files in /pages/blog/):
+	     how-to-get-booked-on-podcasts.html  → blog post with that slug
+
+	   Prefix conventions → parent + template:
+	     product-*  → parent: product,   template: template-product.php
+	     resource-* → parent: resources, template: template-resource.php
+	     Persona slugs (hardcoded list) → parent: for, template: template-persona.php
+	     Everything else → top-level page, default template
+	   =========================================================== */
+
+	/**
+	 * Known persona page slugs (these get parent "for" + persona template).
+	 */
+	private static $persona_slugs = [
+		'experts-consultants',
+		'business-owners',
+		'authors-creators',
+		'agencies',
+	];
+
+	/**
+	 * Scan the /pages/ directory and build a manifest dynamically.
+	 * No hardcoded list — drop an .html file in, it shows up.
+	 *
+	 * @return array{pages: array[], posts: array[]}
+	 */
+	public static function get_page_manifest() {
+		$pages_dir = get_template_directory() . '/pages/';
+		$pages     = [];
+		$posts     = [];
+
+		if ( ! is_dir( $pages_dir ) ) {
+			return [ 'pages' => [], 'posts' => [] ];
+		}
+
+		// ── Scan /pages/*.html for WordPress pages ──────────────
+		$files = glob( $pages_dir . '*.html' );
+		if ( $files ) {
+			foreach ( $files as $file_path ) {
+				$filename = basename( $file_path );
+				$slug_raw = str_replace( '.html', '', $filename );
+
+				$parent   = '';
+				$template = '';
+				$slug     = $slug_raw;
+
+				// Detect prefix conventions
+				if ( strpos( $slug_raw, 'product-' ) === 0 ) {
+					// product-podcast-discovery → parent: product, slug: podcast-discovery
+					$slug     = substr( $slug_raw, strlen( 'product-' ) );
+					$parent   = 'product';
+					$template = 'templates/template-product.php';
+				} elseif ( strpos( $slug_raw, 'resource-' ) === 0 ) {
+					// resource-podcast-media-kit-template → parent: resources, slug: podcast-media-kit-template
+					$slug     = substr( $slug_raw, strlen( 'resource-' ) );
+					$parent   = 'resources';
+					$template = 'templates/template-resource.php';
+				} elseif ( in_array( $slug_raw, self::$persona_slugs, true ) ) {
+					// Known persona slug → parent: for, persona template
+					$parent   = 'for';
+					$template = 'templates/template-persona.php';
+				}
+
+				// Generate a human-readable title from slug
+				$title = self::slug_to_title( $slug_raw, $parent );
+
+				$pages[] = [
+					'file'     => $filename,
+					'slug'     => $slug,
+					'title'    => $title,
+					'parent'   => $parent,
+					'template' => $template,
+					'type'     => 'page',
+				];
+			}
+		}
+
+		// Sort: parent pages first (no parent), then children
+		usort( $pages, function ( $a, $b ) {
+			// Pages without parent come first
+			if ( empty( $a['parent'] ) && ! empty( $b['parent'] ) ) return -1;
+			if ( ! empty( $a['parent'] ) && empty( $b['parent'] ) ) return 1;
+			// Then sort by parent, then slug
+			$cmp = strcmp( $a['parent'], $b['parent'] );
+			return $cmp !== 0 ? $cmp : strcmp( $a['slug'], $b['slug'] );
+		} );
+
+		// ── Scan /pages/blog/*.html for blog posts ──────────────
+		$blog_dir = $pages_dir . 'blog/';
+		if ( is_dir( $blog_dir ) ) {
+			$blog_files = glob( $blog_dir . '*.html' );
+			if ( $blog_files ) {
+				foreach ( $blog_files as $file_path ) {
+					$filename = basename( $file_path );
+					$slug     = str_replace( '.html', '', $filename );
+					$title    = self::slug_to_title( $slug );
+
+					$posts[] = [
+						'file'  => 'blog/' . $filename,
+						'slug'  => $slug,
+						'title' => $title,
+						'type'  => 'post',
+					];
+				}
+				// Sort alphabetically
+				usort( $posts, function ( $a, $b ) {
+					return strcmp( $a['slug'], $b['slug'] );
+				} );
+			}
+		}
+
+		return [ 'pages' => $pages, 'posts' => $posts ];
+	}
+
+	/**
+	 * Convert a slug to a readable title.
+	 * "podcast-media-kit-template" → "Podcast Media Kit Template"
+	 * Adds "For " prefix for persona pages.
+	 *
+	 * @param string $slug       The raw slug.
+	 * @param string $parent     Parent slug (used for title prefix logic).
+	 * @return string
+	 */
+	private static function slug_to_title( $slug, $parent = '' ) {
+		// Custom title overrides for known pages
+		$overrides = [
+			'how-it-works'          => 'How It Works',
+			'wall-of-love'          => 'Wall of Love',
+			'experts-consultants'   => 'For Experts & Consultants',
+			'business-owners'       => 'For Business Owners',
+			'authors-creators'      => 'For Authors & Creators',
+			'agencies'              => 'For Agencies',
+			'podcast-discovery'     => 'Discovery Intelligence',
+			'authority-positioning' => 'Authority Positioning',
+			'outreach-booking'      => 'Outreach & Booking',
+			'interview-tracking'    => 'Interview Tracking',
+			'relationship-management' => 'Relationship Leverage',
+			'agency-operations'     => 'Agency Operations',
+		];
+
+		// Strip prefix for override lookup
+		$lookup = $slug;
+		if ( strpos( $slug, 'product-' ) === 0 ) {
+			$lookup = substr( $slug, strlen( 'product-' ) );
+		} elseif ( strpos( $slug, 'resource-' ) === 0 ) {
+			$lookup = substr( $slug, strlen( 'resource-' ) );
+		}
+
+		if ( isset( $overrides[ $lookup ] ) ) {
+			return $overrides[ $lookup ];
+		}
+		if ( isset( $overrides[ $slug ] ) ) {
+			return $overrides[ $slug ];
+		}
+
+		// Default: capitalize words
+		return ucwords( str_replace( '-', ' ', $slug ) );
+	}
+
+	/**
+	 * Create a blog post from content.
+	 *
+	 * @param string $slug    Post slug.
+	 * @param string $title   Post title.
+	 * @param string $content Block markup.
+	 * @return array           ['id' => int, 'status' => string, 'slug' => string]
+	 */
+	public static function create_blog_post( $slug, $title, $content ) {
+		// Check if post with this slug already exists
+		$existing = get_page_by_path( $slug, OBJECT, 'post' );
+		if ( $existing ) {
+			return [
+				'id'     => $existing->ID,
+				'status' => 'exists',
+				'slug'   => $slug,
+			];
+		}
+
+		$post_id = wp_insert_post( [
+			'post_type'    => 'post',
+			'post_status'  => 'publish',
+			'post_title'   => $title,
+			'post_name'    => $slug,
+			'post_content' => $content,
+		] );
+
+		if ( is_wp_error( $post_id ) ) {
+			return [
+				'id'     => 0,
+				'status' => 'error',
+				'slug'   => $slug,
+				'error'  => $post_id->get_error_message(),
+			];
+		}
+
+		return [
+			'id'     => $post_id,
+			'status' => 'created',
+			'slug'   => $slug,
+		];
+	}
+
+	/**
+	 * Handle the Import form submission (pages + blog posts).
+	 */
+	public static function handle_import_pages_action() {
+		if ( ! isset( $_POST['gfy_import_pages'] ) ) {
+			return;
+		}
+
+		if ( ! wp_verify_nonce( $_POST['_wpnonce'], 'gfy_import_pages' ) ) {
+			wp_die( 'Security check failed.' );
+		}
+
+		if ( ! current_user_can( 'manage_options' ) ) {
+			wp_die( 'Insufficient permissions.' );
+		}
+
+		$pages_dir = get_template_directory() . '/pages/';
+		$manifest  = self::get_page_manifest();
+		$all_items = array_merge( $manifest['pages'], $manifest['posts'] );
+		$results   = [];
+
+		// Determine which items to import
+		$selected = isset( $_POST['gfy_import_selected'] )
+			? array_map( 'sanitize_text_field', $_POST['gfy_import_selected'] )
+			: [];
+
+		// If none selected, import all
+		if ( empty( $selected ) ) {
+			$selected = array_column( $all_items, 'file' );
+		}
+
+		// First pass: ensure parent pages exist for selected page items
+		$parents_needed = [];
+		foreach ( $manifest['pages'] as $entry ) {
+			if ( ! empty( $entry['parent'] ) && in_array( $entry['file'], $selected, true ) ) {
+				$parents_needed[ $entry['parent'] ] = true;
+			}
+		}
+
+		foreach ( array_keys( $parents_needed ) as $parent_slug ) {
+			$parent_page = get_page_by_path( $parent_slug );
+			if ( ! $parent_page ) {
+				$parent_titles = [
+					'for'       => 'For',
+					'product'   => 'Product',
+					'resources' => 'Resources',
+				];
+				$parent_title = isset( $parent_titles[ $parent_slug ] )
+					? $parent_titles[ $parent_slug ]
+					: ucfirst( $parent_slug );
+
+				// Use file content if a file exists for this parent
+				$parent_file    = $pages_dir . $parent_slug . '.html';
+				$parent_content = file_exists( $parent_file ) ? file_get_contents( $parent_file ) : '';
+
+				$pid = wp_insert_post( [
+					'post_type'    => 'page',
+					'post_status'  => 'publish',
+					'post_title'   => $parent_title,
+					'post_name'    => $parent_slug,
+					'post_content' => $parent_content,
+				] );
+
+				$results[] = [
+					'slug'   => $parent_slug,
+					'title'  => $parent_title . ' (auto-created parent)',
+					'status' => 'created',
+					'id'     => is_wp_error( $pid ) ? 0 : $pid,
+					'file'   => $parent_slug . '.html',
+					'type'   => 'page',
+				];
+			}
+		}
+
+		// Second pass: import selected items
+		foreach ( $all_items as $entry ) {
+			if ( ! in_array( $entry['file'], $selected, true ) ) {
+				continue;
+			}
+
+			$file_path = $pages_dir . $entry['file'];
+
+			if ( ! file_exists( $file_path ) ) {
+				$results[] = [
+					'slug'   => $entry['slug'],
+					'title'  => $entry['title'],
+					'status' => 'error',
+					'id'     => 0,
+					'file'   => $entry['file'],
+					'type'   => $entry['type'],
+					'error'  => 'File not found',
+				];
+				continue;
+			}
+
+			$content = file_get_contents( $file_path );
+
+			if ( $entry['type'] === 'post' ) {
+				// Blog post
+				$result = self::create_blog_post( $entry['slug'], $entry['title'], $content );
+			} else {
+				// Page
+				$extra = [];
+				if ( ! empty( $entry['template'] ) ) {
+					$extra['template'] = $entry['template'];
+				}
+				if ( ! empty( $entry['parent'] ) ) {
+					$extra['parent_slug'] = $entry['parent'];
+				}
+				$result = self::create_single( $entry['slug'], $entry['title'], $content, $extra );
+			}
+
+			$result['title'] = $entry['title'];
+			$result['file']  = $entry['file'];
+			$result['type']  = $entry['type'];
+			$results[] = $result;
+		}
+
+		flush_rewrite_rules();
+
+		set_transient( 'gfy_import_results', $results, 120 );
+
+		wp_redirect( admin_url( 'themes.php?page=gfy-site-setup&tab=import-pages' ) );
+		exit;
+	}
+
+	/**
+	 * Render the admin page with tabs.
 	 */
 	public static function render_admin_page() {
+		$active_tab = isset( $_GET['tab'] ) ? sanitize_text_field( $_GET['tab'] ) : 'import-pages';
+		?>
+		<div class="wrap">
+			<h1>Guestify Site Setup</h1>
+
+			<nav class="nav-tab-wrapper" style="margin-bottom:20px;">
+				<a href="<?php echo admin_url( 'themes.php?page=gfy-site-setup&tab=import-pages' ); ?>"
+				   class="nav-tab <?php echo $active_tab === 'import-pages' ? 'nav-tab-active' : ''; ?>">
+					Import Pages
+				</a>
+				<a href="<?php echo admin_url( 'themes.php?page=gfy-site-setup&tab=page-builder' ); ?>"
+				   class="nav-tab <?php echo $active_tab === 'page-builder' ? 'nav-tab-active' : ''; ?>">
+					Page Builder
+				</a>
+				<a href="<?php echo admin_url( 'themes.php?page=gfy-site-setup&tab=bulk-setup' ); ?>"
+				   class="nav-tab <?php echo $active_tab === 'bulk-setup' ? 'nav-tab-active' : ''; ?>">
+					Bulk Setup
+				</a>
+			</nav>
+
+			<?php
+			if ( $active_tab === 'page-builder' ) {
+				self::render_page_builder_tab();
+			} elseif ( $active_tab === 'bulk-setup' ) {
+				self::render_bulk_setup_tab();
+			} else {
+				self::render_import_pages_tab();
+			}
+			?>
+		</div>
+		<?php
+	}
+
+	/**
+	 * Render the Import Pages tab — create pages from /pages/ .html files.
+	 */
+	private static function render_import_pages_tab() {
+		$results = get_transient( 'gfy_import_results' );
+		if ( $results ) {
+			delete_transient( 'gfy_import_results' );
+		}
+
+		$manifest  = self::get_page_manifest();
+		$pages_dir = get_template_directory() . '/pages/';
+
+		// Build status arrays for pages and posts
+		$page_status = self::build_status_list( $manifest['pages'], $pages_dir, 'page' );
+		$post_status = self::build_status_list( $manifest['posts'], $pages_dir, 'post' );
+		$all_status  = array_merge( $page_status, $post_status );
+
+		$total   = count( $all_status );
+		$created = count( array_filter( $all_status, fn( $p ) => $p['wp_exists'] ) );
+		$pending = $total - $created;
+		?>
+
+		<p>
+			Scans <code>/pages/*.html</code> for WordPress pages and <code>/pages/blog/*.html</code> for blog posts.
+			<br><strong>Drop a new .html file in the folder → it appears here automatically.</strong>
+		</p>
+		<p>
+			<span style="color:green;"><strong><?php echo $created; ?></strong> already in WordPress</span> &nbsp;|&nbsp;
+			<span style="color:#d63638;"><strong><?php echo $pending; ?></strong> ready to import</span> &nbsp;|&nbsp;
+			<strong><?php echo $total; ?></strong> total files found
+		</p>
+
+		<?php if ( $results ) : ?>
+			<div class="notice notice-success is-dismissible">
+				<p><strong>Import complete!</strong></p>
+			</div>
+			<table class="widefat fixed striped" style="max-width:800px; margin-bottom:20px;">
+				<thead>
+					<tr><th style="width:10%;">Type</th><th style="width:30%;">Title</th><th style="width:25%;">File</th><th>Status</th></tr>
+				</thead>
+				<tbody>
+					<?php foreach ( $results as $r ) : ?>
+						<tr>
+							<td>
+								<?php
+								$type = isset( $r['type'] ) ? $r['type'] : 'page';
+								echo $type === 'post'
+									? '<span style="background:#2271b1;color:#fff;padding:2px 6px;border-radius:3px;font-size:11px;">Post</span>'
+									: '<span style="background:#6c757d;color:#fff;padding:2px 6px;border-radius:3px;font-size:11px;">Page</span>';
+								?>
+							</td>
+							<td>
+								<?php echo esc_html( isset( $r['title'] ) ? $r['title'] : $r['slug'] ); ?>
+								<br><code>/<?php echo esc_html( $r['slug'] ); ?>/</code>
+							</td>
+							<td><code><?php echo esc_html( isset( $r['file'] ) ? $r['file'] : '' ); ?></code></td>
+							<td>
+								<?php if ( $r['status'] === 'created' ) : ?>
+									<span style="color:green;">&#10003; Created</span>
+									<?php if ( ! empty( $r['id'] ) ) : ?>
+										— <a href="<?php echo get_permalink( $r['id'] ); ?>" target="_blank">View</a>
+										| <a href="<?php echo get_edit_post_link( $r['id'] ); ?>">Edit</a>
+									<?php endif; ?>
+								<?php elseif ( $r['status'] === 'exists' ) : ?>
+									<span style="color:gray;">&#8212; Already exists</span>
+								<?php elseif ( $r['status'] === 'error' ) : ?>
+									<span style="color:red;">&#10007; <?php echo esc_html( isset( $r['error'] ) ? $r['error'] : 'Error' ); ?></span>
+								<?php endif; ?>
+							</td>
+						</tr>
+					<?php endforeach; ?>
+				</tbody>
+			</table>
+		<?php endif; ?>
+
+		<form method="post">
+			<?php wp_nonce_field( 'gfy_import_pages' ); ?>
+			<input type="hidden" name="gfy_import_pages" value="1">
+
+			<?php if ( ! empty( $page_status ) ) : ?>
+			<h3 style="margin-top:5px;">Pages <span style="font-weight:normal;color:#666;">(<?php echo count( $page_status ); ?> files in <code>/pages/</code>)</span></h3>
+			<table class="widefat fixed striped" style="max-width:950px;">
+				<thead>
+					<tr>
+						<th style="width:30px;"><input type="checkbox" class="gfy-check-section" data-section="pages" checked></th>
+						<th>Page</th>
+						<th>File</th>
+						<th>Parent</th>
+						<th>Template</th>
+						<th>Size</th>
+						<th>WordPress</th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php echo self::render_status_rows( $page_status ); ?>
+				</tbody>
+			</table>
+			<?php endif; ?>
+
+			<?php if ( ! empty( $post_status ) ) : ?>
+			<h3 style="margin-top:25px;">Blog Posts <span style="font-weight:normal;color:#666;">(<?php echo count( $post_status ); ?> files in <code>/pages/blog/</code>)</span></h3>
+			<table class="widefat fixed striped" style="max-width:950px;">
+				<thead>
+					<tr>
+						<th style="width:30px;"><input type="checkbox" class="gfy-check-section" data-section="posts" checked></th>
+						<th>Post</th>
+						<th>File</th>
+						<th colspan="2">—</th>
+						<th>Size</th>
+						<th>WordPress</th>
+					</tr>
+				</thead>
+				<tbody>
+					<?php echo self::render_status_rows( $post_status ); ?>
+				</tbody>
+			</table>
+			<?php endif; ?>
+
+			<?php if ( empty( $page_status ) && empty( $post_status ) ) : ?>
+				<div class="notice notice-warning">
+					<p>No <code>.html</code> files found in <code><?php echo esc_html( $pages_dir ); ?></code></p>
+				</div>
+			<?php else : ?>
+				<p style="margin-top:15px;">
+					<?php submit_button( 'Import Selected', 'primary', 'submit', false ); ?>
+					&nbsp;&nbsp;
+					<span class="description">Existing items are skipped. Parent pages (like <code>/for</code>) are auto-created if needed.</span>
+				</p>
+			<?php endif; ?>
+		</form>
+
+		<hr style="margin-top:30px;">
+		<h3>Folder Convention</h3>
+		<table class="widefat" style="max-width:700px;">
+			<thead><tr><th>File Pattern</th><th>Creates</th><th>Parent</th><th>Template</th></tr></thead>
+			<tbody>
+				<tr><td><code>/pages/about.html</code></td><td>Page: <code>/about/</code></td><td>—</td><td>Default</td></tr>
+				<tr><td><code>/pages/product-*.html</code></td><td>Page: <code>/product/*/</code></td><td><code>product</code></td><td>Product</td></tr>
+				<tr><td><code>/pages/resource-*.html</code></td><td>Page: <code>/resources/*/</code></td><td><code>resources</code></td><td>Resource</td></tr>
+				<tr><td><code>/pages/experts-consultants.html</code></td><td>Page: <code>/for/experts-consultants/</code></td><td><code>for</code></td><td>Persona</td></tr>
+				<tr><td><code>/pages/blog/my-post.html</code></td><td>Blog post: <code>/blog/my-post/</code></td><td>—</td><td>—</td></tr>
+			</tbody>
+		</table>
+		<p class="description" style="margin-top:8px;">
+			New persona slugs? Add them to <code>$persona_slugs</code> in <code>class-gfy-site-setup.php</code>.
+			Everything else is automatic.
+		</p>
+
+		<script>
+		document.querySelectorAll('.gfy-check-section').forEach(function(el) {
+			el.addEventListener('change', function() {
+				var section = this.dataset.section;
+				var table = this.closest('table');
+				var boxes = table.querySelectorAll('input[name="gfy_import_selected[]"]:not(:disabled)');
+				for (var i = 0; i < boxes.length; i++) { boxes[i].checked = this.checked; }
+			});
+		});
+		</script>
+		<?php
+	}
+
+	/**
+	 * Build a status list for the import table (pages or posts).
+	 *
+	 * @param array[]  $entries   Manifest entries.
+	 * @param string   $pages_dir Base directory.
+	 * @param string   $post_type 'page' or 'post'.
+	 * @return array[]
+	 */
+	private static function build_status_list( $entries, $pages_dir, $post_type = 'page' ) {
+		$status = [];
+		foreach ( $entries as $entry ) {
+			$file_path   = $pages_dir . $entry['file'];
+			$file_exists = file_exists( $file_path );
+			$file_size   = $file_exists ? filesize( $file_path ) : 0;
+
+			if ( $post_type === 'post' ) {
+				$existing = get_page_by_path( $entry['slug'], OBJECT, 'post' );
+			} else {
+				$full_path = ! empty( $entry['parent'] )
+					? $entry['parent'] . '/' . $entry['slug']
+					: $entry['slug'];
+				$existing = get_page_by_path( $full_path );
+			}
+
+			$status[] = [
+				'entry'       => $entry,
+				'file_exists' => $file_exists,
+				'file_size'   => $file_size,
+				'wp_exists'   => (bool) $existing,
+				'wp_id'       => $existing ? $existing->ID : 0,
+			];
+		}
+		return $status;
+	}
+
+	/**
+	 * Render table rows for a status list.
+	 *
+	 * @param array[] $status_list From build_status_list().
+	 * @return string HTML rows.
+	 */
+	private static function render_status_rows( $status_list ) {
+		$tpl_labels = [
+			'templates/template-persona.php'  => 'Persona',
+			'templates/template-product.php'  => 'Product',
+			'templates/template-resource.php' => 'Resource',
+		];
+
+		ob_start();
+		foreach ( $status_list as $ps ) :
+			$entry  = $ps['entry'];
+			$is_new = ! $ps['wp_exists'];
+		?>
+			<tr style="<?php echo $ps['wp_exists'] ? 'opacity:0.6;' : ''; ?>">
+				<td>
+					<input type="checkbox" name="gfy_import_selected[]"
+					       value="<?php echo esc_attr( $entry['file'] ); ?>"
+					       <?php echo $is_new ? 'checked' : ''; ?>
+					       <?php echo ! $ps['file_exists'] ? 'disabled' : ''; ?>>
+				</td>
+				<td>
+					<strong><?php echo esc_html( $entry['title'] ); ?></strong><br>
+					<code>/<?php
+						if ( $entry['type'] === 'post' ) {
+							echo 'blog/' . esc_html( $entry['slug'] );
+						} elseif ( ! empty( $entry['parent'] ) ) {
+							echo esc_html( $entry['parent'] . '/' . $entry['slug'] );
+						} else {
+							echo esc_html( $entry['slug'] );
+						}
+					?>/</code>
+				</td>
+				<td><code><?php echo esc_html( $entry['file'] ); ?></code></td>
+				<?php if ( $entry['type'] === 'post' ) : ?>
+					<td colspan="2">—</td>
+				<?php else : ?>
+					<td><?php echo ! empty( $entry['parent'] ) ? '<code>' . esc_html( $entry['parent'] ) . '</code>' : '—'; ?></td>
+					<td>
+						<?php
+						if ( ! empty( $entry['template'] ) ) {
+							echo isset( $tpl_labels[ $entry['template'] ] )
+								? esc_html( $tpl_labels[ $entry['template'] ] )
+								: esc_html( $entry['template'] );
+						} else {
+							echo 'Default';
+						}
+						?>
+					</td>
+				<?php endif; ?>
+				<td>
+					<?php if ( $ps['file_exists'] ) : ?>
+						<?php echo esc_html( size_format( $ps['file_size'] ) ); ?>
+					<?php else : ?>
+						<span style="color:red;">Missing</span>
+					<?php endif; ?>
+				</td>
+				<td>
+					<?php if ( $ps['wp_exists'] ) : ?>
+						<span style="color:green;">&#10003; Exists</span>
+						<br><a href="<?php echo get_edit_post_link( $ps['wp_id'] ); ?>" style="font-size:12px;">Edit</a>
+					<?php else : ?>
+						<span style="color:#d63638;">Not created</span>
+					<?php endif; ?>
+				</td>
+			</tr>
+		<?php
+		endforeach;
+		return ob_get_clean();
+	}
+
+	/**
+	 * Render the Bulk Setup tab (original functionality).
+	 */
+	private static function render_bulk_setup_tab() {
 		$results = get_transient( 'gfy_setup_results' );
 		if ( $results ) {
 			delete_transient( 'gfy_setup_results' );
 		}
 		?>
-		<div class="wrap">
-			<h1>Guestify Site Setup</h1>
-			<p>Creates all frontend marketing pages with content, sets page templates, parent relationships, and navigation menus.</p>
-			<p><strong>Safe to run multiple times</strong> — existing pages are skipped (matched by slug).</p>
+		<p>Creates all frontend marketing pages with content, sets page templates, parent relationships, and navigation menus.</p>
+		<p><strong>Safe to run multiple times</strong> — existing pages are skipped (matched by slug).</p>
 
-			<?php if ( $results ) : ?>
-				<div class="notice notice-success">
-					<p><strong>Setup complete!</strong> Here are the results:</p>
+		<?php if ( $results ) : ?>
+			<div class="notice notice-success">
+				<p><strong>Setup complete!</strong> Here are the results:</p>
+			</div>
+			<table class="widefat fixed striped" style="max-width:600px;">
+				<thead>
+					<tr><th>Page</th><th>Status</th></tr>
+				</thead>
+				<tbody>
+					<?php foreach ( $results['pages'] as $page_result ) : ?>
+						<tr>
+							<td><code>/<?php echo esc_html( $page_result['slug'] ); ?>/</code></td>
+							<td>
+								<?php if ( $page_result['status'] === 'created' ) : ?>
+									<span style="color:green;">&#10003; Created</span>
+									(<a href="<?php echo get_edit_post_link( $page_result['id'] ); ?>">Edit</a>)
+								<?php elseif ( $page_result['status'] === 'exists' ) : ?>
+									<span style="color:gray;">&#8212; Already exists</span>
+								<?php else : ?>
+									<span style="color:red;">&#10007; Error</span>
+								<?php endif; ?>
+							</td>
+						</tr>
+					<?php endforeach; ?>
+				</tbody>
+			</table>
+		<?php endif; ?>
+
+		<form method="post" style="margin-top:20px;">
+			<?php wp_nonce_field( 'gfy_site_setup' ); ?>
+			<input type="hidden" name="gfy_run_setup" value="1">
+			<?php submit_button( 'Build Frontend Pages', 'primary', 'submit', false ); ?>
+		</form>
+		<?php
+	}
+
+	/**
+	 * Render the Page Builder tab — paste Claude-generated block markup.
+	 */
+	private static function render_page_builder_tab() {
+		$result = get_transient( 'gfy_pb_result' );
+		if ( $result ) {
+			delete_transient( 'gfy_pb_result' );
+		}
+
+		// Get all templates for the dropdown
+		$templates = [
+			''                                  => '(Default)',
+			'templates/template-persona.php'    => 'Persona Page (/for/*)',
+			'templates/template-product.php'    => 'Product Page (/product/*)',
+			'templates/template-resource.php'   => 'Resource Page (/resources/*)',
+		];
+
+		// Get all top-level published pages for parent dropdown
+		$top_pages = get_pages( [
+			'parent'      => 0,
+			'post_status' => 'publish',
+			'sort_column' => 'post_title',
+		] );
+		?>
+
+		<p>Paste block markup from Claude and create or update a page instantly. No WP-CLI needed.</p>
+
+		<?php if ( $result ) : ?>
+			<?php if ( isset( $result['message'] ) ) : ?>
+				<div class="notice notice-error is-dismissible">
+					<p><?php echo esc_html( $result['message'] ); ?></p>
 				</div>
-				<table class="widefat fixed striped" style="max-width:600px;">
-					<thead>
-						<tr><th>Page</th><th>Status</th></tr>
-					</thead>
-					<tbody>
-						<?php foreach ( $results['pages'] as $page_result ) : ?>
-							<tr>
-								<td><code>/<?php echo esc_html( $page_result['slug'] ); ?>/</code></td>
-								<td>
-									<?php if ( $page_result['status'] === 'created' ) : ?>
-										<span style="color:green;">&#10003; Created</span>
-										(<a href="<?php echo get_edit_post_link( $page_result['id'] ); ?>">Edit</a>)
-									<?php elseif ( $page_result['status'] === 'exists' ) : ?>
-										<span style="color:gray;">&#8212; Already exists</span>
-									<?php else : ?>
-										<span style="color:red;">&#10007; Error</span>
-									<?php endif; ?>
-								</td>
-							</tr>
-						<?php endforeach; ?>
-					</tbody>
-				</table>
+			<?php elseif ( $result['status'] === 'created' ) : ?>
+				<div class="notice notice-success is-dismissible">
+					<p>
+						<strong>Page created!</strong>
+						<code>/<?php echo esc_html( $result['slug'] ); ?>/</code> — ID <?php echo intval( $result['id'] ); ?>
+						&nbsp;
+						<a href="<?php echo get_permalink( $result['id'] ); ?>" target="_blank">View</a> |
+						<a href="<?php echo get_edit_post_link( $result['id'] ); ?>">Edit</a>
+					</p>
+				</div>
+			<?php elseif ( $result['status'] === 'updated' ) : ?>
+				<div class="notice notice-success is-dismissible">
+					<p>
+						<strong>Page updated!</strong>
+						<code>/<?php echo esc_html( $result['slug'] ); ?>/</code> — ID <?php echo intval( $result['id'] ); ?>
+						&nbsp;
+						<a href="<?php echo get_permalink( $result['id'] ); ?>" target="_blank">View</a> |
+						<a href="<?php echo get_edit_post_link( $result['id'] ); ?>">Edit</a>
+					</p>
+				</div>
+			<?php elseif ( $result['status'] === 'exists' ) : ?>
+				<div class="notice notice-warning is-dismissible">
+					<p>
+						<strong>Page already exists!</strong>
+						<code>/<?php echo esc_html( $result['slug'] ); ?>/</code> — ID <?php echo intval( $result['id'] ); ?>.
+						Switch to <strong>"Update existing page"</strong> mode to replace its content.
+						&nbsp;
+						<a href="<?php echo get_edit_post_link( $result['id'] ); ?>">Edit in WP</a>
+					</p>
+				</div>
+			<?php elseif ( $result['status'] === 'not_found' ) : ?>
+				<div class="notice notice-error is-dismissible">
+					<p>
+						<strong>Page not found!</strong>
+						No page with slug <code>/<?php echo esc_html( $result['slug'] ); ?>/</code> exists.
+						Switch to <strong>"Create new page"</strong> mode.
+					</p>
+				</div>
+			<?php elseif ( $result['status'] === 'error' ) : ?>
+				<div class="notice notice-error is-dismissible">
+					<p><strong>Error creating page.</strong> Check the slug and try again.</p>
+				</div>
 			<?php endif; ?>
+		<?php endif; ?>
 
-			<form method="post" style="margin-top:20px;">
-				<?php wp_nonce_field( 'gfy_site_setup' ); ?>
-				<input type="hidden" name="gfy_run_setup" value="1">
-				<?php submit_button( 'Build Frontend Pages', 'primary', 'submit', false ); ?>
-			</form>
-		</div>
+		<form method="post">
+			<?php wp_nonce_field( 'gfy_page_builder' ); ?>
+			<input type="hidden" name="gfy_page_builder" value="1">
+
+			<table class="form-table" role="presentation">
+				<tr>
+					<th scope="row"><label for="gfy_pb_mode">Mode</label></th>
+					<td>
+						<select name="gfy_pb_mode" id="gfy_pb_mode">
+							<option value="create">Create new page</option>
+							<option value="update">Update existing page</option>
+						</select>
+						<p class="description">
+							<strong>Create:</strong> Makes a new page (skips if slug exists).
+							<strong>Update:</strong> Replaces content of existing page by slug.
+						</p>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row"><label for="gfy_pb_slug">Slug <span style="color:red;">*</span></label></th>
+					<td>
+						<input type="text" name="gfy_pb_slug" id="gfy_pb_slug" class="regular-text"
+						       placeholder="e.g. experts-consultants" required>
+						<p class="description">Page slug only (not the full path). For <code>/for/experts-consultants</code>, enter <code>experts-consultants</code> and set Parent to "For".</p>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row"><label for="gfy_pb_title">Title <span style="color:red;">*</span></label></th>
+					<td>
+						<input type="text" name="gfy_pb_title" id="gfy_pb_title" class="regular-text"
+						       placeholder="e.g. For Experts & Consultants" required>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row"><label for="gfy_pb_parent">Parent Page</label></th>
+					<td>
+						<select name="gfy_pb_parent" id="gfy_pb_parent">
+							<option value="">(No parent — top level)</option>
+							<?php foreach ( $top_pages as $page ) : ?>
+								<option value="<?php echo esc_attr( $page->post_name ); ?>">
+									<?php echo esc_html( $page->post_title ); ?> (<?php echo esc_html( $page->post_name ); ?>)
+								</option>
+							<?php endforeach; ?>
+						</select>
+						<p class="description">Set this for child pages (e.g., parent "product" for <code>/product/podcast-discovery</code>, parent "for" for <code>/for/experts-consultants</code>).</p>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row"><label for="gfy_pb_template">Page Template</label></th>
+					<td>
+						<select name="gfy_pb_template" id="gfy_pb_template">
+							<?php foreach ( $templates as $value => $label ) : ?>
+								<option value="<?php echo esc_attr( $value ); ?>">
+									<?php echo esc_html( $label ); ?>
+								</option>
+							<?php endforeach; ?>
+						</select>
+					</td>
+				</tr>
+				<tr>
+					<th scope="row"><label for="gfy_pb_content">Block Markup <span style="color:red;">*</span></label></th>
+					<td>
+						<textarea name="gfy_pb_content" id="gfy_pb_content" rows="20"
+						          style="width:100%; max-width:900px; font-family:monospace; font-size:13px; tab-size:2;"
+						          placeholder="Paste the full <!-- wp:group --> block markup from Claude here..." required></textarea>
+						<p class="description">
+							Paste the complete block markup output from Claude. Everything between the opening and closing group blocks.
+							The content is saved exactly as pasted — no sanitization is applied to block comments.
+						</p>
+					</td>
+				</tr>
+			</table>
+
+			<?php submit_button( 'Create / Update Page', 'primary', 'submit', true ); ?>
+		</form>
+
+		<hr>
+		<h3>Quick Reference — Sitemap</h3>
+		<table class="widefat fixed striped" style="max-width:700px;">
+			<thead>
+				<tr><th>Slug</th><th>Title</th><th>Parent</th><th>Template</th></tr>
+			</thead>
+			<tbody>
+				<tr><td><code>product</code></td><td>Product</td><td>—</td><td>Default</td></tr>
+				<tr><td><code>pricing</code></td><td>Pricing</td><td>—</td><td>Default</td></tr>
+				<tr><td><code>start</code></td><td>Start Free Trial</td><td>—</td><td>Default</td></tr>
+				<tr><td><code>demo</code></td><td>Demo</td><td>—</td><td>Default</td></tr>
+				<tr><td><code>how-it-works</code></td><td>How It Works</td><td>—</td><td>Default</td></tr>
+				<tr><td><code>about</code></td><td>About</td><td>—</td><td>Default</td></tr>
+				<tr><td><code>contact</code></td><td>Contact</td><td>—</td><td>Default</td></tr>
+				<tr><td><code>webinar</code></td><td>Webinar</td><td>—</td><td>Default</td></tr>
+				<tr><td><code>wall-of-love</code></td><td>Wall of Love</td><td>—</td><td>Default</td></tr>
+				<tr><td colspan="4" style="background:#f0f0f1;"><strong>Persona Pages</strong> (parent: <code>for</code>)</td></tr>
+				<tr><td><code>experts-consultants</code></td><td>For Experts & Consultants</td><td>for</td><td>Persona</td></tr>
+				<tr><td><code>business-owners</code></td><td>For Business Owners</td><td>for</td><td>Persona</td></tr>
+				<tr><td><code>authors-creators</code></td><td>For Authors & Creators</td><td>for</td><td>Persona</td></tr>
+				<tr><td><code>agencies</code></td><td>For Agencies</td><td>for</td><td>Persona</td></tr>
+				<tr><td colspan="4" style="background:#f0f0f1;"><strong>Product Sub-Pages</strong> (parent: <code>product</code>)</td></tr>
+				<tr><td><code>podcast-discovery</code></td><td>Discovery Intelligence</td><td>product</td><td>Product</td></tr>
+				<tr><td><code>authority-positioning</code></td><td>Authority Positioning</td><td>product</td><td>Product</td></tr>
+				<tr><td><code>outreach-booking</code></td><td>Outreach & Booking</td><td>product</td><td>Product</td></tr>
+				<tr><td><code>interview-tracking</code></td><td>Interview Tracking</td><td>product</td><td>Product</td></tr>
+				<tr><td><code>relationship-management</code></td><td>Relationship Leverage</td><td>product</td><td>Product</td></tr>
+				<tr><td><code>agency-operations</code></td><td>Agency Operations</td><td>product</td><td>Product</td></tr>
+			</tbody>
+		</table>
 		<?php
 	}
 
