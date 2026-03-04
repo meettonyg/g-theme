@@ -22,6 +22,12 @@ function guestify_body_classes( $classes ) {
 		$classes[] = 'no-sidebar';
 	}
 
+	// Add gfy-frontend class for all frontend/marketing pages so
+	// body.gfy-frontend CSS selectors in frontend-global.css match.
+	if ( function_exists( 'is_frontend_page' ) && is_frontend_page() ) {
+		$classes[] = 'gfy-frontend';
+	}
+
 	return $classes;
 }
 add_filter( 'body_class', 'guestify_body_classes' );

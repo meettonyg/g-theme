@@ -148,6 +148,7 @@ class GFY_Site_Setup {
 			'slug'       => 'home',
 			'title'      => 'Home',
 			'menu_order' => 1,
+			'template'   => 'templates/template-frontend.php',
 			'content'    => self::assemble_homepage(),
 		] );
 
@@ -155,6 +156,7 @@ class GFY_Site_Setup {
 			'slug'       => 'how-it-works',
 			'title'      => 'How It Works',
 			'menu_order' => 2,
+			'template'   => 'templates/template-frontend.php',
 			'content'    => self::assemble_how_it_works(),
 		] );
 
@@ -162,25 +164,29 @@ class GFY_Site_Setup {
 			'slug'       => 'pricing',
 			'title'      => 'Pricing',
 			'menu_order' => 3,
+			'template'   => 'templates/template-frontend.php',
 			'content'    => self::assemble_pricing(),
 		] );
 
 		$results[] = self::create_page( [
-			'slug'    => 'demo',
-			'title'   => 'Book a Demo',
-			'content' => self::assemble_demo(),
+			'slug'     => 'demo',
+			'title'    => 'Book a Demo',
+			'template' => 'templates/template-frontend.php',
+			'content'  => self::assemble_demo(),
 		] );
 
 		$results[] = self::create_page( [
-			'slug'    => 'about',
-			'title'   => 'About',
-			'content' => self::assemble_about(),
+			'slug'     => 'about',
+			'title'    => 'About',
+			'template' => 'templates/template-frontend.php',
+			'content'  => self::assemble_about(),
 		] );
 
 		$results[] = self::create_page( [
-			'slug'    => 'contact',
-			'title'   => 'Contact',
-			'content' => self::assemble_contact(),
+			'slug'     => 'contact',
+			'title'    => 'Contact',
+			'template' => 'templates/template-frontend.php',
+			'content'  => self::assemble_contact(),
 		] );
 
 		// ─────────────────────────────────────────────
@@ -288,6 +294,7 @@ class GFY_Site_Setup {
 			'slug'       => 'for',
 			'title'      => 'Solutions',
 			'menu_order' => 5,
+			'template'   => 'templates/template-frontend.php',
 			'content'    => '',
 		] );
 		$results[] = $for_result;
@@ -405,9 +412,10 @@ class GFY_Site_Setup {
 		// ─────────────────────────────────────────────
 
 		$results[] = self::create_page( [
-			'slug'    => 'webinar',
-			'title'   => 'Free Masterclass',
-			'content' => self::assemble_webinar(),
+			'slug'     => 'webinar',
+			'title'    => 'Free Masterclass',
+			'template' => 'templates/template-frontend.php',
+			'content'  => self::assemble_webinar(),
 		] );
 
 		$results[] = self::create_page( [
@@ -429,21 +437,24 @@ class GFY_Site_Setup {
 		// ─────────────────────────────────────────────
 
 		$results[] = self::create_page( [
-			'slug'    => 'privacy',
-			'title'   => 'Privacy Policy',
-			'content' => '<!-- wp:paragraph --><p>Privacy policy content goes here.</p><!-- /wp:paragraph -->',
+			'slug'     => 'privacy',
+			'title'    => 'Privacy Policy',
+			'template' => 'templates/template-frontend.php',
+			'content'  => '<!-- wp:paragraph --><p>Privacy policy content goes here.</p><!-- /wp:paragraph -->',
 		] );
 
 		$results[] = self::create_page( [
-			'slug'    => 'terms',
-			'title'   => 'Terms of Service',
-			'content' => '<!-- wp:paragraph --><p>Terms of service content goes here.</p><!-- /wp:paragraph -->',
+			'slug'     => 'terms',
+			'title'    => 'Terms of Service',
+			'template' => 'templates/template-frontend.php',
+			'content'  => '<!-- wp:paragraph --><p>Terms of service content goes here.</p><!-- /wp:paragraph -->',
 		] );
 
 		$results[] = self::create_page( [
-			'slug'    => 'security',
-			'title'   => 'Security',
-			'content' => '<!-- wp:paragraph --><p>Security information goes here.</p><!-- /wp:paragraph -->',
+			'slug'     => 'security',
+			'title'    => 'Security',
+			'template' => 'templates/template-frontend.php',
+			'content'  => '<!-- wp:paragraph --><p>Security information goes here.</p><!-- /wp:paragraph -->',
 		] );
 
 		// ─────────────────────────────────────────────
@@ -451,11 +462,12 @@ class GFY_Site_Setup {
 		// ─────────────────────────────────────────────
 
 		$results[] = self::create_page( [
-			'slug'    => 'wall-of-love',
-			'title'   => 'Wall of Love',
-			'content' => self::get_pattern_content( 'section-testimonial-row' )
-			           . "\n\n"
-			           . self::get_pattern_content( 'section-cta-primary' ),
+			'slug'     => 'wall-of-love',
+			'title'    => 'Wall of Love',
+			'template' => 'templates/template-frontend.php',
+			'content'  => self::get_pattern_content( 'section-testimonial-row' )
+			            . "\n\n"
+			            . self::get_pattern_content( 'section-cta-primary' ),
 		] );
 
 		return $results;
@@ -1300,6 +1312,10 @@ class GFY_Site_Setup {
 					// Known persona slug → parent: for, persona template
 					$parent   = 'for';
 					$template = 'templates/template-persona.php';
+				} else {
+					// All other frontend pages use the generic frontend template
+					// so the gfy-frontend wrapper class is present for CSS.
+					$template = 'templates/template-frontend.php';
 				}
 
 				// Generate a human-readable title from slug
