@@ -29,6 +29,54 @@
 }
 
 /* ---------------------------------------------------------------------------
+   Hero Section
+   --------------------------------------------------------------------------- */
+
+.gfy-section--hero {
+    background: linear-gradient(135deg, var(--gfy-primary-800, #1B365D) 0%, var(--gfy-primary-900, #102a43) 100%);
+    color: var(--gfy-white, #ffffff);
+    padding: var(--gfy-space-24, 6rem) var(--gfy-space-6, 1.5rem);
+    text-align: center;
+}
+
+.gfy-section--hero h1,
+.gfy-section--hero h2,
+.gfy-section--hero h3 {
+    color: var(--gfy-white, #ffffff);
+}
+
+.gfy-section--hero p {
+    color: var(--gfy-primary-200, #bcccdc);
+}
+
+.gfy-section--hero .gfy-pre-headline {
+    color: var(--gfy-accent-400, #f6ad55);
+}
+
+.gfy-section--hero .gfy-sub-headline {
+    color: var(--gfy-primary-100, #d9e2ec);
+    max-width: 720px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+@media (max-width: 768px) {
+    .gfy-section--hero {
+        padding: var(--gfy-space-16, 4rem) var(--gfy-space-4, 1rem);
+    }
+}
+
+/* ---------------------------------------------------------------------------
+   Content Wrapper (max-width container)
+   --------------------------------------------------------------------------- */
+
+.gfy-wrapper {
+    max-width: 1200px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/* ---------------------------------------------------------------------------
    Section Theme Variants
    --------------------------------------------------------------------------- */
 
@@ -291,6 +339,23 @@
     direction: ltr;
 }
 
+/* Column types */
+.gfy-content-grid__col {
+    min-width: 0;
+}
+
+.gfy-content-grid__col--text {
+    display: flex;
+    flex-direction: column;
+    gap: var(--gfy-space-4, 1rem);
+}
+
+.gfy-content-grid__col--media {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
 @media (max-width: 768px) {
     .gfy-content-grid {
         grid-template-columns: 1fr;
@@ -300,6 +365,43 @@
     .gfy-content-grid--reversed {
         direction: ltr;
     }
+}
+
+
+/* ---------------------------------------------------------------------------
+   Feature Row (alternating image + text)
+   --------------------------------------------------------------------------- */
+
+.gfy-feature-row {
+    margin-bottom: var(--gfy-space-4, 1rem);
+}
+
+.gfy-feature-row__image img {
+    width: 100%;
+    height: auto;
+    border-radius: var(--gfy-radius-xl, 0.75rem);
+    box-shadow: var(--gfy-shadow-lg, 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -4px rgba(0, 0, 0, 0.1));
+    border: 1px solid var(--gfy-gray-200, #e2e8f0);
+}
+
+/* ---------------------------------------------------------------------------
+   CTA Section
+   --------------------------------------------------------------------------- */
+
+.gfy-cta__buttons {
+    justify-content: center;
+    gap: var(--gfy-space-4, 1rem);
+    margin-top: var(--gfy-space-8, 2rem);
+}
+
+.gfy-cta__reassurance {
+    font-size: var(--gfy-text-sm, 0.875rem);
+    color: var(--gfy-gray-400, #94a3b8);
+    margin-top: var(--gfy-space-4, 1rem);
+}
+
+.gfy-section--accent .gfy-cta__reassurance {
+    color: var(--gfy-primary-200, #bcccdc);
 }
 
 

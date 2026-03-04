@@ -280,6 +280,12 @@ body.gfy-frontend {
     font-size: var(--gfy-text-sm, 0.875rem);
 }
 
+/* BEM aliases — block markup uses double-dash convention */
+.gfy-btn--primary { background-color: var(--gfy-primary-800, #1B365D); color: var(--gfy-white, #ffffff); }
+.gfy-btn--primary:hover { background-color: var(--gfy-primary-900, #102a43); text-decoration: none; color: var(--gfy-white, #ffffff); }
+.gfy-btn--secondary { background-color: transparent; border: var(--gfy-border-2, 2px) solid var(--gfy-primary-800, #1B365D); color: var(--gfy-primary-800, #1B365D); }
+.gfy-btn--secondary:hover { background-color: var(--gfy-primary-50, #f0f4f8); text-decoration: none; color: var(--gfy-primary-800, #1B365D); }
+
 
 /* ==========================================================================
    5. FRONTEND HEADER ADJUSTMENTS
@@ -491,6 +497,8 @@ body.gfy-frontend {
     font-size: var(--gfy-text-lg, 1.125rem);
     color: var(--gfy-gray-500, #64748b);
     max-width: 640px;
+    margin-left: auto;
+    margin-right: auto;
     line-height: var(--gfy-leading-relaxed, 1.625);
 }
 
