@@ -34,16 +34,20 @@
    --------------------------------------------------------------------------
    theme.json sets contentSize: 768px for blog readability.
    Frontend marketing pages need 1200px content width.
-   These overrides are scoped to .gfy-frontend so blog pages stay at 768px.
+   These overrides are scoped to .gfy-frontend so blog/app pages are unaffected.
+
+   DOM structure WordPress generates:
+     .gfy-section.wp-block-group
+       └── .wp-block-group__inner-container.is-layout-flow
+             └── .gfy-wrapper.wp-block-group
+                   └── .wp-block-group__inner-container.is-layout-constrained
+                         ├── p, h1, h2 …
+                         └── .wp-block-columns.gfy-content-grid
    ========================================================================== */
 
 /*
- * Expand the constrained-layout content width to 1200px on frontend pages.
- * WordPress generates:
- *   :where(.is-layout-constrained) > :where(:not(.alignleft)...) {
- *       max-width: var(--wp--style--global--content-size);
- *   }
- * Overriding the variable is cleaner than fighting specificity.
+ * 1. Override the CSS custom property that WordPress's constrained layout
+ *    reads for max-width. Insurance in case WP picks it up.
  */
 .gfy-frontend {
     --wp--style--global--content-size: 1200px;
@@ -51,11 +55,45 @@
 }
 
 /*
- * Reset WP block-group padding inside section wrappers.
- * Sections already provide their own padding via .gfy-section;
- * the inner .gfy-wrapper should not add more.
+ * 2. Center children of constrained containers.
+ *    WordPress should generate these rules but does NOT on this setup.
+ *    Without margin: auto, elements with max-width (p { max-width: 75ch })
+ *    stay left-aligned — creating the off-center appearance.
+ *
+ *    NOTE: .is-layout-constrained is on the __inner-container div,
+ *    NOT on .gfy-wrapper itself.
  */
-.gfy-frontend .gfy-section .gfy-wrapper.wp-block-group {
+.gfy-frontend .is-layout-constrained > :where(:not(.alignleft):not(.alignright):not(.alignfull)) {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/*
+ * 3. Structural blocks should fill the full wrapper width, not be
+ *    constrained by WordPress's contentSize. max-width: none lets
+ *    columns, buttons, tables, etc. stretch to 100% of the container.
+ */
+.gfy-frontend .is-layout-constrained > :where(.wp-block-columns, .wp-block-buttons, .wp-block-group, .wp-block-image, figure, table) {
+    max-width: none;
+}
+
+/*
+ * 4. Center elements that use WordPress's has-text-align-center utility.
+ *    Without this, a p with max-width: 75ch would be a left-aligned box
+ *    with centered text inside — appearing visually off-center.
+ */
+.gfy-frontend .has-text-align-center {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+/*
+ * 5. Reset WP block-group padding inside section wrappers.
+ *    Sections already provide their own padding via .gfy-section;
+ *    the inner .gfy-wrapper and its __inner-container should not add more.
+ */
+.gfy-frontend .gfy-section .gfy-wrapper.wp-block-group,
+.gfy-frontend .gfy-section .gfy-wrapper .wp-block-group__inner-container {
     padding-top: 0;
     padding-bottom: 0;
     padding-left: 0;
@@ -63,28 +101,17 @@
 }
 
 /*
- * Ensure full-width block types (columns, buttons, tables) aren't accidentally
- * constrained. The CSS variable override above handles most cases; this targets
- * structural blocks that should always fill the wrapper width.
- * NOTE: We intentionally don't use `> *` here to preserve paragraph-level
- * max-widths (75ch, 720px on .gfy-sub-headline, etc.).
- */
-.gfy-frontend .gfy-wrapper.is-layout-constrained > :where(.wp-block-columns, .wp-block-buttons, .wp-block-group, .wp-block-image, figure, table) {
-    max-width: none;
-}
-
-/*
- * Ensure wp:columns uses our grid layout, not WordPress's default flex.
- * WordPress generates .wp-block-columns.is-layout-flex { display: flex; }
- * Our .gfy-content-grid uses display: grid with explicit column tracks.
+ * 6. Ensure wp:columns uses our grid layout, not WordPress's default flex.
+ *    WordPress inlines: .wp-block-columns { display: flex; }
+ *    Our .gfy-content-grid uses display: grid with explicit column tracks.
  */
 .gfy-frontend .gfy-content-grid.wp-block-columns {
     display: grid;
 }
 
 /*
- * Reset WP's flex-basis on individual columns so the grid controls sizing.
- * WordPress sets flex-basis with specificity; we need to override it.
+ * 7. Reset WP's flex-basis on individual columns so the grid controls sizing.
+ *    WordPress sets: .wp-block-column { flex-basis: 0; flex-grow: 1; }
  */
 .gfy-frontend .gfy-content-grid .wp-block-column {
     flex-basis: unset;
@@ -92,9 +119,9 @@
 }
 
 /*
- * Strip WP root padding from full-bleed sections.
- * useRootPaddingAwareAlignments adds padding via .has-global-padding;
- * sections already handle their own horizontal padding.
+ * 8. Strip WP root padding from full-bleed sections.
+ *    useRootPaddingAwareAlignments adds padding via .has-global-padding;
+ *    sections already handle their own horizontal padding.
  */
 .gfy-frontend .gfy-section.has-global-padding {
     padding-right: var(--gfy-space-6, 1.5rem);
