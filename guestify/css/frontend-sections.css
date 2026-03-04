@@ -135,6 +135,32 @@
     }
 }
 
+/*
+ * 9. Bridge rules — replace critical styles from dequeued WP block CSS.
+ *    These cover wp-block-buttons, wp-block-columns, and wp-block-button
+ *    inline CSS that we removed in frontend-enqueue.php.
+ */
+
+/* Replace wp-block-buttons-inline-css: flex layout for button groups */
+.gfy-frontend .wp-block-buttons.is-layout-flex {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5em;
+}
+
+/* Replace wp-block-columns-inline-css: mobile stacking */
+@media (max-width: 781px) {
+    .gfy-frontend .wp-block-columns:not(.is-not-stacked-on-mobile) > .wp-block-column {
+        flex-basis: 100% !important;
+    }
+}
+
+/* Replace wp-block-button-inline-css: link display */
+.gfy-frontend .wp-block-button__link {
+    display: inline-block;
+    text-decoration: none;
+}
+
 
 /* ---------------------------------------------------------------------------
    Hero Section
