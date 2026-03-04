@@ -315,7 +315,7 @@ body.gfy-frontend {
     max-width: 1280px;
     margin: 0 auto;
     display: grid;
-    grid-template-columns: 1.5fr repeat(3, 1fr);
+    grid-template-columns: 1.5fr repeat(4, 1fr);
     gap: var(--gfy-space-12, 3rem);
 }
 
@@ -328,8 +328,15 @@ body.gfy-frontend {
 }
 
 .gfy-footer__logo {
+    max-width: 160px;
+}
+
+.gfy-footer__logo img,
+.gfy-footer__logo .custom-logo {
     height: 32px;
     width: auto;
+    max-width: 160px;
+    object-fit: contain;
 }
 
 .gfy-footer__tagline {
@@ -347,7 +354,17 @@ body.gfy-frontend {
     gap: var(--gfy-space-3, 0.75rem);
 }
 
+.gfy-footer__nav ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--gfy-space-2, 0.5rem);
+}
+
 .gfy-footer__nav-title {
+    font-family: var(--gfy-font-heading, 'Montserrat', system-ui, sans-serif);
     font-size: var(--gfy-text-sm, 0.875rem);
     font-weight: var(--gfy-font-semibold, 600);
     color: var(--gfy-white, #ffffff);

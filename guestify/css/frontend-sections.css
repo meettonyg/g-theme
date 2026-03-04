@@ -28,6 +28,87 @@
     }
 }
 
+
+/* ==========================================================================
+   1b. WORDPRESS BLOCK LAYOUT OVERRIDES (Frontend Pages Only)
+   --------------------------------------------------------------------------
+   theme.json sets contentSize: 768px for blog readability.
+   Frontend marketing pages need 1200px content width.
+   These overrides are scoped to .gfy-frontend so blog pages stay at 768px.
+   ========================================================================== */
+
+/*
+ * Expand the constrained-layout content width to 1200px on frontend pages.
+ * WordPress generates:
+ *   :where(.is-layout-constrained) > :where(:not(.alignleft)...) {
+ *       max-width: var(--wp--style--global--content-size);
+ *   }
+ * Overriding the variable is cleaner than fighting specificity.
+ */
+.gfy-frontend {
+    --wp--style--global--content-size: 1200px;
+    --wp--style--global--wide-size: 1280px;
+}
+
+/*
+ * Reset WP block-group padding inside section wrappers.
+ * Sections already provide their own padding via .gfy-section;
+ * the inner .gfy-wrapper should not add more.
+ */
+.gfy-frontend .gfy-section .gfy-wrapper.wp-block-group {
+    padding-top: 0;
+    padding-bottom: 0;
+    padding-left: 0;
+    padding-right: 0;
+}
+
+/*
+ * Ensure full-width block types (columns, buttons, tables) aren't accidentally
+ * constrained. The CSS variable override above handles most cases; this targets
+ * structural blocks that should always fill the wrapper width.
+ * NOTE: We intentionally don't use `> *` here to preserve paragraph-level
+ * max-widths (75ch, 720px on .gfy-sub-headline, etc.).
+ */
+.gfy-frontend .gfy-wrapper.is-layout-constrained > :where(.wp-block-columns, .wp-block-buttons, .wp-block-group, .wp-block-image, figure, table) {
+    max-width: none;
+}
+
+/*
+ * Ensure wp:columns uses our grid layout, not WordPress's default flex.
+ * WordPress generates .wp-block-columns.is-layout-flex { display: flex; }
+ * Our .gfy-content-grid uses display: grid with explicit column tracks.
+ */
+.gfy-frontend .gfy-content-grid.wp-block-columns {
+    display: grid;
+}
+
+/*
+ * Reset WP's flex-basis on individual columns so the grid controls sizing.
+ * WordPress sets flex-basis with specificity; we need to override it.
+ */
+.gfy-frontend .gfy-content-grid .wp-block-column {
+    flex-basis: unset;
+    flex-grow: unset;
+}
+
+/*
+ * Strip WP root padding from full-bleed sections.
+ * useRootPaddingAwareAlignments adds padding via .has-global-padding;
+ * sections already handle their own horizontal padding.
+ */
+.gfy-frontend .gfy-section.has-global-padding {
+    padding-right: var(--gfy-space-6, 1.5rem);
+    padding-left: var(--gfy-space-6, 1.5rem);
+}
+
+@media (max-width: 768px) {
+    .gfy-frontend .gfy-section.has-global-padding {
+        padding-right: var(--gfy-space-4, 1rem);
+        padding-left: var(--gfy-space-4, 1rem);
+    }
+}
+
+
 /* ---------------------------------------------------------------------------
    Hero Section
    --------------------------------------------------------------------------- */
@@ -98,6 +179,14 @@
     color: var(--gfy-gray-300, #cbd5e1);
 }
 
+.gfy-section--dark a {
+    color: var(--gfy-accent-400, #f6ad55);
+}
+
+.gfy-section--dark a:hover {
+    color: var(--gfy-accent-300, #fbd38d);
+}
+
 .gfy-section--light {
     background-color: var(--gfy-gray-50, #f8fafc);
 }
@@ -118,6 +207,14 @@
 
 .gfy-section--accent p {
     color: var(--gfy-primary-100, #d9e2ec);
+}
+
+.gfy-section--accent a {
+    color: var(--gfy-accent-400, #f6ad55);
+}
+
+.gfy-section--accent a:hover {
+    color: var(--gfy-accent-300, #fbd38d);
 }
 
 /* ---------------------------------------------------------------------------
@@ -881,6 +978,34 @@
     -webkit-overflow-scrolling: touch;
     border-radius: var(--gfy-radius-lg, 0.5rem);
     border: var(--gfy-border-1, 1px) solid var(--gfy-gray-200, #e2e8f0);
+}
+
+/* Comparison table in dark section */
+.gfy-section--dark .gfy-comparison {
+    border-radius: var(--gfy-radius-lg, 0.5rem);
+    overflow: hidden;
+}
+
+.gfy-section--dark .gfy-comparison th {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-bottom: 1px solid var(--gfy-gray-700, #334155);
+}
+
+.gfy-section--dark .gfy-comparison td {
+    color: var(--gfy-gray-300, #cbd5e1);
+    border-bottom-color: var(--gfy-gray-700, #334155);
+}
+
+.gfy-section--dark .gfy-comparison td:first-child {
+    color: var(--gfy-white, #ffffff);
+}
+
+.gfy-section--dark .gfy-comparison tbody tr:hover {
+    background-color: var(--gfy-gray-800, #1e293b);
+}
+
+.gfy-section--dark .gfy-comparison-wrapper {
+    border-color: var(--gfy-gray-700, #334155);
 }
 
 
