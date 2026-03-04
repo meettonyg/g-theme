@@ -859,24 +859,8 @@ function guestify_enqueue_resources_assets() {
 }
 add_action( 'wp_enqueue_scripts', 'guestify_enqueue_resources_assets' );
 
-/**
- * Enqueue homepage CSS only for homepage (ID: 46263)
- */
-function guestify_enqueue_homepage_css() {
-	if ( is_page( 46263 ) ) {
-		$css_path = WP_CONTENT_DIR . '/css/homepage.css';
-		$css_url  = content_url( '/css/homepage.css' );
-		$version  = file_exists( $css_path ) ? filemtime( $css_path ) : '1.0.0';
-
-		wp_enqueue_style(
-			'guestify-homepage',
-			$css_url,
-			array(),
-			$version
-		);
-	}
-}
-add_action( 'wp_enqueue_scripts', 'guestify_enqueue_homepage_css' );
+/* Legacy guestify_enqueue_homepage_css removed — homepage styles
+   are now handled by frontend-home.css via frontend-enqueue.php. */
 
 /**
  * Guestify New Theme Pages CSS Enqueue
@@ -1403,7 +1387,7 @@ function is_gfy_home_page() {
 	$url_path = rtrim( $url_path, '/' );
 
 	// Match /app or /app/ exactly (not subpages)
-	return $url_path === '/app' || $url_path === '';
+	return $url_path === '/app';
 }
 
 /**

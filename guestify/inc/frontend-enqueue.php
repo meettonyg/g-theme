@@ -143,9 +143,8 @@ add_action( 'wp_enqueue_scripts', 'guestify_frontend_page_assets' );
  * Dequeue app-only and unnecessary styles/scripts on frontend pages.
  *
  * Runs at priority 100 so it fires after all assets have been enqueued.
- * Frontend marketing pages use custom CSS (frontend-global.css, frontend-sections.css)
- * that fully replaces WordPress block inline styles, so we can safely remove them
- * along with other app-only and plugin assets to cut ~150KB+ of dead weight.
+ * Uses both wp_dequeue and wp_deregister to prevent plugins from
+ * re-enqueuing assets via dependency chains.
  *
  * @return void
  */
@@ -164,14 +163,16 @@ function guestify_dequeue_app_on_frontend() {
 	wp_dequeue_style( 'gfy-dashboard' );
 	wp_dequeue_style( 'gfy-account' );
 	wp_dequeue_style( 'gfy-command-palette' );
+	wp_dequeue_style( 'guestify-home' );
+	wp_deregister_style( 'guestify-home' );
 
 	/*
 	|----------------------------------------------------------------------
 	| Font Awesome (~40KB) — not used on any frontend page.
-	| Only the app-navigation uses fa- classes.
 	|----------------------------------------------------------------------
 	*/
 	wp_dequeue_style( 'font-awesome' );
+	wp_deregister_style( 'font-awesome' );
 
 	/*
 	|----------------------------------------------------------------------
@@ -179,16 +180,30 @@ function guestify_dequeue_app_on_frontend() {
 	|----------------------------------------------------------------------
 	*/
 	wp_dequeue_style( 'gfy-agency-switcher' );
+	wp_deregister_style( 'gfy-agency-switcher' );
 
 	/*
 	|----------------------------------------------------------------------
-	| WordPress Block Inline CSS — replaced by frontend-global.css
-	| and frontend-sections.css with bridge rules.
-	|
-	| NOTE: We keep 'global-styles-inline-css' because it contains
-	| critical layout primitives (.is-layout-flex, .is-layout-flow).
+	| WP Fusion admin bar — not needed on marketing pages.
 	|----------------------------------------------------------------------
 	*/
+	wp_dequeue_style( 'wpf-admin-bar' );
+	wp_deregister_style( 'wpf-admin-bar' );
+
+	/*
+	|----------------------------------------------------------------------
+	| Legacy homepage CSS — superseded by frontend-home.css.
+	|----------------------------------------------------------------------
+	*/
+	wp_dequeue_style( 'guestify-homepage' );
+
+	/*
+	|----------------------------------------------------------------------
+	| WordPress Core Inline CSS — replaced by frontend-global.css
+	| and frontend-sections.css with bridge rules.
+	|----------------------------------------------------------------------
+	*/
+	wp_dequeue_style( 'global-styles' );
 	wp_dequeue_style( 'classic-theme-styles' );
 	wp_dequeue_style( 'wp-block-button' );
 	wp_dequeue_style( 'wp-block-buttons' );
@@ -198,14 +213,17 @@ function guestify_dequeue_app_on_frontend() {
 	wp_dequeue_style( 'wp-block-paragraph' );
 	wp_dequeue_style( 'wp-block-columns' );
 	wp_dequeue_style( 'wp-block-group' );
+	wp_dequeue_style( 'wp-img-auto-sizes-contain' );
 
 	/*
 	|----------------------------------------------------------------------
 	| NextEnd Social Login — not needed on marketing pages.
 	|----------------------------------------------------------------------
 	*/
-	wp_dequeue_style( 'nsl-inline-css' );
+	wp_dequeue_style( 'nextend-social-login' );
+	wp_deregister_style( 'nextend-social-login' );
 	wp_dequeue_script( 'nextend-social-login' );
+	wp_deregister_script( 'nextend-social-login' );
 
 	/*
 	|----------------------------------------------------------------------
@@ -214,19 +232,47 @@ function guestify_dequeue_app_on_frontend() {
 	*/
 	wp_dequeue_script( 'gfy-command-palette' );
 	wp_dequeue_script( 'gfy-agency-switcher' );
+	wp_deregister_script( 'gfy-agency-switcher' );
 	wp_dequeue_script( 'wpf-admin-bar' );
+	wp_deregister_script( 'wpf-admin-bar' );
+	wp_dequeue_script( 'guestify-home' );
+	wp_deregister_script( 'guestify-home' );
 
 	/*
 	|----------------------------------------------------------------------
 	| jQuery + jQuery Migrate (~90KB) — not needed.
 	| navigation.js and frontend-header.js are vanilla JS.
-	| Dequeuing agency-switcher (above) removes the only dependency.
-	| If another plugin re-adds jQuery as a dependency, WP will
-	| re-enqueue it automatically.
+	| Deregister to prevent dependency-chain re-enqueuing.
 	|----------------------------------------------------------------------
 	*/
 	wp_dequeue_script( 'jquery' );
 	wp_dequeue_script( 'jquery-core' );
 	wp_dequeue_script( 'jquery-migrate' );
+	wp_deregister_script( 'jquery' );
+	wp_deregister_script( 'jquery-core' );
+	wp_deregister_script( 'jquery-migrate' );
 }
 add_action( 'wp_enqueue_scripts', 'guestify_dequeue_app_on_frontend', 100 );
+
+/**
+ * Remove NextEnd Social Login inline CSS/JS on frontend pages.
+ *
+ * NSL outputs its styles and scripts directly via wp_head/wp_footer hooks,
+ * bypassing the enqueue system. We remove those hooks on marketing pages.
+ *
+ * @return void
+ */
+function guestify_remove_nsl_on_frontend() {
+
+	if ( ! function_exists( 'is_frontend_page' ) || ! is_frontend_page() ) {
+		return;
+	}
+
+	if ( ! class_exists( 'NextendSocialLogin' ) ) {
+		return;
+	}
+
+	remove_action( 'wp_head', array( 'NextendSocialLogin', 'styles' ) );
+	remove_action( 'wp_footer', array( 'NextendSocialLogin', 'scripts' ) );
+}
+add_action( 'wp_enqueue_scripts', 'guestify_remove_nsl_on_frontend', 99 );
