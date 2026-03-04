@@ -161,8 +161,7 @@ function guestify_dequeue_app_on_frontend() {
 	// App-only scripts.
 	wp_dequeue_script( 'gfy-command-palette' );
 
-	// Unnecessary WP defaults on the frontend.
-	wp_dequeue_style( 'wp-block-library-theme' );
-	wp_dequeue_style( 'classic-theme-styles' );
+	// Keep wp-block-library-theme and classic-theme-styles —
+	// frontend pages use block markup and need these.
 }
 add_action( 'wp_enqueue_scripts', 'guestify_dequeue_app_on_frontend', 100 );

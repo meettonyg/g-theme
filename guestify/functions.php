@@ -226,6 +226,21 @@ function guestify_enqueue_frontend_header_assets() {
 add_action( 'wp_enqueue_scripts', 'guestify_enqueue_frontend_header_assets' );
 
 /**
+ * Enqueue Google Fonts (Inter + Montserrat) on frontend pages.
+ */
+function guestify_enqueue_google_fonts() {
+	if ( function_exists( 'is_frontend_page' ) && is_frontend_page() ) {
+		wp_enqueue_style(
+			'gfy-google-fonts',
+			'https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800&display=swap',
+			array(),
+			null
+		);
+	}
+}
+add_action( 'wp_enqueue_scripts', 'guestify_enqueue_google_fonts', 1 );
+
+/**
  * Implement the Custom Header feature.
  */
 require get_template_directory() . '/inc/custom-header.php';
@@ -997,9 +1012,13 @@ function guestify_enqueue_new_theme_pages_css() {
 add_action( 'wp_enqueue_scripts', 'guestify_enqueue_new_theme_pages_css', 25 );
 
 /**
- * Remove WordPress block library CSS and other unnecessary styles
+ * Remove WordPress block library CSS and other unnecessary styles.
+ * Keep block styles on frontend pages — they use block markup for layout.
  */
 function guestify_remove_block_styles() {
+	if ( function_exists( 'is_frontend_page' ) && is_frontend_page() ) {
+		return;
+	}
 	wp_dequeue_style( 'wp-block-library' );
 	wp_dequeue_style( 'wp-block-library-theme' );
 	wp_dequeue_style( 'wc-blocks-style' ); // WooCommerce blocks if present
