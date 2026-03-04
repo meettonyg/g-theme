@@ -2858,10 +2858,48 @@ require get_template_directory() . '/inc/custom-post-types.php';
 require get_template_directory() . '/inc/frontend-enqueue.php';
 
 /**
- * Load Frontend JSON-LD Schema (Organization, WebApplication, BreadcrumbList, Article, Review).
- * Auto-outputs structured data in wp_head on frontend pages only.
+ * Load Frontend JSON-LD Schema v3 — unified @graph output.
+ * SoftwareApplication, Organization, WebSite, Article, LearningResource,
+ * BreadcrumbList, Person. Includes SEO plugin conflict prevention
+ * (Yoast, RankMath, AIOSEO). Server-side rendered for AI crawler access.
  */
 require get_template_directory() . '/inc/frontend-schema.php';
+
+/**
+ * Serve llms.txt from site root for AI engine discovery.
+ *
+ * The llms.txt file lives in the theme directory but is served at
+ * https://guestify.ai/llms.txt — a markdown file designed to guide
+ * LLMs to the site's most important pages and facts.
+ *
+ * After activating, flush permalinks: Settings → Permalinks → Save.
+ */
+function guestify_llms_txt_rewrite() {
+	add_rewrite_rule( '^llms\.txt$', 'index.php?gfy_llms_txt=1', 'top' );
+}
+add_action( 'init', 'guestify_llms_txt_rewrite' );
+
+function guestify_llms_txt_query_var( $vars ) {
+	$vars[] = 'gfy_llms_txt';
+	return $vars;
+}
+add_filter( 'query_vars', 'guestify_llms_txt_query_var' );
+
+function guestify_llms_txt_template_redirect() {
+	if ( ! get_query_var( 'gfy_llms_txt' ) ) {
+		return;
+	}
+	$file = get_template_directory() . '/llms.txt';
+	if ( file_exists( $file ) ) {
+		header( 'Content-Type: text/plain; charset=utf-8' );
+		header( 'X-Robots-Tag: noindex' );
+		readfile( $file );
+		exit;
+	}
+	status_header( 404 );
+	exit;
+}
+add_action( 'template_redirect', 'guestify_llms_txt_template_redirect' );
 
 /**
  * Register additional frontend navigation menus.

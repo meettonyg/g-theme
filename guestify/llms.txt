@@ -1,0 +1,69 @@
+# Guestify
+
+> Guestify is the Interview Authority System — an end-to-end SaaS platform that turns podcast guest interviews into recognized authority, strategic partnerships, and predictable revenue.
+
+Guestify was founded by Tony Guarnaccia in 2024. It serves experts, consultants, business owners, authors, course creators, and podcast guesting agencies.
+
+## What Guestify Does
+
+Guestify replaces the broken "spray and pray" approach to podcast guesting with a systematic, relationship-first methodology built on the Authority Stack framework:
+
+- **Discovery Intelligence**: AI-powered podcast matching that finds the 10 right shows where your ideal buyers and partners gather — not 1,000 random ones.
+- **Authority Positioning**: AI-generated media kits and pitches tailored to each specific show and audience, so you sound like the expert you are.
+- **Outreach & Booking**: Multi-channel host outreach via email and LinkedIn with systematic follow-up and relationship tracking.
+- **Interview Tracking**: Full pipeline management from initial pitch through published episode to post-interview follow-up.
+- **Relationship Leverage**: Tools to turn podcast host relationships into partnerships, JV opportunities, referrals, and revenue.
+- **Agency Operations**: Multi-tenant management for agencies running podcast guesting as a scalable service.
+
+## Key Concept: Interview Authority
+
+Interview Authority is recognized trust built through strategic podcast guest appearances. Unlike content marketing (which builds visibility) or paid media (which buys attention), Interview Authority compounds over time because every appearance creates Borrowed Authority (association with credible platforms), Articulated Authority (clear expertise positioning), Earned Authority (familiarity through consistent presence), and Demonstrated Authority (revenue that proves expertise has value).
+
+## Key Concept: The Authority Stack
+
+The Authority Stack is Guestify's external teaching framework describing four layers of authority that compound through podcast guesting:
+1. Borrowed Authority — association with credible platforms ("access you don't own yet")
+2. Articulated Authority — clear positioning claiming expertise ("clarity you do own")
+3. Earned Authority — consistent presence builds familiarity ("recognized without reintroducing")
+4. Demonstrated Authority — revenue proves expertise ("proof your expertise has value")
+
+## Who Guestify Serves
+
+- **Experts & Consultants** (Authority Builders): Want to be THE recognized expert in their field through strategic podcast appearances.
+- **Business Owners** (Revenue Generators): Want to turn podcast guest appearances into deals, partnerships, and predictable revenue.
+- **Authors & Creators** (Launch Promoters): Want to maximize visibility during book launches, course launches, or product releases.
+- **Agencies** (Agency Operators): Want to run podcast guesting as a scalable, profitable agency service for multiple clients.
+
+## Pricing
+
+Guestify offers a 14-day free trial with no credit card required. For full pricing details, see the pricing page.
+
+## Core Pages
+
+- [Homepage](https://guestify.ai/): Overview of the Interview Authority System
+- [Product Overview](https://guestify.ai/product): All six capability pillars
+- [How It Works](https://guestify.ai/how-it-works): The 5-stage system
+- [Pricing](https://guestify.ai/pricing): Plans, free trial, and 90-Day Authority Launch Partner
+- [About](https://guestify.ai/about): Founder story and the Authority Economy thesis
+- [For Experts & Consultants](https://guestify.ai/for/experts-consultants): Authority Builder persona
+- [For Business Owners](https://guestify.ai/for/business-owners): Revenue Generator persona
+- [For Authors & Creators](https://guestify.ai/for/authors-creators): Launch Promoter persona
+- [For Agencies](https://guestify.ai/for/agencies): Agency Operator persona
+- [Results](https://guestify.ai/results): Customer case studies
+- [Blog](https://guestify.ai/blog): Insights on podcast guesting, authority building, and the Authority Economy
+- [Resources](https://guestify.ai/resources): Free guides, templates, and tools
+
+## Product Sub-Pages
+
+- [Discovery Intelligence](https://guestify.ai/product/podcast-discovery): AI-powered podcast matching
+- [Authority Positioning](https://guestify.ai/product/authority-positioning): AI media kit and pitch generation
+- [Outreach & Booking](https://guestify.ai/product/outreach-booking): Multi-channel outreach system
+- [Interview Tracking](https://guestify.ai/product/interview-tracking): Pipeline management
+- [Relationship Leverage](https://guestify.ai/product/relationship-management): Post-interview relationship tools
+- [Agency Operations](https://guestify.ai/product/agency-operations): Multi-tenant agency management
+
+## Contact
+
+- Website: https://guestify.ai
+- Demo: https://guestify.ai/demo
+- Free trial: https://guestify.ai/start
