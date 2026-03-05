@@ -725,6 +725,12 @@
     justify-content: center;
 }
 
+/* Reset background on wp:button wrappers that inherit .gfy-btn--primary/--secondary */
+.wp-block-button.gfy-btn--primary,
+.wp-block-button.gfy-btn--secondary {
+    background-color: transparent;
+}
+
 /* Primary/secondary button styles for wp:button blocks */
 .gfy-btn--primary .wp-block-button__link {
     background-color: var(--gfy-accent-500, #ED8936);
