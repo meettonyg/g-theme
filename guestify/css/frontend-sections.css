@@ -469,6 +469,11 @@
     margin-top: var(--gfy-space-4, 1rem);
 }
 
+.gfy-section--hero .gfy-hero-tabs__reassurance,
+.gfy-section--dark .gfy-hero-tabs__reassurance {
+    color: var(--gfy-gray-300, #cbd5e1);
+}
+
 
 /* ==========================================================================
    3. CONTENT GRID (Two-column split, text + image)
@@ -562,20 +567,8 @@
 
 .gfy-feature-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: var(--gfy-space-8, 2rem);
-}
-
-@media (max-width: 768px) {
-    .gfy-feature-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
-@media (max-width: 480px) {
-    .gfy-feature-grid {
-        grid-template-columns: 1fr;
-    }
 }
 
 /* ---------------------------------------------------------------------------
@@ -589,6 +582,10 @@
     border: var(--gfy-border-1, 1px) solid var(--gfy-gray-200, #e2e8f0);
     transition: box-shadow var(--gfy-transition-base, 200ms),
                 border-color var(--gfy-transition-base, 200ms);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-width: 0;
 }
 
 .gfy-feature-card:hover {
@@ -722,7 +719,7 @@
 
 .gfy-steps {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: var(--gfy-space-6, 1.5rem);
 }
 
@@ -773,22 +770,11 @@
     z-index: 0;
 }
 
-/* Steps Responsive */
+/* Steps Responsive — auto-fit handles column count; hide connectors on narrow screens */
 
 @media (max-width: 768px) {
-    .gfy-steps {
-        grid-template-columns: repeat(3, 1fr);
-    }
-
     .gfy-step:not(:last-child)::after {
         display: none;
-    }
-}
-
-@media (max-width: 480px) {
-    .gfy-steps {
-        grid-template-columns: 1fr;
-        gap: var(--gfy-space-4, 1rem);
     }
 }
 
@@ -815,6 +801,10 @@
     background-color: var(--gfy-white, #ffffff);
     border-radius: var(--gfy-radius-xl, 0.75rem);
     border: var(--gfy-border-1, 1px) solid var(--gfy-gray-200, #e2e8f0);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-width: 0;
 }
 
 .gfy-testimonial__quote {
@@ -1073,16 +1063,9 @@
 
 .gfy-stats {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
     gap: var(--gfy-space-8, 2rem);
     text-align: center;
-}
-
-@media (max-width: 768px) {
-    .gfy-stats {
-        grid-template-columns: repeat(2, 1fr);
-        gap: var(--gfy-space-6, 1.5rem);
-    }
 }
 
 .gfy-stats__item {
