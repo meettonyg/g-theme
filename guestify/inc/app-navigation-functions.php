@@ -59,6 +59,20 @@ function is_frontend_page() {
 }
 
 /**
+ * Check if current page is a public-facing page (visible to site visitors).
+ *
+ * Covers both regular frontend pages AND blank-canvas marketing pages
+ * (e.g. the homepage uses template-blank.php but still needs frontend
+ * asset cleanup). Use this for dequeue / OB guards instead of
+ * is_frontend_page() which excludes blank-canvas pages.
+ *
+ * @return bool
+ */
+function is_public_page() {
+    return is_frontend_page() || ( is_blank_canvas_page() && ! is_app_page() );
+}
+
+/**
  * Check if current page is an app page
  * 
  * @param string $section Optional section to check for (e.g., 'dashboard', 'interviews')

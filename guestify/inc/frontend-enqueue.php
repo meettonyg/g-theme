@@ -3,7 +3,7 @@
  * Frontend Asset Enqueue
  *
  * Conditionally enqueues CSS and JS for frontend (non-app) pages.
- * Relies on the existing is_frontend_page() and is_app_page() helpers
+ * Relies on the existing is_public_page() and is_app_page() helpers
  * and the 'guestify-tokens' stylesheet handle already registered at priority 1.
  *
  * @package Guestify
@@ -22,7 +22,7 @@ defined( 'ABSPATH' ) || exit;
 function guestify_frontend_page_assets() {
 
 	// Bail early if not a frontend page.
-	if ( ! function_exists( 'is_frontend_page' ) || ! is_frontend_page() ) {
+	if ( ! function_exists( 'is_public_page' ) || ! is_public_page() ) {
 		return;
 	}
 
@@ -57,7 +57,7 @@ function guestify_frontend_page_assets() {
 	| Homepage
 	|----------------------------------------------------------------------
 	*/
-	if ( is_front_page() ) {
+	if ( is_front_page() || is_page( 'home' ) ) {
 		wp_enqueue_style(
 			'gfy-frontend-home',
 			$theme_uri . '/css/frontend-home.css',
@@ -150,7 +150,7 @@ add_action( 'wp_enqueue_scripts', 'guestify_frontend_page_assets' );
  */
 function guestify_dequeue_app_on_frontend() {
 
-	if ( ! function_exists( 'is_frontend_page' ) || ! is_frontend_page() ) {
+	if ( ! function_exists( 'is_public_page' ) || ! is_public_page() ) {
 		return;
 	}
 
@@ -199,21 +199,15 @@ function guestify_dequeue_app_on_frontend() {
 
 	/*
 	|----------------------------------------------------------------------
-	| WordPress Core Inline CSS — replaced by frontend-global.css
-	| and frontend-sections.css with bridge rules.
+	| WordPress Core Block Styles — KEEP these.
+	|
+	| The HTML uses WordPress block markup (wp-block-group, wp-block-columns,
+	| wp-block-buttons) which depends on global-styles and block CSS for
+	| is-layout-flex, is-layout-constrained, is-content-justification-center.
+	| Removing them breaks the grid/flex layouts across all sections.
 	|----------------------------------------------------------------------
 	*/
-	wp_dequeue_style( 'global-styles' );
 	wp_dequeue_style( 'classic-theme-styles' );
-	wp_dequeue_style( 'wp-block-button' );
-	wp_dequeue_style( 'wp-block-buttons' );
-	wp_dequeue_style( 'wp-block-heading' );
-	wp_dequeue_style( 'wp-block-image' );
-	wp_dequeue_style( 'wp-block-list' );
-	wp_dequeue_style( 'wp-block-paragraph' );
-	wp_dequeue_style( 'wp-block-columns' );
-	wp_dequeue_style( 'wp-block-group' );
-	wp_dequeue_style( 'wp-img-auto-sizes-contain' );
 
 	/*
 	|----------------------------------------------------------------------
@@ -255,24 +249,67 @@ function guestify_dequeue_app_on_frontend() {
 add_action( 'wp_enqueue_scripts', 'guestify_dequeue_app_on_frontend', 100 );
 
 /**
- * Remove NextEnd Social Login inline CSS/JS on frontend pages.
+ * Strip extraneous inline CSS from wp_head on frontend pages.
  *
- * NSL outputs its styles and scripts directly via wp_head/wp_footer hooks,
- * bypassing the enqueue system. We remove those hooks on marketing pages.
+ * NSL prints its CSS via echo inside wp_head hooks (not through the
+ * enqueue system), making it impossible to remove with wp_dequeue.
+ * Output buffering captures everything printed inside wp_head and
+ * strips the unwanted blocks before they reach the browser.
  *
- * @return void
+ * Also catches global-styles-inline-css as a fallback if wp_deregister
+ * didn't prevent WordPress from re-adding it.
  */
-function guestify_remove_nsl_on_frontend() {
-
-	if ( ! function_exists( 'is_frontend_page' ) || ! is_frontend_page() ) {
-		return;
+function guestify_clean_head_start() {
+	if ( function_exists( 'is_public_page' ) && is_public_page() ) {
+		ob_start();
 	}
-
-	if ( ! class_exists( 'NextendSocialLogin' ) ) {
-		return;
-	}
-
-	remove_action( 'wp_head', array( 'NextendSocialLogin', 'styles' ) );
-	remove_action( 'wp_footer', array( 'NextendSocialLogin', 'scripts' ) );
 }
-add_action( 'wp_enqueue_scripts', 'guestify_remove_nsl_on_frontend', 99 );
+add_action( 'wp_head', 'guestify_clean_head_start', 0 );
+
+function guestify_clean_head_end() {
+	if ( ! function_exists( 'is_public_page' ) || ! is_public_page() || ! ob_get_level() ) {
+		return;
+	}
+
+	$html = ob_get_clean();
+
+	// NSL button styles  (starts with div.nsl-container)
+	$html = preg_replace( '#<style[^>]*>\s*div\.nsl-container.*?</style>\s*#s', '', $html );
+
+	// NSL notice-fallback styles  (starts with /* Notice fallback */)
+	$html = preg_replace( '#<style[^>]*>\s*/\* Notice fallback \*/.*?</style>\s*#s', '', $html );
+
+	// NSL _nslDOMReady helper script
+	$html = preg_replace( '#<script[^>]*>\s*window\._nslDOMReady\s*=.*?</script>\s*#s', '', $html );
+
+	// NOTE: global-styles-inline-css is intentionally KEPT.
+	// It provides is-layout-flex, is-layout-constrained, and gap rules
+	// required by the WordPress block markup used across all frontend pages.
+
+	echo $html;
+}
+add_action( 'wp_head', 'guestify_clean_head_end', PHP_INT_MAX );
+
+/**
+ * Strip NSL inline JavaScript from wp_footer on frontend pages.
+ */
+function guestify_clean_footer_start() {
+	if ( function_exists( 'is_public_page' ) && is_public_page() ) {
+		ob_start();
+	}
+}
+add_action( 'wp_footer', 'guestify_clean_footer_start', 0 );
+
+function guestify_clean_footer_end() {
+	if ( ! function_exists( 'is_public_page' ) || ! is_public_page() || ! ob_get_level() ) {
+		return;
+	}
+
+	$html = ob_get_clean();
+
+	// NSL main inline script  (starts with (function (undefined))
+	$html = preg_replace( '#<script[^>]*>\s*\(function\s*\(undefined\).*?</script>\s*#s', '', $html );
+
+	echo $html;
+}
+add_action( 'wp_footer', 'guestify_clean_footer_end', PHP_INT_MAX );
