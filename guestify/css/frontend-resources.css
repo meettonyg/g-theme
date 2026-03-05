@@ -109,7 +109,7 @@
     font-size: var(--gfy-text-xs, 0.75rem);
     font-weight: var(--gfy-font-semibold, 600);
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: var(--gfy-tracking-wider, 0.05em);
     padding: var(--gfy-space-1, 0.25rem) var(--gfy-space-3, 0.75rem);
     border-radius: var(--gfy-radius-full, 9999px);
     margin-bottom: var(--gfy-space-3, 0.75rem);
@@ -168,14 +168,14 @@
     margin-top: var(--gfy-space-10, 2.5rem);
     margin-bottom: var(--gfy-space-4, 1rem);
     padding-bottom: var(--gfy-space-2, 0.5rem);
-    border-bottom: 2px solid var(--gfy-gray-100, #f1f5f9);
+    border-bottom: var(--gfy-border-2, 2px) solid var(--gfy-gray-100, #f1f5f9);
 }
 
 .gfy-case-study-single .entry-content blockquote {
     margin: var(--gfy-space-8, 2rem) 0;
     padding: var(--gfy-space-8, 2rem);
     background: var(--gfy-gray-50, #f8fafc);
-    border-left: 4px solid var(--gfy-accent-500, #ED8936);
+    border-left: var(--gfy-border-4, 4px) solid var(--gfy-accent-500, #ED8936);
     border-radius: 0 var(--gfy-radius-lg, 0.5rem) var(--gfy-radius-lg, 0.5rem) 0;
     font-size: var(--gfy-text-lg, 1.125rem);
     font-style: italic;
@@ -254,7 +254,7 @@
     text-align: center;
     padding: var(--gfy-space-12, 3rem) var(--gfy-space-8, 2rem);
     background: var(--gfy-gray-50, #f8fafc);
-    border: 2px dashed var(--gfy-gray-300, #cbd5e1);
+    border: var(--gfy-border-2, 2px) dashed var(--gfy-gray-300, #cbd5e1);
     border-radius: var(--gfy-radius-xl, 0.75rem);
     max-width: 480px;
     margin: var(--gfy-space-10, 2.5rem) auto;
@@ -289,7 +289,7 @@
 .gfy-resource-gate__input:focus {
     outline: none;
     border-color: var(--gfy-info-500, #3b82f6);
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.15);
+    box-shadow: var(--gfy-shadow-focus, 0 0 0 3px rgba(59, 130, 246, 0.15));
 }
 
 @media (max-width: 480px) {

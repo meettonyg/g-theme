@@ -63,7 +63,7 @@
     width: 100%;
     height: 100%;
     object-fit: cover;
-    transition: transform 300ms ease;
+    transition: transform var(--gfy-transition-slow, 300ms ease);
 }
 
 .gfy-post-card:hover .gfy-post-card__image img {
@@ -79,7 +79,7 @@
     font-size: var(--gfy-text-xs, 0.75rem);
     font-weight: var(--gfy-font-semibold, 600);
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: var(--gfy-tracking-wider, 0.05em);
     color: var(--gfy-accent-500, #ED8936);
     margin-bottom: var(--gfy-space-2, 0.5rem);
 }
@@ -133,7 +133,7 @@
     font-weight: var(--gfy-font-semibold, 600);
     color: var(--gfy-accent-500, #ED8936);
     text-transform: uppercase;
-    letter-spacing: 0.05em;
+    letter-spacing: var(--gfy-tracking-wider, 0.05em);
     margin-bottom: var(--gfy-space-3, 0.75rem);
 }
 
@@ -202,7 +202,7 @@
     margin: var(--gfy-space-8, 2rem) 0;
     padding: var(--gfy-space-6, 1.5rem);
     padding-left: var(--gfy-space-8, 2rem);
-    border-left: 4px solid var(--gfy-accent-500, #ED8936);
+    border-left: var(--gfy-border-4, 4px) solid var(--gfy-accent-500, #ED8936);
     background: var(--gfy-gray-50, #f8fafc);
     border-radius: 0 var(--gfy-radius-lg, 0.5rem) var(--gfy-radius-lg, 0.5rem) 0;
     font-style: italic;
@@ -222,7 +222,7 @@
     margin: var(--gfy-space-10, 2.5rem) 0;
     padding: var(--gfy-space-8, 2rem);
     background: var(--gfy-accent-50, #fffaf0);
-    border-left: 4px solid var(--gfy-accent-500, #ED8936);
+    border-left: var(--gfy-border-4, 4px) solid var(--gfy-accent-500, #ED8936);
     border-radius: 0 var(--gfy-radius-lg, 0.5rem) var(--gfy-radius-lg, 0.5rem) 0;
 }
 
@@ -245,7 +245,7 @@
     margin: var(--gfy-space-10, 2.5rem) 0;
     padding: var(--gfy-space-6, 1.5rem);
     background: var(--gfy-white, #ffffff);
-    border: 2px dashed var(--gfy-gray-300, #cbd5e1);
+    border: var(--gfy-border-2, 2px) dashed var(--gfy-gray-300, #cbd5e1);
     border-radius: var(--gfy-radius-lg, 0.5rem);
     text-align: center;
 }

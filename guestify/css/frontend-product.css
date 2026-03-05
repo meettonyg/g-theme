@@ -78,8 +78,8 @@
 }
 
 .gfy-problem-solution__card--negative {
-    background: #fef2f2;
-    border: 1px solid #fecaca;
+    background: var(--gfy-error-50, #fef2f2);
+    border: 1px solid var(--gfy-error-200, #fecaca);
 }
 
 .gfy-problem-solution__card--positive {

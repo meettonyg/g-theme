@@ -209,6 +209,7 @@
   --gfy-tracking-normal: 0;
   --gfy-tracking-wide: 0.025em;
   --gfy-tracking-wider: 0.05em;
+  --gfy-tracking-widest: 0.1em;
 
   /* ==========================================================================
      SPACING (8px Base Unit)
@@ -263,6 +264,7 @@
   --gfy-border-0: 0;
   --gfy-border-1: 1px;
   --gfy-border-2: 2px;
+  --gfy-border-3: 3px;
   --gfy-border-4: 4px;
   --gfy-border-8: 8px;
 
@@ -282,6 +284,7 @@
   --gfy-ring-offset: 2px;
   --gfy-ring-color: var(--gfy-primary-500);
   --gfy-ring: 0 0 0 var(--gfy-ring-offset) var(--gfy-ring-color);
+  --gfy-shadow-focus: 0 0 0 3px rgba(59, 130, 246, 0.15);
 
   /* ==========================================================================
      TRANSITIONS

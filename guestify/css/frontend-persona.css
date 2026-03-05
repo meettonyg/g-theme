@@ -59,7 +59,7 @@
 
 .gfy-persona-page .gfy-feature-card__icon {
     color: var(--gfy-error, #ef4444);
-    background: #fef2f2;
+    background: var(--gfy-error-50, #fef2f2);
 }
 
 /* ============================================
@@ -90,7 +90,7 @@
     font-size: var(--gfy-text-xs, 0.75rem);
     font-weight: var(--gfy-font-bold, 700);
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: var(--gfy-tracking-widest, 0.1em);
     margin-bottom: var(--gfy-space-3, 0.75rem);
 }
 
@@ -138,15 +138,15 @@
 
 /* Authority Builder — Intelligence Blue */
 .gfy-persona-page--authority-builder .gfy-hero-persona {
-    border-bottom: 3px solid var(--gfy-primary-800, #1B365D);
+    border-bottom: var(--gfy-border-3, 3px) solid var(--gfy-primary-800, #1B365D);
 }
 
 /* Revenue Generator — Connection Green */
 .gfy-persona-page--revenue-generator .gfy-hero-persona {
-    border-bottom: 3px solid var(--gfy-secondary-500, #2B7A4C);
+    border-bottom: var(--gfy-border-3, 3px) solid var(--gfy-secondary-500, #2B7A4C);
 }
 
 /* Launch Promoter — Transformation Orange */
 .gfy-persona-page--launch-promoter .gfy-hero-persona {
-    border-bottom: 3px solid var(--gfy-accent-500, #ED8936);
+    border-bottom: var(--gfy-border-3, 3px) solid var(--gfy-accent-500, #ED8936);
 }

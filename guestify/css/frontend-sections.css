@@ -150,8 +150,8 @@
 
 /* Replace wp-block-columns-inline-css: mobile stacking */
 @media (max-width: 781px) {
-    .gfy-frontend .wp-block-columns:not(.is-not-stacked-on-mobile) > .wp-block-column {
-        flex-basis: 100% !important;
+    .gfy-frontend .gfy-frontend .wp-block-columns:not(.is-not-stacked-on-mobile) > .wp-block-column {
+        flex-basis: 100%;
     }
 }
 
@@ -169,7 +169,7 @@
 .gfy-section--hero {
     background: linear-gradient(135deg, var(--gfy-primary-800, #1B365D) 0%, var(--gfy-primary-900, #102a43) 100%);
     color: var(--gfy-white, #ffffff);
-    padding: var(--gfy-space-24, 6rem) var(--gfy-space-6, 1.5rem);
+    padding: var(--gfy-space-12, 3rem) var(--gfy-space-6, 1.5rem);
     text-align: center;
 }
 
@@ -288,7 +288,7 @@
 
 .gfy-section__eyebrow {
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: var(--gfy-tracking-widest, 0.1em);
     color: var(--gfy-accent-500, #ED8936);
     font-size: var(--gfy-text-sm, 0.875rem);
     font-weight: var(--gfy-font-semibold, 600);
@@ -347,7 +347,7 @@
     background-color: var(--gfy-gray-100, #f1f5f9);
     border-radius: var(--gfy-radius-lg, 0.5rem);
     padding: var(--gfy-space-1, 0.25rem);
-    margin-bottom: var(--gfy-space-12, 3rem);
+    margin-bottom: var(--gfy-space-8, 2rem);
     max-width: fit-content;
     margin-left: auto;
     margin-right: auto;
@@ -498,6 +498,7 @@
     display: flex;
     flex-direction: column;
     gap: var(--gfy-space-4, 1rem);
+    text-align: left;
 }
 
 .gfy-content-grid__col--media {
@@ -605,7 +606,11 @@
     justify-content: center;
     margin-bottom: var(--gfy-space-4, 1rem);
     color: var(--gfy-primary-800, #1B365D);
-    font-size: var(--gfy-text-xl, 1.25rem);
+}
+
+.gfy-feature-card__icon svg {
+    width: 24px;
+    height: 24px;
 }
 
 .gfy-feature-card__title {
@@ -1126,11 +1131,11 @@
 
 @media (prefers-contrast: high) {
     .gfy-feature-card {
-        border-width: 2px;
+        border-width: var(--gfy-border-2, 2px);
     }
 
     .gfy-testimonial {
-        border-width: 2px;
+        border-width: var(--gfy-border-2, 2px);
     }
 
     .gfy-authority-stack__layer {

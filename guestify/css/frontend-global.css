@@ -499,7 +499,7 @@ body.gfy-frontend {
 
 .gfy-pre-headline {
     text-transform: uppercase;
-    letter-spacing: 0.1em;
+    letter-spacing: var(--gfy-tracking-widest, 0.1em);
     font-size: var(--gfy-text-sm, 0.875rem);
     font-weight: var(--gfy-font-semibold, 600);
     color: var(--gfy-accent-500, #ED8936);
@@ -573,10 +573,10 @@ body.gfy-frontend {
 
 @media (prefers-contrast: high) {
     .gfy-btn-secondary {
-        border-width: 3px;
+        border-width: var(--gfy-border-3, 3px);
     }
 
     .gfy-btn-outline {
-        border-width: 3px;
+        border-width: var(--gfy-border-3, 3px);
     }
 }

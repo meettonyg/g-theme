@@ -2,26 +2,11 @@
  * Frontend Header Styles
  * Clean, modern header with logo left and nav right
  *
+ * Uses unified --gfy-* design tokens from guestify-tokens.css.
+ * No :root definitions — all tokens come from the authoritative file.
+ *
  * @package Guestify
  */
-
-/* ==================== Unified Token Variables ==================== */
-:root {
-    /* Frontend header colors - mapped to unified Guestify tokens */
-    --fh-bg: var(--gfy-white, #ffffff);
-    --fh-text: var(--gfy-gray-600, #475569);
-    --fh-text-dark: var(--gfy-gray-900, #111827);
-    --fh-text-heading: var(--gfy-primary-800, #1B365D);
-    --fh-text-muted: var(--gfy-gray-500, #666);
-    --fh-hover-bg: var(--gfy-gray-50, #f8fafc);
-    --fh-active-bg: var(--gfy-primary-50, #f0f4f8);
-    --fh-active-text: var(--gfy-primary-800, #1B365D);
-    --fh-cta-bg: var(--gfy-accent-500, #ED8936);
-    --fh-cta-bg-hover: var(--gfy-accent-600, #dd6b20);
-    --fh-link: var(--gfy-primary-800, #1B365D);
-    --fh-border: var(--gfy-gray-200, #e5e7eb);
-    --fh-shadow: 0 1px 3px rgba(27, 54, 93, 0.08), 0 1px 2px rgba(27, 54, 93, 0.04);
-}
 
 /* ==========================================================================
    Frontend Header - Core Layout
@@ -30,10 +15,10 @@
 .frontend-header {
     position: sticky;
     top: 0;
-    z-index: 1000;
-    background-color: var(--fh-bg);
-    box-shadow: var(--fh-shadow);
-    border-bottom: 1px solid var(--fh-border);
+    z-index: var(--gfy-z-dropdown, 1000);
+    background-color: var(--gfy-white, #ffffff);
+    box-shadow: var(--gfy-shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06));
+    border-bottom: 1px solid var(--gfy-gray-200, #e5e7eb);
 }
 
 /* Offset for admin bar when logged in */
@@ -51,10 +36,10 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
-    max-width: 1200px;
+    max-width: var(--gfy-max-width-xl, 1280px);
     margin: 0 auto;
-    padding: 0 24px;
-    height: 72px;
+    padding: 0 var(--gfy-space-6, 1.5rem);
+    height: var(--gfy-header-height, 64px);
 }
 
 /* ==========================================================================
@@ -80,15 +65,15 @@
 
 .frontend-header__site-title {
     font-family: var(--gfy-font-heading, 'Montserrat', system-ui, sans-serif);
-    font-size: 1.375rem;
-    font-weight: 800;
-    color: var(--fh-text-heading);
+    font-size: var(--gfy-text-xl, 1.25rem);
+    font-weight: var(--gfy-font-extrabold, 800);
+    color: var(--gfy-primary-800, #1B365D);
     text-decoration: none;
-    letter-spacing: -0.025em;
+    letter-spacing: var(--gfy-tracking-tight, -0.025em);
 }
 
 .frontend-header__site-title:hover {
-    color: var(--fh-link);
+    color: var(--gfy-primary-800, #1B365D);
 }
 
 /* ==========================================================================
@@ -106,7 +91,7 @@
     list-style: none;
     margin: 0;
     padding: 0;
-    gap: 8px;
+    gap: var(--gfy-space-2, 0.5rem);
 }
 
 .frontend-header__menu li {
@@ -118,45 +103,44 @@
 .frontend-header__menu > li > a {
     display: inline-flex;
     align-items: center;
-    padding: 10px 18px;
+    padding: var(--gfy-space-2, 0.5rem) var(--gfy-space-4, 1rem);
     font-family: var(--gfy-font-heading, 'Montserrat', system-ui, sans-serif);
-    font-size: 0.875rem;
-    font-weight: 600;
-    letter-spacing: 0.01em;
-    color: var(--fh-text);
+    font-size: var(--gfy-text-sm, 0.875rem);
+    font-weight: var(--gfy-font-semibold, 600);
+    color: var(--gfy-gray-600, #475569);
     text-decoration: none;
-    border-radius: 8px;
-    transition: background-color 0.15s ease, color 0.15s ease;
+    border-radius: var(--gfy-radius-lg, 0.5rem);
+    transition: background-color var(--gfy-transition-fast, 150ms ease), color var(--gfy-transition-fast, 150ms ease);
 }
 
 .frontend-header__menu > li > a:hover,
 .frontend-header__menu > li > a:focus {
-    background-color: var(--fh-hover-bg);
-    color: var(--fh-text-dark);
+    background-color: var(--gfy-gray-50, #f8fafc);
+    color: var(--gfy-gray-900, #111827);
 }
 
 .frontend-header__menu > li.current_page_item > a,
 .frontend-header__menu > li.current_page_ancestor > a {
-    background-color: var(--fh-active-bg);
-    color: var(--fh-active-text);
+    background-color: var(--gfy-primary-50, #f0f4f8);
+    color: var(--gfy-primary-800, #1B365D);
 }
 
 /* CTA Button Style - Apply to last menu item or specific class */
 .frontend-header__menu > li:last-child > a,
 .frontend-header__menu > li.menu-item-cta > a {
-    background-color: var(--fh-cta-bg);
-    color: var(--fh-bg);
-    font-weight: 700;
-    border-radius: 8px;
-    padding: 10px 24px;
-    box-shadow: 0 1px 3px rgba(237, 137, 54, 0.3);
+    background-color: var(--gfy-accent-500, #ED8936);
+    color: var(--gfy-white, #ffffff);
+    font-weight: var(--gfy-font-bold, 700);
+    border-radius: var(--gfy-radius-lg, 0.5rem);
+    padding: var(--gfy-space-2, 0.5rem) var(--gfy-space-6, 1.5rem);
+    box-shadow: var(--gfy-shadow-sm, 0 1px 3px rgba(0, 0, 0, 0.1));
 }
 
 .frontend-header__menu > li:last-child > a:hover,
 .frontend-header__menu > li.menu-item-cta > a:hover {
-    background-color: var(--fh-cta-bg-hover);
-    color: var(--fh-bg);
-    box-shadow: 0 2px 6px rgba(237, 137, 54, 0.4);
+    background-color: var(--gfy-accent-600, #dd6b20);
+    color: var(--gfy-white, #ffffff);
+    box-shadow: var(--gfy-shadow-md, 0 4px 6px -1px rgba(0, 0, 0, 0.1));
     transform: translateY(-1px);
 }
 
@@ -170,11 +154,11 @@
     top: 100%;
     left: 0;
     min-width: 200px;
-    background: var(--fh-bg);
-    border-radius: 8px;
-    box-shadow: var(--gfy-shadow-lg, 0 10px 40px rgba(0, 0, 0, 0.12));
-    padding: 8px 0;
-    margin: 4px 0 0 0;
+    background: var(--gfy-white, #ffffff);
+    border-radius: var(--gfy-radius-lg, 0.5rem);
+    box-shadow: var(--gfy-shadow-lg, 0 10px 15px -3px rgba(0, 0, 0, 0.1));
+    padding: var(--gfy-space-2, 0.5rem) 0;
+    margin: var(--gfy-space-1, 0.25rem) 0 0 0;
     list-style: none;
     z-index: 100;
 }
@@ -190,17 +174,17 @@
 
 .frontend-header__menu li ul li a {
     display: block;
-    padding: 10px 16px;
-    font-size: 0.875rem;
-    font-weight: 400;
-    color: var(--fh-text);
+    padding: var(--gfy-space-2, 0.5rem) var(--gfy-space-4, 1rem);
+    font-size: var(--gfy-text-sm, 0.875rem);
+    font-weight: var(--gfy-font-normal, 400);
+    color: var(--gfy-gray-600, #475569);
     text-decoration: none;
-    transition: background-color 0.15s ease;
+    transition: background-color var(--gfy-transition-fast, 150ms ease);
 }
 
 .frontend-header__menu li ul li a:hover {
-    background-color: var(--fh-hover-bg);
-    color: var(--fh-text-dark);
+    background-color: var(--gfy-gray-50, #f8fafc);
+    color: var(--gfy-gray-900, #111827);
 }
 
 /* ==========================================================================
@@ -217,12 +201,12 @@
     background: transparent;
     border: none;
     cursor: pointer;
-    border-radius: 8px;
-    transition: background-color 0.15s ease;
+    border-radius: var(--gfy-radius-lg, 0.5rem);
+    transition: background-color var(--gfy-transition-fast, 150ms ease);
 }
 
 .frontend-header__menu-toggle:hover {
-    background-color: var(--fh-hover-bg);
+    background-color: var(--gfy-gray-50, #f8fafc);
 }
 
 .frontend-header__menu-icon,
@@ -231,9 +215,9 @@
     display: block;
     width: 24px;
     height: 2px;
-    background-color: var(--fh-text);
-    border-radius: 1px;
-    transition: transform 0.2s ease, opacity 0.2s ease;
+    background-color: var(--gfy-gray-600, #475569);
+    border-radius: var(--gfy-radius-sm, 0.125rem);
+    transition: transform var(--gfy-transition-base, 200ms ease), opacity var(--gfy-transition-base, 200ms ease);
 }
 
 .frontend-header__menu-icon {
@@ -276,8 +260,8 @@
 
 @media screen and (max-width: 992px) {
     .frontend-header__container {
-        padding: 0 16px;
-        height: 64px;
+        padding: 0 var(--gfy-space-4, 1rem);
+        height: var(--gfy-header-height, 64px);
     }
 
     .frontend-header__menu-toggle {
@@ -291,11 +275,11 @@
         left: 0;
         right: 0;
         flex-direction: column;
-        background: var(--fh-bg);
-        padding: 16px;
-        gap: 4px;
-        box-shadow: var(--gfy-shadow-lg, 0 10px 40px rgba(0, 0, 0, 0.12));
-        border-top: 1px solid var(--fh-border);
+        background: var(--gfy-white, #ffffff);
+        padding: var(--gfy-space-4, 1rem);
+        gap: var(--gfy-space-1, 0.25rem);
+        box-shadow: var(--gfy-shadow-lg, 0 10px 15px -3px rgba(0, 0, 0, 0.1));
+        border-top: 1px solid var(--gfy-gray-200, #e5e7eb);
     }
 
     .frontend-header__nav[data-menu-open="true"] .frontend-header__menu {
@@ -314,7 +298,7 @@
     .frontend-header__menu li ul {
         position: static;
         box-shadow: none;
-        padding-left: 16px;
+        padding-left: var(--gfy-space-4, 1rem);
         margin: 0;
     }
 
@@ -326,7 +310,7 @@
     /* Reset CTA styles on mobile */
     .frontend-header__menu > li:last-child > a,
     .frontend-header__menu > li.menu-item-cta > a {
-        background-color: var(--fh-cta-bg);
+        background-color: var(--gfy-accent-500, #ED8936);
         text-align: center;
         justify-content: center;
     }
@@ -339,6 +323,6 @@
     }
 
     .frontend-header__site-title {
-        font-size: 1.25rem;
+        font-size: var(--gfy-text-lg, 1.125rem);
     }
 }
