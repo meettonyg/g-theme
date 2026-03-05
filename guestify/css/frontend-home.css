@@ -731,3 +731,451 @@
 .gfy-section--dark .gfy-cta__reassurance {
     color: var(--gfy-gray-300, #cbd5e1);
 }
+
+
+/* ============================================
+   STANDALONE HERO HEADLINE (Change 1A)
+   Extracted from tabs — always visible, centered
+   ============================================ */
+
+.gfy-hero-headline {
+    text-align: center;
+    max-width: 880px;
+    margin: 0 auto;
+}
+
+.gfy-section--hero .gfy-hero-headline h1 {
+    color: var(--gfy-white, #ffffff);
+    font-size: var(--gfy-text-5xl, 3rem);
+    font-weight: var(--gfy-font-extrabold, 800);
+    line-height: 1.1;
+    margin-bottom: var(--gfy-space-6, 1.5rem);
+}
+
+.gfy-section--hero .gfy-hero-headline .gfy-pre-headline {
+    color: var(--gfy-accent-400, #f6ad55);
+}
+
+.gfy-section--hero .gfy-hero-headline .gfy-sub-headline {
+    color: var(--gfy-primary-100, #d9e2ec);
+    max-width: 720px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.gfy-section--hero .gfy-hero-headline .gfy-hero-tabs__reassurance {
+    color: var(--gfy-gray-300, #cbd5e1);
+    font-size: var(--gfy-text-sm, 0.875rem);
+    margin-top: var(--gfy-space-6, 1.5rem);
+}
+
+@media (max-width: 768px) {
+    .gfy-section--hero .gfy-hero-headline h1 {
+        font-size: var(--gfy-text-4xl, 2.25rem);
+    }
+}
+
+@media (max-width: 480px) {
+    .gfy-section--hero .gfy-hero-headline h1 {
+        font-size: var(--gfy-text-3xl, 1.875rem);
+    }
+}
+
+
+/* ============================================
+   USE CASE EXPLORER (Change 1B)
+   Tabs relocated to their own light-bg section
+   ============================================ */
+
+.gfy-hero-tabs--explorer .gfy-hero-tabs__copy h3 {
+    font-size: var(--gfy-text-3xl, 1.875rem);
+    font-weight: var(--gfy-font-bold, 700);
+    color: var(--gfy-primary-800, #1B365D);
+    margin-bottom: var(--gfy-space-4, 1rem);
+}
+
+/* On light bg, text copy is left-aligned and dark */
+.gfy-hero-tabs--explorer .gfy-hero-tabs__copy .gfy-sub-headline {
+    color: var(--gfy-gray-600, #475569);
+}
+
+/* Tab bar on light background */
+.gfy-hero-tabs--explorer .gfy-hero-tabs__buttons {
+    background-color: var(--gfy-gray-100, #f1f5f9);
+    border-radius: var(--gfy-radius-xl, 0.75rem);
+    padding: 0.375rem;
+    max-width: 640px;
+    margin: 0 auto var(--gfy-space-10, 2.5rem);
+}
+
+.gfy-hero-tabs--explorer .gfy-hero-tabs__btn {
+    color: var(--gfy-gray-500, #64748b);
+    border-radius: var(--gfy-radius-lg, 0.5rem);
+}
+
+/* Active tab on light bg — each radio :checked state */
+.gfy-hero-tabs--explorer #tab-authority:checked ~ .gfy-hero-tabs__buttons label[for="tab-authority"],
+.gfy-hero-tabs--explorer #tab-revenue:checked ~ .gfy-hero-tabs__buttons label[for="tab-revenue"],
+.gfy-hero-tabs--explorer #tab-launch:checked ~ .gfy-hero-tabs__buttons label[for="tab-launch"] {
+    background-color: var(--gfy-primary-800, #1B365D);
+    color: var(--gfy-white, #ffffff);
+    box-shadow: var(--gfy-shadow-sm, 0 1px 3px 0 rgba(0,0,0,.1));
+}
+
+/* Panel content wrapper on light bg */
+.gfy-hero-tabs--explorer .gfy-hero-tabs__panels {
+    background-color: var(--gfy-gray-50, #f8fafc);
+    border-radius: var(--gfy-radius-xl, 0.75rem);
+    border: 1px solid var(--gfy-gray-200, #e2e8f0);
+    padding: var(--gfy-space-8, 2rem) var(--gfy-space-10, 2.5rem);
+}
+
+@media (max-width: 768px) {
+    .gfy-hero-tabs--explorer .gfy-hero-tabs__panels {
+        padding: var(--gfy-space-6, 1.5rem);
+    }
+}
+
+/* CTA button overrides for light bg */
+.gfy-hero-tabs--explorer .gfy-btn-cta {
+    background-color: var(--gfy-accent-500, #ED8936);
+    color: var(--gfy-white, #ffffff);
+}
+
+.gfy-hero-tabs--explorer .gfy-btn-cta:hover {
+    background-color: var(--gfy-accent-600, #dd6b20);
+}
+
+.gfy-hero-tabs--explorer .gfy-btn-secondary {
+    background-color: transparent;
+    color: var(--gfy-primary-800, #1B365D);
+    border: 2px solid var(--gfy-gray-300, #cbd5e1);
+}
+
+.gfy-hero-tabs--explorer .gfy-btn-secondary:hover {
+    border-color: var(--gfy-primary-800, #1B365D);
+}
+
+.gfy-hero-tabs--explorer .gfy-hero-tabs__reassurance {
+    color: var(--gfy-gray-400, #94a3b8);
+}
+
+/* Visual (image) styling in light context */
+.gfy-hero-tabs--explorer .gfy-hero-tabs__visual img {
+    border-radius: var(--gfy-radius-xl, 0.75rem);
+    box-shadow: var(--gfy-shadow-xl, 0 20px 25px -5px rgba(0,0,0,.1));
+    border: 1px solid var(--gfy-gray-100, #f1f5f9);
+}
+
+
+/* ============================================
+   LOGO STRIP — Social Proof (Change 2)
+   ============================================ */
+
+.gfy-section--logo-strip {
+    padding: var(--gfy-space-8, 2rem) var(--gfy-space-6, 1.5rem);
+    background-color: var(--gfy-white, #ffffff);
+    border-bottom: 1px solid var(--gfy-gray-100, #f1f5f9);
+}
+
+.gfy-logo-strip {
+    text-align: center;
+}
+
+.gfy-logo-strip__label {
+    font-size: var(--gfy-text-sm, 0.875rem);
+    color: var(--gfy-gray-400, #94a3b8);
+    text-transform: uppercase;
+    letter-spacing: var(--gfy-tracking-wider, 0.05em);
+    font-weight: var(--gfy-font-medium, 500);
+    margin-bottom: var(--gfy-space-6, 1.5rem);
+    max-width: none;
+}
+
+.gfy-logo-strip__logos {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--gfy-space-10, 2.5rem);
+    flex-wrap: wrap;
+}
+
+.gfy-logo-strip__logo {
+    height: 28px;
+    width: auto;
+    opacity: 0.4;
+    filter: grayscale(1);
+    transition: opacity var(--gfy-transition-base, 200ms),
+                filter var(--gfy-transition-base, 200ms);
+}
+
+.gfy-logo-strip__logo:hover {
+    opacity: 0.7;
+    filter: grayscale(0);
+}
+
+/* Text-based placeholder logos (until real images) */
+.gfy-logo-strip__placeholder {
+    font-family: var(--gfy-font-heading, 'Montserrat', system-ui);
+    font-weight: var(--gfy-font-bold, 700);
+    font-size: var(--gfy-text-lg, 1.125rem);
+    color: var(--gfy-gray-400, #94a3b8);
+    display: flex;
+    align-items: center;
+    gap: var(--gfy-space-2, 0.5rem);
+    opacity: 0.5;
+    filter: grayscale(1);
+    transition: opacity var(--gfy-transition-base, 200ms);
+}
+
+.gfy-logo-strip__placeholder:hover {
+    opacity: 0.75;
+}
+
+.gfy-logo-strip__placeholder svg {
+    width: 24px;
+    height: 24px;
+}
+
+@media (max-width: 480px) {
+    .gfy-logo-strip__logos {
+        gap: var(--gfy-space-6, 1.5rem);
+    }
+
+    .gfy-logo-strip__placeholder {
+        font-size: var(--gfy-text-base, 1rem);
+    }
+}
+
+
+/* ============================================
+   COMPARISON CARD — Check/Cross Icons (Change 3)
+   ============================================ */
+
+/* Explicit cell type classes */
+.gfy-comparison-card__old {
+    color: var(--gfy-gray-400, #94a3b8);
+    display: flex;
+    align-items: center;
+    gap: var(--gfy-space-2, 0.5rem);
+}
+
+.gfy-comparison-card__old svg {
+    color: var(--gfy-error-500, #ef4444);
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+}
+
+.gfy-comparison-card__new {
+    color: var(--gfy-secondary-500, #2B7A4C);
+    font-weight: var(--gfy-font-medium, 500);
+    display: flex;
+    align-items: center;
+    gap: var(--gfy-space-2, 0.5rem);
+}
+
+.gfy-comparison-card__new svg {
+    color: var(--gfy-secondary-500, #2B7A4C);
+    flex-shrink: 0;
+    width: 16px;
+    height: 16px;
+}
+
+/* Row hover feedback */
+.gfy-comparison-card__row {
+    transition: background-color var(--gfy-transition-base, 200ms);
+}
+
+.gfy-comparison-card__row:hover {
+    background-color: var(--gfy-gray-50, #f8fafc);
+}
+
+/* Dark variant for Differentiation section */
+.gfy-comparison-card--dark {
+    background: var(--gfy-gray-900, #0f172a);
+    border-color: var(--gfy-gray-700, #334155);
+}
+
+.gfy-comparison-card--dark .gfy-comparison-card__header {
+    background: rgba(255, 255, 255, 0.05);
+    border-bottom-color: var(--gfy-gray-700, #334155);
+}
+
+.gfy-comparison-card--dark .gfy-comparison-card__header span {
+    color: var(--gfy-gray-300, #cbd5e1);
+}
+
+.gfy-comparison-card--dark .gfy-comparison-card__row {
+    border-bottom-color: var(--gfy-gray-800, #1e293b);
+}
+
+.gfy-comparison-card--dark .gfy-comparison-card__row span:first-child {
+    color: var(--gfy-white, #ffffff);
+}
+
+.gfy-comparison-card--dark .gfy-comparison-card__old {
+    color: var(--gfy-gray-500, #64748b);
+}
+
+.gfy-comparison-card--dark .gfy-comparison-card__old svg {
+    color: var(--gfy-error-400, #f87171);
+}
+
+.gfy-comparison-card--dark .gfy-comparison-card__new {
+    color: var(--gfy-secondary-300, #7ec298);
+}
+
+.gfy-comparison-card--dark .gfy-comparison-card__new svg {
+    color: var(--gfy-secondary-400, #5fb07e);
+}
+
+.gfy-comparison-card--dark .gfy-comparison-card__row:hover {
+    background-color: var(--gfy-gray-800, #1e293b);
+}
+
+@media (max-width: 600px) {
+    .gfy-comparison-card--dark .gfy-comparison-card__row span:first-child {
+        background: rgba(255, 255, 255, 0.05);
+    }
+}
+
+
+/* ============================================
+   TESTIMONIAL AVATARS — Initials Circles (Change 4)
+   ============================================ */
+
+.gfy-testimonial__avatar--initials {
+    width: 48px;
+    height: 48px;
+    min-width: 48px;
+    border-radius: var(--gfy-radius-full, 9999px);
+    background: linear-gradient(135deg, var(--gfy-primary-800, #1B365D), var(--gfy-primary-600, #486581));
+    color: var(--gfy-white, #ffffff);
+    font-weight: var(--gfy-font-semibold, 600);
+    font-size: var(--gfy-text-sm, 0.875rem);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    letter-spacing: var(--gfy-tracking-wide, 0.025em);
+    flex-shrink: 0;
+}
+
+/* Featured testimonial gets a larger avatar */
+.gfy-testimonial--featured .gfy-testimonial__avatar--initials {
+    width: 56px;
+    height: 56px;
+    min-width: 56px;
+    font-size: var(--gfy-text-base, 1rem);
+}
+
+/* Color variants for visual variety */
+.gfy-testimonial-grid .gfy-testimonial:nth-child(2) .gfy-testimonial__avatar--initials {
+    background: linear-gradient(135deg, var(--gfy-secondary-500, #2B7A4C), var(--gfy-secondary-700, #1e5c38));
+}
+
+.gfy-testimonial-grid .gfy-testimonial:nth-child(3) .gfy-testimonial__avatar--initials {
+    background: linear-gradient(135deg, var(--gfy-accent-500, #ED8936), var(--gfy-accent-700, #c05621));
+}
+
+/* Author info wrapper */
+.gfy-testimonial__author-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+
+/* ============================================
+   VISUAL POLISH — Hover States & Shadows (Change 5)
+   ============================================ */
+
+/* Trust grid cards — lift on hover */
+.gfy-trust-grid__card {
+    transition: box-shadow var(--gfy-transition-base, 200ms),
+                transform var(--gfy-transition-base, 200ms),
+                border-color var(--gfy-transition-base, 200ms);
+}
+
+.gfy-trust-grid__card:hover {
+    box-shadow: var(--gfy-shadow-md, 0 4px 6px -1px rgba(0,0,0,.1));
+    transform: translateY(-2px);
+    border-color: var(--gfy-gray-300, #cbd5e1);
+}
+
+.gfy-trust-grid__card--highlighted:hover {
+    border-color: var(--gfy-accent-400, #f6ad55);
+    box-shadow: 0 4px 14px -3px rgba(237, 137, 54, 0.3);
+}
+
+/* Authority stack layers — subtle lift */
+.gfy-authority-stack__layer {
+    transition: box-shadow var(--gfy-transition-base, 200ms),
+                transform var(--gfy-transition-base, 200ms);
+}
+
+.gfy-authority-stack__layer:hover {
+    box-shadow: var(--gfy-shadow-md, 0 4px 6px -1px rgba(0,0,0,.1));
+    transform: translateY(-1px);
+}
+
+/* Steps — card-like background on hover */
+.gfy-steps__item {
+    border-radius: var(--gfy-radius-xl, 0.75rem);
+    transition: background-color var(--gfy-transition-base, 200ms),
+                box-shadow var(--gfy-transition-base, 200ms);
+}
+
+.gfy-steps__item:hover {
+    background-color: var(--gfy-white, #ffffff);
+    box-shadow: var(--gfy-shadow-sm, 0 1px 3px 0 rgba(0,0,0,.1));
+}
+
+/* Testimonial cards — enhanced hover */
+.gfy-testimonial {
+    transition: box-shadow var(--gfy-transition-base, 200ms),
+                transform var(--gfy-transition-base, 200ms);
+}
+
+.gfy-testimonial:hover {
+    box-shadow: var(--gfy-shadow-lg, 0 10px 15px -3px rgba(0,0,0,.1));
+    transform: translateY(-2px);
+}
+
+/* Feature cards — add transform to existing transition */
+.gfy-feature-card {
+    transition: box-shadow var(--gfy-transition-base, 200ms),
+                border-color var(--gfy-transition-base, 200ms),
+                transform var(--gfy-transition-base, 200ms);
+}
+
+.gfy-feature-card:hover {
+    transform: translateY(-2px);
+}
+
+/* Comparison card — base and hover shadow */
+.gfy-comparison-card {
+    box-shadow: var(--gfy-shadow-xs, 0 1px 2px 0 rgba(0,0,0,.05));
+    transition: box-shadow var(--gfy-transition-base, 200ms);
+}
+
+.gfy-comparison-card:hover {
+    box-shadow: var(--gfy-shadow-md, 0 4px 6px -1px rgba(0,0,0,.1));
+}
+
+/* Pathway cards — base shadow */
+.gfy-pathway-card {
+    box-shadow: var(--gfy-shadow-xs, 0 1px 2px 0 rgba(0,0,0,.05));
+}
+
+/* FAQ question hover polish */
+.gfy-faq__question {
+    transition: color var(--gfy-transition-base, 200ms),
+                background-color var(--gfy-transition-base, 200ms);
+    border-radius: var(--gfy-radius-md, 0.375rem);
+}
+
+.gfy-faq__question:hover {
+    color: var(--gfy-primary-800, #1B365D);
+    background-color: var(--gfy-gray-50, #f8fafc);
+}

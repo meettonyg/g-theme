@@ -1107,7 +1107,17 @@
 @media (prefers-reduced-motion: reduce) {
     .gfy-feature-card,
     .gfy-faq__icon,
-    .gfy-hero-tabs__btn {
+    .gfy-faq__question,
+    .gfy-hero-tabs__btn,
+    .gfy-trust-grid__card,
+    .gfy-authority-stack__layer,
+    .gfy-steps__item,
+    .gfy-testimonial,
+    .gfy-comparison-card,
+    .gfy-comparison-card__row,
+    .gfy-pathway-card,
+    .gfy-logo-strip__logo,
+    .gfy-logo-strip__placeholder {
         transition: none;
     }
 }
