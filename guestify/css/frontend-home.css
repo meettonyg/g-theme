@@ -189,7 +189,7 @@
 
 .gfy-trust-grid {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
     gap: var(--gfy-space-6, 1.5rem);
     margin-top: var(--gfy-space-10, 2.5rem);
 }
@@ -251,12 +251,6 @@
     color: var(--gfy-gray-500, #64748b);
 }
 
-@media (max-width: 768px) {
-    .gfy-trust-grid {
-        grid-template-columns: repeat(2, 1fr);
-    }
-}
-
 @media (max-width: 480px) {
     .gfy-trust-grid {
         grid-template-columns: 1fr;
@@ -279,7 +273,7 @@
 
 .gfy-comparison-card__header {
     display: grid;
-    grid-template-columns: 40% 30% 30%;
+    grid-template-columns: 2fr 1.5fr 1.5fr;
     background: var(--gfy-gray-50, #f8fafc);
     border-bottom: 1px solid var(--gfy-gray-200, #e2e8f0);
 }
@@ -293,7 +287,7 @@
 
 .gfy-comparison-card__row {
     display: grid;
-    grid-template-columns: 40% 30% 30%;
+    grid-template-columns: 2fr 1.5fr 1.5fr;
     border-bottom: 1px solid var(--gfy-gray-100, #f1f5f9);
 }
 
@@ -606,14 +600,8 @@
 /* 3-column testimonial grid */
 .gfy-testimonial-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: var(--gfy-space-6, 1.5rem);
-}
-
-@media (max-width: 768px) {
-    .gfy-testimonial-grid {
-        grid-template-columns: 1fr;
-    }
 }
 
 
@@ -625,14 +613,8 @@
 /* 3-column persona card grid */
 .gfy-persona-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
     gap: var(--gfy-space-6, 1.5rem);
-}
-
-@media (max-width: 768px) {
-    .gfy-persona-grid {
-        grid-template-columns: 1fr;
-    }
 }
 
 /* Wound activation quote at top of card */
@@ -655,6 +637,10 @@
     border-top: var(--gfy-border-4, 4px) solid var(--gfy-gray-300, #cbd5e1);
     transition: box-shadow var(--gfy-transition-base, 200ms),
                 transform var(--gfy-transition-base, 200ms);
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    min-width: 0;
 }
 
 .gfy-pathway-card:hover {
@@ -705,6 +691,7 @@
     display: inline-flex;
     align-items: center;
     gap: var(--gfy-space-2, 0.5rem);
+    margin-top: auto;
 }
 
 .gfy-pathway-card__link:hover {
