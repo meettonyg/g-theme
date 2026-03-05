@@ -136,6 +136,32 @@ function guestify_frontend_page_assets() {
 				: null
 		);
 	}
+
+	/*
+	|----------------------------------------------------------------------
+	| Authority Graph Page (Interactive Tool + Signal Score Calculator)
+	|----------------------------------------------------------------------
+	*/
+	if ( is_page( 'authority-graph' ) ) {
+		wp_enqueue_style(
+			'gfy-frontend-authority-graph',
+			$theme_uri . '/css/frontend-authority-graph.css',
+			array( 'gfy-frontend-sections' ),
+			file_exists( $theme_dir . '/css/frontend-authority-graph.css' )
+				? filemtime( $theme_dir . '/css/frontend-authority-graph.css' )
+				: null
+		);
+
+		wp_enqueue_script(
+			'gfy-authority-score',
+			$theme_uri . '/js/authority-score.js',
+			array(),
+			file_exists( $theme_dir . '/js/authority-score.js' )
+				? filemtime( $theme_dir . '/js/authority-score.js' )
+				: null,
+			true // Load in footer
+		);
+	}
 }
 add_action( 'wp_enqueue_scripts', 'guestify_frontend_page_assets' );
 

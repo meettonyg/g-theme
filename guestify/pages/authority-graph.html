@@ -1,0 +1,604 @@
+<!-- ============================================================
+     PAGE: /authority-graph — Lead Magnet (Interactive Tool)
+     TEMPLATE: templates/template-resource.php
+     PARENT: (none — standalone resource page)
+     RESOURCE TYPE: Interactive visualization + calculator
+     TARGET PERSONA: All personas
+     ============================================================ -->
+
+
+<!-- SECTION 1 — HERO -->
+
+<!-- wp:group {"className":"gfy-section gfy-section--hero"} -->
+<div class="wp-block-group gfy-section gfy-section--hero">
+	<!-- wp:group {"className":"gfy-wrapper","layout":{"type":"constrained"}} -->
+	<div class="wp-block-group gfy-wrapper">
+		<!-- wp:paragraph {"className":"gfy-pre-headline"} -->
+		<p class="gfy-pre-headline">INTERACTIVE TOOL</p>
+		<!-- /wp:paragraph -->
+
+		<!-- wp:heading {"textAlign":"center","level":1} -->
+		<h1 class="wp-block-heading has-text-align-center">The Authority Graph: How AI Decides Who to Recommend</h1>
+		<!-- /wp:heading -->
+
+		<!-- wp:paragraph {"align":"center","className":"gfy-sub-headline"} -->
+		<p class="has-text-align-center gfy-sub-headline">Every podcast interview creates a node in a trust network that AI systems read to determine who to recommend. Discover how your Authority Graph works, then calculate your Authority Signal Score to see where you stand.</p>
+		<!-- /wp:paragraph -->
+	</div>
+	<!-- /wp:group -->
+</div>
+<!-- /wp:group -->
+
+
+<!-- SECTION 2 — AUTHORITY GRAPH VISUALIZATION -->
+
+<!-- wp:group {"className":"gfy-section gfy-section--dark"} -->
+<div class="wp-block-group gfy-section gfy-section--dark">
+	<!-- wp:group {"className":"gfy-wrapper","layout":{"type":"constrained"}} -->
+	<div class="wp-block-group gfy-wrapper">
+
+		<!-- wp:columns {"className":"gfy-content-grid"} -->
+		<div class="wp-block-columns gfy-content-grid">
+			<!-- wp:column {"className":"gfy-content-grid__col gfy-content-grid__col--text"} -->
+			<div class="wp-block-column gfy-content-grid__col gfy-content-grid__col--text">
+				<!-- wp:heading {"level":2} -->
+				<h2 class="wp-block-heading">Your Authority Is a Network, Not a Resume</h2>
+				<!-- /wp:heading -->
+
+				<!-- wp:paragraph -->
+				<p>When AI systems like ChatGPT, Perplexity, and Google AI Overview decide who to recommend, they don't read resumes. They read networks of trust: who endorses you, who shares your ideas, and how deeply connected your expertise is to the conversations happening in your space.</p>
+				<!-- /wp:paragraph -->
+
+				<!-- wp:paragraph -->
+				<p>Every podcast interview adds nodes to your Authority Graph:</p>
+				<!-- /wp:paragraph -->
+
+				<!-- wp:html -->
+<ul class="gfy-resource__contents-list gfy-resource__contents-list--dark">
+	<li><strong>Host Endorsement Nodes:</strong> When a trusted host introduces you as the expert, their credibility transfers to you. AI tracks these endorsement patterns.</li>
+	<li><strong>Audience Reach Nodes:</strong> Each show's listeners become connection points between your expertise and the people who need it.</li>
+	<li><strong>Topic Authority Nodes:</strong> Appearing on shows within a specific domain signals deep contextual expertise, not just general knowledge.</li>
+	<li><strong>Cross-Pollination Nodes:</strong> When you appear alongside other recognized voices, the combined graph strengthens every participant's authority signal.</li>
+</ul>
+				<!-- /wp:html -->
+			</div>
+			<!-- /wp:column -->
+
+			<!-- wp:column {"className":"gfy-content-grid__col gfy-content-grid__col--media"} -->
+			<div class="wp-block-column gfy-content-grid__col gfy-content-grid__col--media">
+				<!-- wp:html -->
+<div class="gfy-authority-graph">
+	<svg class="gfy-authority-graph__svg" viewBox="0 0 600 450" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="graph-title graph-desc">
+		<title id="graph-title">Authority Graph Network Diagram</title>
+		<desc id="graph-desc">A network visualization showing how podcast interviews create interconnected trust nodes. A central "You" node connects to host nodes, which connect to audience and topic nodes, forming a web of authority signals.</desc>
+
+		<defs>
+			<!-- Glow filter for central node -->
+			<filter id="gfy-glow" x="-50%" y="-50%" width="200%" height="200%">
+				<feGaussianBlur stdDeviation="6" result="blur"/>
+				<feMerge>
+					<feMergeNode in="blur"/>
+					<feMergeNode in="SourceGraphic"/>
+				</feMerge>
+			</filter>
+			<!-- Animated dash pattern -->
+			<linearGradient id="gfy-edge-grad" x1="0%" y1="0%" x2="100%" y2="0%">
+				<stop offset="0%" style="stop-color:#627d98;stop-opacity:0.2"/>
+				<stop offset="50%" style="stop-color:#ED8936;stop-opacity:0.8"/>
+				<stop offset="100%" style="stop-color:#627d98;stop-opacity:0.2"/>
+			</linearGradient>
+		</defs>
+
+		<!-- EDGES — Connection lines (drawn first so nodes render on top) -->
+		<!-- You → Hosts -->
+		<line class="gfy-authority-graph__edge" x1="300" y1="225" x2="140" y2="120"/>
+		<line class="gfy-authority-graph__edge" x1="300" y1="225" x2="460" y2="120"/>
+		<line class="gfy-authority-graph__edge" x1="300" y1="225" x2="160" y2="340"/>
+
+		<!-- Animated trust-flow edges -->
+		<line class="gfy-authority-graph__edge gfy-authority-graph__edge--active" x1="300" y1="225" x2="140" y2="120"/>
+		<line class="gfy-authority-graph__edge gfy-authority-graph__edge--active gfy-authority-graph__edge--delay-1" x1="300" y1="225" x2="460" y2="120"/>
+		<line class="gfy-authority-graph__edge gfy-authority-graph__edge--active gfy-authority-graph__edge--delay-2" x1="300" y1="225" x2="160" y2="340"/>
+
+		<!-- Hosts → Audience nodes -->
+		<line class="gfy-authority-graph__edge gfy-authority-graph__edge--secondary" x1="140" y1="120" x2="60" y2="60"/>
+		<line class="gfy-authority-graph__edge gfy-authority-graph__edge--secondary" x1="140" y1="120" x2="80" y2="190"/>
+		<line class="gfy-authority-graph__edge gfy-authority-graph__edge--secondary" x1="460" y1="120" x2="540" y2="55"/>
+		<line class="gfy-authority-graph__edge gfy-authority-graph__edge--secondary" x1="460" y1="120" x2="540" y2="185"/>
+		<line class="gfy-authority-graph__edge gfy-authority-graph__edge--secondary" x1="160" y1="340" x2="80" y2="390"/>
+		<line class="gfy-authority-graph__edge gfy-authority-graph__edge--secondary" x1="160" y1="340" x2="100" y2="280"/>
+
+		<!-- You → Topic nodes -->
+		<line class="gfy-authority-graph__edge gfy-authority-graph__edge--topic" x1="300" y1="225" x2="440" y2="310"/>
+		<line class="gfy-authority-graph__edge gfy-authority-graph__edge--topic" x1="300" y1="225" x2="380" y2="390"/>
+		<line class="gfy-authority-graph__edge gfy-authority-graph__edge--topic" x1="300" y1="225" x2="500" y2="270"/>
+		<line class="gfy-authority-graph__edge gfy-authority-graph__edge--topic" x1="300" y1="225" x2="220" y2="140"/>
+
+		<!-- Host → Topic cross-connections -->
+		<line class="gfy-authority-graph__edge gfy-authority-graph__edge--cross" x1="460" y1="120" x2="440" y2="310"/>
+		<line class="gfy-authority-graph__edge gfy-authority-graph__edge--cross" x1="160" y1="340" x2="380" y2="390"/>
+		<line class="gfy-authority-graph__edge gfy-authority-graph__edge--cross" x1="140" y1="120" x2="220" y2="140"/>
+
+		<!-- NODES -->
+		<!-- Audience nodes (smallest, drawn first) -->
+		<circle class="gfy-authority-graph__node gfy-authority-graph__node--audience" cx="60" cy="60" r="10"/>
+		<circle class="gfy-authority-graph__node gfy-authority-graph__node--audience" cx="80" cy="190" r="10"/>
+		<circle class="gfy-authority-graph__node gfy-authority-graph__node--audience" cx="540" cy="55" r="10"/>
+		<circle class="gfy-authority-graph__node gfy-authority-graph__node--audience" cx="540" cy="185" r="10"/>
+		<circle class="gfy-authority-graph__node gfy-authority-graph__node--audience" cx="80" cy="390" r="10"/>
+		<circle class="gfy-authority-graph__node gfy-authority-graph__node--audience" cx="100" cy="280" r="10"/>
+
+		<!-- Topic nodes -->
+		<circle class="gfy-authority-graph__node gfy-authority-graph__node--topic" cx="440" cy="310" r="14"/>
+		<circle class="gfy-authority-graph__node gfy-authority-graph__node--topic" cx="380" cy="390" r="14"/>
+		<circle class="gfy-authority-graph__node gfy-authority-graph__node--topic" cx="500" cy="270" r="12"/>
+		<circle class="gfy-authority-graph__node gfy-authority-graph__node--topic" cx="220" cy="140" r="12"/>
+
+		<!-- Host nodes -->
+		<circle class="gfy-authority-graph__node gfy-authority-graph__node--host" cx="140" cy="120" r="20"/>
+		<circle class="gfy-authority-graph__node gfy-authority-graph__node--host" cx="460" cy="120" r="20"/>
+		<circle class="gfy-authority-graph__node gfy-authority-graph__node--host" cx="160" cy="340" r="20"/>
+
+		<!-- Central YOU node -->
+		<circle class="gfy-authority-graph__node gfy-authority-graph__node--you" cx="300" cy="225" r="32" filter="url(#gfy-glow)"/>
+
+		<!-- LABELS -->
+		<text class="gfy-authority-graph__label gfy-authority-graph__label--you" x="300" y="230" text-anchor="middle" dominant-baseline="central">YOU</text>
+		<text class="gfy-authority-graph__label gfy-authority-graph__label--host" x="140" y="93" text-anchor="middle">Host</text>
+		<text class="gfy-authority-graph__label gfy-authority-graph__label--host" x="460" y="93" text-anchor="middle">Host</text>
+		<text class="gfy-authority-graph__label gfy-authority-graph__label--host" x="160" y="370" text-anchor="middle">Host</text>
+		<text class="gfy-authority-graph__label gfy-authority-graph__label--topic" x="440" y="340" text-anchor="middle">Topic</text>
+		<text class="gfy-authority-graph__label gfy-authority-graph__label--topic" x="380" y="418" text-anchor="middle">Topic</text>
+		<text class="gfy-authority-graph__label gfy-authority-graph__label--audience" x="40" y="45" text-anchor="middle">Audience</text>
+		<text class="gfy-authority-graph__label gfy-authority-graph__label--audience" x="556" y="40" text-anchor="middle">Audience</text>
+	</svg>
+</div>
+				<!-- /wp:html -->
+			</div>
+			<!-- /wp:column -->
+		</div>
+		<!-- /wp:columns -->
+
+	</div>
+	<!-- /wp:group -->
+</div>
+<!-- /wp:group -->
+
+
+<!-- SECTION 3 — HOW AI READS THE GRAPH -->
+
+<!-- wp:group {"className":"gfy-section gfy-section--light"} -->
+<div class="wp-block-group gfy-section gfy-section--light">
+	<!-- wp:group {"className":"gfy-wrapper","layout":{"type":"constrained"}} -->
+	<div class="wp-block-group gfy-wrapper">
+
+		<!-- wp:heading {"textAlign":"center","level":2} -->
+		<h2 class="wp-block-heading has-text-align-center">How AI Reads Your Authority Graph</h2>
+		<!-- /wp:heading -->
+
+		<!-- wp:paragraph {"align":"center","className":"gfy-section__subtitle"} -->
+		<p class="has-text-align-center gfy-section__subtitle">AI systems evaluate four dimensions of your trust network to determine who to recommend. Stronger signals across all four mean higher visibility.</p>
+		<!-- /wp:paragraph -->
+
+		<!-- wp:html -->
+<div class="gfy-feature-grid" style="margin-top: var(--gfy-space-12, 3rem);">
+	<div class="gfy-feature-card">
+		<div class="gfy-feature-card__icon">
+			<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg>
+		</div>
+		<h3 class="gfy-feature-card__title">Connected Nodes</h3>
+		<p class="gfy-feature-card__description">More podcast appearances create more connections in your authority graph. Each interview adds host endorsements, audience touchpoints, and contextual links that AI systems aggregate into a trust profile.</p>
+	</div>
+
+	<div class="gfy-feature-card">
+		<div class="gfy-feature-card__icon">
+			<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>
+		</div>
+		<h3 class="gfy-feature-card__title">Contextual Relevance</h3>
+		<p class="gfy-feature-card__description">Appearing on topic-aligned shows strengthens specific expertise signals. AI doesn't just count connections. It evaluates whether your graph is contextually coherent or randomly scattered.</p>
+	</div>
+
+	<div class="gfy-feature-card">
+		<div class="gfy-feature-card__icon">
+			<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+		</div>
+		<h3 class="gfy-feature-card__title">Trust Propagation</h3>
+		<p class="gfy-feature-card__description">When a host endorses you, that trust extends to their entire network. Their audience, their guest community, and their topic ecosystem all become paths that connect back to your expertise.</p>
+	</div>
+
+	<div class="gfy-feature-card">
+		<div class="gfy-feature-card__icon">
+			<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
+		</div>
+		<h3 class="gfy-feature-card__title">Compounding Authority</h3>
+		<p class="gfy-feature-card__description">Each interview makes the next one more valuable. As your graph grows, new connections reinforce existing ones, creating an exponential authority effect that makes you increasingly visible to AI systems.</p>
+	</div>
+</div>
+		<!-- /wp:html -->
+
+	</div>
+	<!-- /wp:group -->
+</div>
+<!-- /wp:group -->
+
+
+<!-- SECTION 4 — AUTHORITY SIGNAL SCORE CALCULATOR -->
+
+<!-- wp:group {"className":"gfy-section"} -->
+<div class="wp-block-group gfy-section">
+	<!-- wp:group {"className":"gfy-wrapper","layout":{"type":"constrained"}} -->
+	<div class="wp-block-group gfy-wrapper">
+
+		<!-- wp:heading {"textAlign":"center","level":2} -->
+		<h2 class="wp-block-heading has-text-align-center">Calculate Your Authority Signal Score</h2>
+		<!-- /wp:heading -->
+
+		<!-- wp:paragraph {"align":"center","className":"gfy-section__subtitle"} -->
+		<p class="has-text-align-center gfy-section__subtitle">Answer 5 questions. See where you stand across the four layers of the Authority Stack. Get personalized recommendations.</p>
+		<!-- /wp:paragraph -->
+
+		<!-- wp:html -->
+<div id="gfy-authority-calculator" class="gfy-score-calc-container">
+
+	<!-- Calculator -->
+	<div class="gfy-score-calc">
+		<!-- Progress -->
+		<div class="gfy-score-calc__progress">
+			<div class="gfy-score-calc__progress-bar">
+				<div class="gfy-score-calc__progress-fill" style="width: 20%;"></div>
+			</div>
+			<div class="gfy-score-calc__step-dots">
+				<span class="gfy-score-calc__step-dot gfy-score-calc__step-dot--active" aria-label="Question 1"></span>
+				<span class="gfy-score-calc__step-dot" aria-label="Question 2"></span>
+				<span class="gfy-score-calc__step-dot" aria-label="Question 3"></span>
+				<span class="gfy-score-calc__step-dot" aria-label="Question 4"></span>
+				<span class="gfy-score-calc__step-dot" aria-label="Question 5"></span>
+			</div>
+		</div>
+
+		<!-- Question 1 — Borrowed Authority -->
+		<div class="gfy-score-calc__panel gfy-score-calc__panel--active" data-question="0">
+			<span class="gfy-score-calc__question-number">Question 1 of 5</span>
+			<h3 class="gfy-score-calc__question">How often are you introduced or endorsed by recognized voices in your industry?</h3>
+			<p class="gfy-score-calc__layer-tag"><span class="gfy-score-calc__layer-dot gfy-score-calc__layer-dot--borrowed"></span> Borrowed Authority</p>
+			<div class="gfy-score-calc__slider-wrap">
+				<input type="range" class="gfy-score-calc__slider" min="0" max="4" step="1" value="2" aria-label="How often are you endorsed by recognized voices">
+				<div class="gfy-score-calc__slider-labels">
+					<span class="gfy-score-calc__slider-label" data-value="0">Never</span>
+					<span class="gfy-score-calc__slider-label" data-value="1">Rarely</span>
+					<span class="gfy-score-calc__slider-label gfy-score-calc__slider-label--active" data-value="2">Occasionally</span>
+					<span class="gfy-score-calc__slider-label" data-value="3">Regularly</span>
+					<span class="gfy-score-calc__slider-label" data-value="4">Frequently</span>
+				</div>
+			</div>
+		</div>
+
+		<!-- Question 2 — Borrowed + Articulated -->
+		<div class="gfy-score-calc__panel" data-question="1">
+			<span class="gfy-score-calc__question-number">Question 2 of 5</span>
+			<h3 class="gfy-score-calc__question">When someone asks AI (ChatGPT, Perplexity, Google) about experts in your space, how likely are they to find you?</h3>
+			<p class="gfy-score-calc__layer-tag"><span class="gfy-score-calc__layer-dot gfy-score-calc__layer-dot--borrowed"></span> Borrowed + <span class="gfy-score-calc__layer-dot gfy-score-calc__layer-dot--articulated"></span> Articulated Authority</p>
+			<div class="gfy-score-calc__slider-wrap">
+				<input type="range" class="gfy-score-calc__slider" min="0" max="4" step="1" value="2" aria-label="How likely AI surfaces you as an expert">
+				<div class="gfy-score-calc__slider-labels">
+					<span class="gfy-score-calc__slider-label" data-value="0">Invisible</span>
+					<span class="gfy-score-calc__slider-label" data-value="1">Unlikely</span>
+					<span class="gfy-score-calc__slider-label gfy-score-calc__slider-label--active" data-value="2">Possible</span>
+					<span class="gfy-score-calc__slider-label" data-value="3">Likely</span>
+					<span class="gfy-score-calc__slider-label" data-value="4">Consistently</span>
+				</div>
+			</div>
+		</div>
+
+		<!-- Question 3 — Articulated Authority -->
+		<div class="gfy-score-calc__panel" data-question="2">
+			<span class="gfy-score-calc__question-number">Question 3 of 5</span>
+			<h3 class="gfy-score-calc__question">How clearly and consistently is your expertise communicated across platforms?</h3>
+			<p class="gfy-score-calc__layer-tag"><span class="gfy-score-calc__layer-dot gfy-score-calc__layer-dot--articulated"></span> Articulated Authority</p>
+			<div class="gfy-score-calc__slider-wrap">
+				<input type="range" class="gfy-score-calc__slider" min="0" max="4" step="1" value="2" aria-label="How clearly your expertise is communicated">
+				<div class="gfy-score-calc__slider-labels">
+					<span class="gfy-score-calc__slider-label" data-value="0">Scattered</span>
+					<span class="gfy-score-calc__slider-label" data-value="1">Somewhat</span>
+					<span class="gfy-score-calc__slider-label gfy-score-calc__slider-label--active" data-value="2">Clear</span>
+					<span class="gfy-score-calc__slider-label" data-value="3">Strong</span>
+					<span class="gfy-score-calc__slider-label" data-value="4">Exceptional</span>
+				</div>
+			</div>
+		</div>
+
+		<!-- Question 4 — Earned Authority -->
+		<div class="gfy-score-calc__panel" data-question="3">
+			<span class="gfy-score-calc__question-number">Question 4 of 5</span>
+			<h3 class="gfy-score-calc__question">Do people who interact with your content or work come back for more?</h3>
+			<p class="gfy-score-calc__layer-tag"><span class="gfy-score-calc__layer-dot gfy-score-calc__layer-dot--earned"></span> Earned Authority</p>
+			<div class="gfy-score-calc__slider-wrap">
+				<input type="range" class="gfy-score-calc__slider" min="0" max="4" step="1" value="2" aria-label="How often people return to your content">
+				<div class="gfy-score-calc__slider-labels">
+					<span class="gfy-score-calc__slider-label" data-value="0">Never</span>
+					<span class="gfy-score-calc__slider-label" data-value="1">Rarely</span>
+					<span class="gfy-score-calc__slider-label gfy-score-calc__slider-label--active" data-value="2">Sometimes</span>
+					<span class="gfy-score-calc__slider-label" data-value="3">Often</span>
+					<span class="gfy-score-calc__slider-label" data-value="4">Consistently</span>
+				</div>
+			</div>
+		</div>
+
+		<!-- Question 5 — Demonstrated Authority -->
+		<div class="gfy-score-calc__panel" data-question="4">
+			<span class="gfy-score-calc__question-number">Question 5 of 5</span>
+			<h3 class="gfy-score-calc__question">How visible are your results? Can your market verify your expertise through case studies, outcomes, or published evidence?</h3>
+			<p class="gfy-score-calc__layer-tag"><span class="gfy-score-calc__layer-dot gfy-score-calc__layer-dot--demonstrated"></span> Demonstrated Authority</p>
+			<div class="gfy-score-calc__slider-wrap">
+				<input type="range" class="gfy-score-calc__slider" min="0" max="4" step="1" value="2" aria-label="How visible your results are">
+				<div class="gfy-score-calc__slider-labels">
+					<span class="gfy-score-calc__slider-label" data-value="0">Not at all</span>
+					<span class="gfy-score-calc__slider-label" data-value="1">Minimal</span>
+					<span class="gfy-score-calc__slider-label gfy-score-calc__slider-label--active" data-value="2">Moderate</span>
+					<span class="gfy-score-calc__slider-label" data-value="3">Strong</span>
+					<span class="gfy-score-calc__slider-label" data-value="4">Extensive</span>
+				</div>
+			</div>
+		</div>
+
+		<!-- Navigation -->
+		<div class="gfy-score-calc__nav">
+			<button type="button" class="gfy-btn gfy-btn-outline gfy-score-calc__nav-btn" data-action="back" style="visibility: hidden;">Back</button>
+			<button type="button" class="gfy-btn gfy-btn-cta gfy-score-calc__nav-btn" data-action="next">Next</button>
+		</div>
+	</div>
+
+	<!-- Results (hidden until calculated) -->
+	<div class="gfy-score-results" aria-live="polite">
+		<!-- Gauge -->
+		<div class="gfy-score-results__gauge">
+			<svg class="gfy-score-results__gauge-svg" viewBox="0 0 140 140" xmlns="http://www.w3.org/2000/svg">
+				<circle class="gfy-score-results__gauge-track" cx="70" cy="70" r="54" fill="none" stroke-width="10"/>
+				<circle class="gfy-score-results__gauge-circle" cx="70" cy="70" r="54" fill="none" stroke-width="10" transform="rotate(-90 70 70)"/>
+			</svg>
+			<div class="gfy-score-results__gauge-inner">
+				<span class="gfy-score-results__gauge-value">0</span>
+				<span class="gfy-score-results__gauge-label">/ 100</span>
+			</div>
+		</div>
+
+		<!-- Tier -->
+		<h3 class="gfy-score-results__tier"></h3>
+		<p class="gfy-score-results__tier-desc"></p>
+
+		<!-- Layer Breakdown -->
+		<div class="gfy-score-results__layers">
+			<div class="gfy-score-results__layer" data-layer="borrowed">
+				<div class="gfy-score-results__layer-header">
+					<span class="gfy-score-results__layer-label">Borrowed Authority</span>
+					<span class="gfy-score-results__layer-value">0 / 25</span>
+				</div>
+				<div class="gfy-score-results__layer-bar">
+					<div class="gfy-score-results__layer-fill gfy-score-results__layer-fill--borrowed"></div>
+				</div>
+			</div>
+			<div class="gfy-score-results__layer" data-layer="articulated">
+				<div class="gfy-score-results__layer-header">
+					<span class="gfy-score-results__layer-label">Articulated Authority</span>
+					<span class="gfy-score-results__layer-value">0 / 25</span>
+				</div>
+				<div class="gfy-score-results__layer-bar">
+					<div class="gfy-score-results__layer-fill gfy-score-results__layer-fill--articulated"></div>
+				</div>
+			</div>
+			<div class="gfy-score-results__layer" data-layer="earned">
+				<div class="gfy-score-results__layer-header">
+					<span class="gfy-score-results__layer-label">Earned Authority</span>
+					<span class="gfy-score-results__layer-value">0 / 25</span>
+				</div>
+				<div class="gfy-score-results__layer-bar">
+					<div class="gfy-score-results__layer-fill gfy-score-results__layer-fill--earned"></div>
+				</div>
+			</div>
+			<div class="gfy-score-results__layer" data-layer="demonstrated">
+				<div class="gfy-score-results__layer-header">
+					<span class="gfy-score-results__layer-label">Demonstrated Authority</span>
+					<span class="gfy-score-results__layer-value">0 / 25</span>
+				</div>
+				<div class="gfy-score-results__layer-bar">
+					<div class="gfy-score-results__layer-fill gfy-score-results__layer-fill--demonstrated"></div>
+				</div>
+			</div>
+		</div>
+
+		<!-- Recommendation -->
+		<div class="gfy-score-results__recommendation">
+			<h4 class="gfy-score-results__recommendation-title">Your Next Move</h4>
+			<p class="gfy-score-results__recommendation-text"></p>
+		</div>
+
+		<!-- CTA Card -->
+		<div class="gfy-score-results__cta-card">
+			<p class="gfy-score-results__cta-text"></p>
+			<a href="/start-free-trial" class="gfy-btn gfy-btn-cta gfy-btn--lg gfy-score-results__cta-btn">Start Free Trial</a>
+		</div>
+
+		<!-- Retake -->
+		<button type="button" class="gfy-btn gfy-btn-outline gfy-score-results__retake" data-action="retake">Retake Assessment</button>
+	</div>
+
+</div>
+		<!-- /wp:html -->
+
+	</div>
+	<!-- /wp:group -->
+</div>
+<!-- /wp:group -->
+
+
+<!-- SECTION 5 — WHO THIS IS FOR -->
+
+<!-- wp:group {"className":"gfy-section gfy-section--light"} -->
+<div class="wp-block-group gfy-section gfy-section--light">
+	<!-- wp:group {"className":"gfy-wrapper","layout":{"type":"constrained"}} -->
+	<div class="wp-block-group gfy-wrapper">
+
+		<!-- wp:heading {"level":2} -->
+		<h2 class="wp-block-heading">Who Should Explore the Authority Graph?</h2>
+		<!-- /wp:heading -->
+
+		<!-- wp:paragraph -->
+		<p>The Authority Graph framework and Signal Score calculator are built for experts who want to understand how modern trust and visibility actually work, especially in the age of AI-driven recommendations.</p>
+		<!-- /wp:paragraph -->
+
+		<!-- wp:list -->
+		<ul>
+			<!-- wp:list-item -->
+			<li><strong>Experts who feel invisible despite strong work.</strong> You deliver real results, but AI systems and decision-makers don't seem to know you exist. Your authority graph may have gaps that this tool can reveal.</li>
+			<!-- /wp:list-item -->
+
+			<!-- wp:list-item -->
+			<li><strong>Business owners evaluating podcast guesting.</strong> Before you invest time in interviews, understand how they build the authority signals that drive both human trust and AI recommendations.</li>
+			<!-- /wp:list-item -->
+
+			<!-- wp:list-item -->
+			<li><strong>Marketing leaders building authority strategies.</strong> Use the Signal Score to benchmark where your organization stands and identify which authority layer needs the most investment.</li>
+			<!-- /wp:list-item -->
+
+			<!-- wp:list-item -->
+			<li><strong>Agencies planning client authority campaigns.</strong> The Authority Graph gives you a framework for explaining how podcast guesting creates measurable, compounding visibility that clients can understand.</li>
+			<!-- /wp:list-item -->
+		</ul>
+		<!-- /wp:list -->
+
+	</div>
+	<!-- /wp:group -->
+</div>
+<!-- /wp:group -->
+
+
+<!-- SECTION 6 — FAQ -->
+
+<!-- wp:group {"className":"gfy-section"} -->
+<div class="wp-block-group gfy-section">
+	<!-- wp:group {"className":"gfy-wrapper","layout":{"type":"constrained"}} -->
+	<div class="wp-block-group gfy-wrapper">
+
+		<!-- wp:heading {"level":2} -->
+		<h2 class="wp-block-heading">Frequently Asked Questions</h2>
+		<!-- /wp:heading -->
+
+		<!-- wp:html -->
+<div class="gfy-faq">
+	<details class="gfy-faq__item">
+		<summary class="gfy-faq__question">What is the Authority Graph?</summary>
+		<div class="gfy-faq__answer">
+			<p>The Authority Graph is a model for understanding how podcast interviews create interconnected networks of trust. Every interview creates nodes: the host who endorses you, their audience who hears your ideas, other experts in the topic space, and the broader ecosystem connected to that show. AI systems like ChatGPT, Perplexity, and Google AI Overview read these networks to determine who qualifies as a trusted expert worth recommending. The more connected and contextually relevant your graph, the more likely you are to be surfaced when someone asks AI for an expert in your space.</p>
+		</div>
+	</details>
+
+	<details class="gfy-faq__item">
+		<summary class="gfy-faq__question">How is the Authority Signal Score calculated?</summary>
+		<div class="gfy-faq__answer">
+			<p>The score evaluates five dimensions of your current authority presence, mapped to the four layers of the Authority Stack: Borrowed Authority (endorsements from credible voices), Articulated Authority (clarity and consistency of your message), Earned Authority (repeat engagement and loyalty from your audience), and Demonstrated Authority (visible, verifiable results). Each question uses a 5-point scale, and your responses are weighted and normalized to produce a composite score from 0 to 100, with a breakdown showing your strength in each layer.</p>
+		</div>
+	</details>
+
+	<details class="gfy-faq__item">
+		<summary class="gfy-faq__question">Is my data stored or shared?</summary>
+		<div class="gfy-faq__answer">
+			<p>No. The entire calculation happens in your browser using client-side JavaScript. Your answers are not sent to any server, not stored in any database, and not shared with anyone. You can retake the assessment as many times as you like, and each session starts fresh.</p>
+		</div>
+	</details>
+
+	<details class="gfy-faq__item">
+		<summary class="gfy-faq__question">What should I do after I get my score?</summary>
+		<div class="gfy-faq__answer">
+			<p>Your score includes a personalized recommendation based on your weakest authority layer. For most experts, the highest-leverage action is building Borrowed Authority through strategic podcast interviews, because host endorsements create the trust signals that activate all four layers simultaneously. The Guestify platform is designed to help you do exactly that: find the right shows, manage relationships with hosts, and track the authority outcomes that matter.</p>
+		</div>
+	</details>
+</div>
+		<!-- /wp:html -->
+
+	</div>
+	<!-- /wp:group -->
+</div>
+<!-- /wp:group -->
+
+
+<!-- SECTION 7 — CTA -->
+
+<!-- wp:group {"className":"gfy-section gfy-section--accent"} -->
+<div class="wp-block-group gfy-section gfy-section--accent">
+	<!-- wp:group {"className":"gfy-wrapper","layout":{"type":"constrained"}} -->
+	<div class="wp-block-group gfy-wrapper">
+
+		<!-- wp:heading {"textAlign":"center","level":2} -->
+		<h2 class="wp-block-heading has-text-align-center">Ready to Build Your Authority Graph?</h2>
+		<!-- /wp:heading -->
+
+		<!-- wp:paragraph {"align":"center"} -->
+		<p class="has-text-align-center">Guestify gives you the system to find strategic podcasts, build host relationships, and create the compounding authority signals that AI and decision-makers look for.</p>
+		<!-- /wp:paragraph -->
+
+		<!-- wp:buttons {"className":"gfy-cta__buttons","layout":{"type":"flex","justifyContent":"center"}} -->
+		<div class="wp-block-buttons gfy-cta__buttons">
+			<!-- wp:button {"className":"gfy-btn gfy-btn-cta gfy-btn--lg"} -->
+			<div class="wp-block-button gfy-btn gfy-btn-cta gfy-btn--lg"><a class="wp-block-button__link" href="/start-free-trial">Start Free Trial</a></div>
+			<!-- /wp:button -->
+
+			<!-- wp:button {"className":"gfy-btn gfy-btn-secondary gfy-btn--lg"} -->
+			<div class="wp-block-button gfy-btn gfy-btn-secondary gfy-btn--lg"><a class="wp-block-button__link" href="/how-it-works">See How It Works</a></div>
+			<!-- /wp:button -->
+		</div>
+		<!-- /wp:buttons -->
+
+		<!-- wp:paragraph {"align":"center","className":"gfy-cta__reassurance"} -->
+		<p class="has-text-align-center gfy-cta__reassurance">No credit card required. Cancel anytime.</p>
+		<!-- /wp:paragraph -->
+
+	</div>
+	<!-- /wp:group -->
+</div>
+<!-- /wp:group -->
+
+
+<!-- SECTION 8 — SCHEMA -->
+
+<!-- wp:html -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "What is the Authority Graph?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The Authority Graph is a model for understanding how podcast interviews create interconnected networks of trust. Every interview creates nodes: the host who endorses you, their audience who hears your ideas, other experts in the topic space, and the broader ecosystem connected to that show. AI systems read these networks to determine who qualifies as a trusted expert worth recommending."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "How is the Authority Signal Score calculated?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "The score evaluates five dimensions of your current authority presence, mapped to the four layers of the Authority Stack: Borrowed Authority, Articulated Authority, Earned Authority, and Demonstrated Authority. Each question uses a 5-point scale, and your responses are weighted and normalized to produce a composite score from 0 to 100."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "Is my data stored or shared?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "No. The entire calculation happens in your browser using client-side JavaScript. Your answers are not sent to any server, not stored in any database, and not shared with anyone."
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "What should I do after I get my score?",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "Your score includes a personalized recommendation based on your weakest authority layer. For most experts, the highest-leverage action is building Borrowed Authority through strategic podcast interviews, because host endorsements create the trust signals that activate all four layers simultaneously."
+      }
+    }
+  ]
+}
+</script>
+<!-- /wp:html -->
